@@ -1,4 +1,4 @@
-package com.speko;
+package com.android.speko;
 
 import org.junit.Test;
 
