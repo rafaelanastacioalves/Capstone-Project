@@ -3,5 +3,7 @@
 
 
     <!-- Facebook app credentials-->
-    <string name="facebook_app_id">167169730425816</string>
+    <string name="facebook_application_id" translatable="false">167169730425816</string>
+    <!-- Facebook Application ID, prefixed by 'fb'.  Enables Chrome Custom tabs. -->
+    <string name="facebook_login_protocol_scheme" translatable="false">rb167169730425816</string>
 </resources>
