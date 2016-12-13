@@ -14,8 +14,19 @@ repositories {
     maven { url 'https://maven.fabric.io/public' }
 }
 
+def Properties signProps = new Properties()
+def propFile = new File('keys/sign.properties')
+signProps.load(new InputStreamReader(new FileInputStream(propFile), "UTF-8"))
 
 android {
+    signingConfigs {
+        release {
+            keyAlias 'release'
+            keyPassword signProps['KEY_PASSWORD_RELEASE']
+            storeFile file("$rootDir/keys/release.jks")
+            storePassword signProps['STORE_PASSWORD_RELEASE']
+        }
+    }
     compileSdkVersion 25
     buildToolsVersion "25.0.1"
     defaultConfig {
@@ -31,33 +42,30 @@ android {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             resValue('string', 'app_name', 'Speko')
+            signingConfig signingConfigs.release
         }
-
         debug {
             applicationIdSuffix ".debug"
             versionNameSuffix "-debug"
             minifyEnabled false
             useProguard false
             resValue('string', 'app_name', 'Speko-D')
-
         }
     }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     compile 'com.android.support:appcompat-v7:25.0.1'
     testCompile 'junit:junit:4.12'
-
     compile 'com.firebaseui:firebase-ui-auth:1.0.1'
     compile 'com.facebook.android:facebook-android-sdk:[4,5)'
     compile('com.crashlytics.sdk.android:crashlytics:2.6.5@aar') {
         transitive = true;
     }
-
 }
 
 apply plugin: 'com.google.gms.google-services'
