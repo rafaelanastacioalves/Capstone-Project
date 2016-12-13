@@ -3,7 +3,5 @@
     <string name="action_settings">Settings</string>
 
 
-    <!-- Facebook app credentials-->
-    <string name="facebook_app_id">166280200514769</string>
 
 </resources>
