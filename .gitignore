@@ -7,3 +7,5 @@
 /build
 /captures
 .externalNativeBuild
+keys/release.jks
+keys/sign.properties
