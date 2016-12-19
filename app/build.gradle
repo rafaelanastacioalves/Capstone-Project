@@ -45,13 +45,18 @@ android {
             signingConfig signingConfigs.release
         }
         debug {
-            applicationIdSuffix ".debug"
+//            applicationIdSuffix ".debug"
             versionNameSuffix "-debug"
             minifyEnabled false
             useProguard false
             resValue('string', 'app_name', 'Speko-D')
         }
     }
+
+    applicationVariants.all { variant ->
+        variant.resValue "string", "app_id", variant.versionName
+    }
+    sourceSets { debug { java.srcDirs = ['src/debug/java', 'src/debug/java/'] } }
 }
 
 dependencies {
@@ -60,12 +65,14 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     compile 'com.android.support:appcompat-v7:25.0.1'
+    compile 'com.android.support:design:25.0.1'
     testCompile 'junit:junit:4.12'
-    compile 'com.firebaseui:firebase-ui-auth:1.0.1'
-    compile 'com.facebook.android:facebook-android-sdk:[4,5)'
-    compile('com.crashlytics.sdk.android:crashlytics:2.6.5@aar') {
-        transitive = true;
-    }
+//    compile 'com.firebaseui:firebase-ui-auth:1.0.1'
+//    compile 'com.google.firebase:firebase-database:10.0.1'
+//    compile 'com.facebook.android:facebook-android-sdk:[4,5)'
+//    compile('com.crashlytics.sdk.android:crashlytics:2.6.5@aar') {
+//        transitive = true;
+//    }
 }
 
-apply plugin: 'com.google.gms.google-services'
+//apply plugin: 'com.google.gms.google-services'

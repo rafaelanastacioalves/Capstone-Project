@@ -3,8 +3,9 @@
     <string name="action_settings">Settings</string>
 
     <!-- SyncAdapter related -->
-    <string name="content_authority">com.speko.android</string>
     <string name="sync_account_type">android.speko.com</string>
+    <string name="content_authority">com.speko.android</string>
+
 
 
 </resources>
