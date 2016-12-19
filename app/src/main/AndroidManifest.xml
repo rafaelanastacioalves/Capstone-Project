@@ -34,6 +34,19 @@
             tools:replace="android:value"
             android:name="io.fabric.ApiKey"
             android:value="b26c0f1b3cd4804fbb2f3ac24780fe6fd7253306" />
+
+        <!-- The SyncAdapter service -->
+        <service
+            android:name=".sync.SpekoSyncService"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.content.SyncAdapter" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.content.SyncAdapter"
+                android:resource="@xml/syncadapter" />
+        </service>
     </application>
 
 </manifest>
