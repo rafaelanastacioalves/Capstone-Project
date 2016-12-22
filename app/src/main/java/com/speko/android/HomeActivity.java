@@ -147,7 +147,11 @@ public class HomeActivity extends AppCompatActivity  {
              * To maintain backward compatibility, assume that
              * changeUri is null.
              */
-            ContentResolver.requestSync(mAccount, AUTHORITY, null);
+            Bundle b = new Bundle();
+            // Disable sync backoff and ignore sync preferences. In other words...perform sync NOW!
+            b.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
+            b.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+            ContentResolver.requestSync(mAccount, AUTHORITY, b);
         }
 
     }
