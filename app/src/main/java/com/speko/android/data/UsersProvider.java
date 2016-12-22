@@ -1,6 +1,7 @@
 package com.speko.android.data;
 
 import android.content.ContentProvider;
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
@@ -11,6 +12,11 @@ import android.support.annotation.Nullable;
  */
 
 public class UsersProvider extends ContentProvider {
+
+    private static String AUTHORITY = "com.speko.android.data";
+    public static final Uri URI
+            = new Uri.Builder().scheme(ContentResolver.SCHEME_CONTENT).authority(AUTHORITY).build();
+
     @Override
     public boolean onCreate() {
         return true;

@@ -30,6 +30,6 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
 
     @Override
     public void onPerformSync(Account account, Bundle bundle, String s, ContentProviderClient contentProviderClient, SyncResult syncResult) {
-
+        Log.d("SyncAdapter", "onPerformSync");
     }
 }

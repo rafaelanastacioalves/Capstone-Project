@@ -1,5 +1,6 @@
 package com.speko.android;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -20,7 +21,7 @@ public class LoginActivity extends AppCompatActivity {
 //        FirebaseAuth auth = FirebaseAuth.getInstance();
 //        if (auth.getCurrentUser() != null) {
 //            // already signed in
-//            startActivity(new Intent(this, HomeActivity.class));
+            startActivity(new Intent(this, HomeActivity.class));
 //
 //
 //        } else {
