@@ -54,9 +54,7 @@
             <meta-data
                 android:name="android.content.SyncAdapter"
                 android:resource="@xml/syncadapter" />
-            <meta-data
-                android:name="android.accounts.AccountAuthenticator"
-                android:resource="@xml/authenticator" />
+
         </service>
 
 
@@ -66,15 +64,15 @@
 
 
 
-        <!--&lt;!&ndash; SyncAdapter's dummy authentication service &ndash;&gt;-->
-        <!--<service android:name=".sync.SpekoAuthenticatorService">-->
-        <!--<intent-filter>-->
-            <!--<action android:name="android.accounts.AccountAuthenticator" />-->
-        <!--</intent-filter>-->
-            <!--<meta-data-->
-                <!--android:name="android.accounts.AccountAuthenticator"-->
-                <!--android:resource="@xml/authenticator" />-->
-        <!--</service>-->
+        <!-- SyncAdapter's dummy authentication service -->
+        <service android:name=".sync.SpekoAuthenticatorService">
+        <intent-filter>
+            <action android:name="android.accounts.AccountAuthenticator" />
+        </intent-filter>
+            <meta-data
+                android:name="android.accounts.AccountAuthenticator"
+                android:resource="@xml/authenticator" />
+        </service>
 
 
         <provider
