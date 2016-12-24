@@ -15,8 +15,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 
-import com.speko.android.data.UsersProvider;
-
 public class HomeActivity extends AppCompatActivity  {
 
     // Constants
@@ -33,6 +31,8 @@ public class HomeActivity extends AppCompatActivity  {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d("HomeActibvity", "onCreate");
+
         setContentView(R.layout.activity_home);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -50,16 +50,22 @@ public class HomeActivity extends AppCompatActivity  {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mAccount = CreateSyncAccount(this);
 
-        Bundle b = new Bundle();
-        // Disable sync backoff and ignore sync preferences. In other words...perform sync NOW!
-        b.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
-        b.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
-        ContentResolver.requestSync(mAccount,AUTHORITY,b);
 
-        TableObserver observer = new TableObserver(false);
+//        Log.d("HomeActibvity", "requestSync");
+//
+//        Bundle b = new Bundle();
+//        // Disable sync backoff and ignore sync preferences. In other words...perform sync NOW!
+//        b.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
+//        b.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
+//        ContentResolver.requestSync(mAccount,AUTHORITY,b);
 
-        mResolver.registerContentObserver(UsersProvider.URI, true, observer);
-        getContentResolver().notifyChange(UsersProvider.URI, null, true);
+//        TableObserver observer = new TableObserver(false);
+
+//        Log.d("HomeActibvity", "ContentObserver ");
+//        Log.d("HomeActibvity", "NotifyChange ");
+//
+//        mResolver.registerContentObserver(UsersProvider.URI, true, observer);
+//        mResolver.notifyChange(UsersProvider.URI, null, true);
 
 
     }
@@ -129,6 +135,7 @@ public class HomeActivity extends AppCompatActivity  {
                                  */
         @Override
         public void onChange(boolean selfChange) {
+            Log.d("HomeActibvity", "onChange(selfChange)");
             /*
              * Invoke the method signature available as of
              * Android platform version 4.1, with a null URI.
@@ -147,11 +154,9 @@ public class HomeActivity extends AppCompatActivity  {
              * To maintain backward compatibility, assume that
              * changeUri is null.
              */
-            Bundle b = new Bundle();
-            // Disable sync backoff and ignore sync preferences. In other words...perform sync NOW!
-            b.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
-            b.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
-            ContentResolver.requestSync(mAccount, AUTHORITY, b);
+            Log.d("HomeActibvity", "onChange(selfChange, changeUri)");
+
+            ContentResolver.requestSync(mAccount, AUTHORITY, null);
         }
 
     }
