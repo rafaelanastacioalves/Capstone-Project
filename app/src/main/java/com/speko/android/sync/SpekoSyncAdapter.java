@@ -8,11 +8,14 @@ import android.content.SyncResult;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.google.firebase.database.FirebaseDatabase;
+
 
 /**
  * Created by rafaelalves on 14/12/16.
  */
 public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
+    private static FirebaseDatabase mFirebaseDatabase;
     private final String LOG_TAG = this.getClass().getSimpleName();
 
 
@@ -30,6 +33,13 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
 
     @Override
     public void onPerformSync(Account account, Bundle bundle, String s, ContentProviderClient contentProviderClient, SyncResult syncResult) {
-        Log.d("SyncAdapter", "onPerformSync");
+        Log.d(LOG_TAG, "onPerformSync");
+    }
+
+    public static void initializeSyncAdapter(){
+
+        Log.d("SpekoSyncAdapter", "initializeSyncAdapter");
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
+
     }
 }

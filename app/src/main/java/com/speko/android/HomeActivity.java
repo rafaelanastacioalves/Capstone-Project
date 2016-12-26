@@ -15,6 +15,8 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 
+import com.speko.android.sync.SpekoSyncAdapter;
+
 public class HomeActivity extends AppCompatActivity  {
 
     // Constants
@@ -49,6 +51,7 @@ public class HomeActivity extends AppCompatActivity  {
         });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mAccount = CreateSyncAccount(this);
+        SpekoSyncAdapter.initializeSyncAdapter();
 
 
 //        Log.d("HomeActibvity", "requestSync");
