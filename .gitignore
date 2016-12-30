@@ -9,3 +9,6 @@
 .externalNativeBuild
 keys/release.jks
 keys/sign.properties
+.idea/
+gradle/
+gradlew
