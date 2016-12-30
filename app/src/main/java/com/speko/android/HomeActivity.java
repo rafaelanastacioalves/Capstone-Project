@@ -8,6 +8,7 @@ import android.database.ContentObserver;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +16,9 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 
+import com.firebase.ui.auth.AuthUI;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.speko.android.sync.SpekoSyncAdapter;
 
 public class HomeActivity extends AppCompatActivity  {
@@ -26,9 +30,12 @@ public class HomeActivity extends AppCompatActivity  {
     public static final String ACCOUNT_TYPE = "android.speko.com";
     // The account name
     public static final String ACCOUNT = "dummyaccount";
+    private static final int RC_SIGN_IN = 1;
     // Instance fields
     Account mAccount;
     private ContentResolver mResolver;
+    private FirebaseAuth mFirebaseAuth;
+    private FirebaseAuth.AuthStateListener mAuthStateListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +58,34 @@ public class HomeActivity extends AppCompatActivity  {
         });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mAccount = CreateSyncAccount(this);
+
+        mFirebaseAuth = FirebaseAuth.getInstance();
+
+        mAuthStateListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user != null) {
+                    // User is signed in
+                    //TODO implement this
+//                    onSignedInInitialize(user.getDisplayName());
+                } else {
+                    // User is signed out
+                    //TODO implement this
+//                    onSignedOutCleanup();
+                    startActivityForResult(
+                            AuthUI.getInstance()
+                                    .createSignInIntentBuilder()
+                                    .setIsSmartLockEnabled(false)
+                                    .setProviders(
+                                            AuthUI.FACEBOOK_PROVIDER,
+                                            AuthUI.GOOGLE_PROVIDER)
+                                    .build(),
+                            RC_SIGN_IN);
+                }
+            }
+        };
+
         SpekoSyncAdapter.initializeSyncAdapter();
 
 
@@ -70,6 +105,21 @@ public class HomeActivity extends AppCompatActivity  {
 //        mResolver.registerContentObserver(UsersProvider.URI, true, observer);
 //        mResolver.notifyChange(UsersProvider.URI, null, true);
 
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mFirebaseAuth.addAuthStateListener(mAuthStateListener);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (mAuthStateListener != null) {
+            mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
+        }
 
     }
 
