@@ -11,6 +11,7 @@ import android.util.Log;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 import com.speko.android.data.User;
+import com.speko.android.retrofit.AccessToken;
 import com.speko.android.retrofit.FirebaseClient;
 import com.speko.android.retrofit.ServiceGenerator;
 
@@ -62,7 +63,10 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
 
     public static void getUser(String idToken){
         // Fetch and print a list of the contributors to this library.
-        FirebaseClient client = ServiceGenerator.createService(FirebaseClient.class);
+        FirebaseClient client = ServiceGenerator.createService(FirebaseClient.class, new AccessToken(
+                "Bearer",
+                idToken)
+        );
         Call<User> call = client.getUser("-K_0dp55MnCf5edl2J8M", idToken);
 
         try {
