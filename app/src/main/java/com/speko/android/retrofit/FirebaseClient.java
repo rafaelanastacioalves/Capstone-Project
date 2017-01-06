@@ -8,6 +8,7 @@ import java.util.List;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 /**
  * Created by rafaelanastacioalves on 12/28/16.
@@ -23,4 +24,9 @@ public interface FirebaseClient {
     @GET("/users/{userId}.json")
     Call<User> getUser(
             @Path("userId") String owner );
+
+    @GET("/users/{userId}.json")
+    Call<User> getUser(
+            @Path("userId") String owner,
+            @Query("auth") String token);
 }

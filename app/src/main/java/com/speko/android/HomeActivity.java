@@ -17,8 +17,11 @@ import android.util.Log;
 import android.view.View;
 
 import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GetTokenResult;
 import com.speko.android.sync.SpekoSyncAdapter;
 
 public class HomeActivity extends AppCompatActivity  {
@@ -57,11 +60,15 @@ public class HomeActivity extends AppCompatActivity  {
             }
         });
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        mAccount = CreateSyncAccount(this);
 
         mFirebaseAuth = FirebaseAuth.getInstance();
+        setFireBaseToken();
+
+
 
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
+            public final String LOG_TAG = getClass().getSimpleName();
+
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
                 FirebaseUser user = firebaseAuth.getCurrentUser();
@@ -69,6 +76,11 @@ public class HomeActivity extends AppCompatActivity  {
                     // User is signed in
                     //TODO implement this
 //                    onSignedInInitialize(user.getDisplayName());
+
+                    setFireBaseToken();
+
+
+
                 } else {
                     // User is signed out
                     //TODO implement this
@@ -86,7 +98,6 @@ public class HomeActivity extends AppCompatActivity  {
             }
         };
 
-        SpekoSyncAdapter.initializeSyncAdapter();
 
 
 //        Log.d("HomeActibvity", "requestSync");
@@ -107,6 +118,30 @@ public class HomeActivity extends AppCompatActivity  {
 
 
     }
+
+    private void setFireBaseToken() {
+        FirebaseUser user = mFirebaseAuth.getCurrentUser();
+        user.getToken(false).addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
+            public final String LOG_TAG = getClass().getSimpleName();
+
+            @Override
+            public void onComplete(@NonNull Task<GetTokenResult> task) {
+                if (task.isSuccessful()) {
+                    String userToken = task.getResult().getToken();
+                    Log.i(LOG_TAG, "O token Deu certo! \n");
+                    Log.i(LOG_TAG, "O ID do usuário é: \n" + mFirebaseAuth.getCurrentUser().getUid());
+                    SpekoSyncAdapter.setUserToken(userToken);
+                    mAccount = CreateSyncAccount(getApplicationContext());
+                    SpekoSyncAdapter.initializeSyncAdapter();
+
+
+                } else {
+                    Log.e(LOG_TAG, task.getException().getMessage());
+                }
+            }
+        });
+    }
+
 
     @Override
     protected void onResume() {

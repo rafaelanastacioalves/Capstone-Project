@@ -8,6 +8,7 @@ import android.content.SyncResult;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 import com.speko.android.data.User;
 import com.speko.android.retrofit.FirebaseClient;
@@ -23,7 +24,9 @@ import retrofit2.Call;
  */
 public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
     private static FirebaseDatabase mFirebaseDatabase;
+    private static FirebaseAuth mFirebaseAuth;
     private final String LOG_TAG = this.getClass().getSimpleName();
+    private static String userToken;
 
 
     public SpekoSyncAdapter(Context context, boolean autoInitialize) {
@@ -38,25 +41,39 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
 
     }
 
+    public static void setUserToken(String userToken) {
+        SpekoSyncAdapter.userToken = userToken;
+    }
+
     @Override
     public void onPerformSync(Account account, Bundle bundle, String s, ContentProviderClient contentProviderClient, SyncResult syncResult) {
         Log.d(LOG_TAG, "onPerformSync");
 
-        // Create a very simple REST adapter which points the GitHub API endpoint.
-        FirebaseClient client = ServiceGenerator.createService(FirebaseClient.class);
+            if (userToken !=null){
+                getUser(userToken);
 
+            }else{
+                Log.w(LOG_TAG, "userToken not setted!");
+            }
+
+
+
+    }
+
+    public static void getUser(String idToken){
         // Fetch and print a list of the contributors to this library.
-        Call<User> call = client.getUser("-K_0dp55MnCf5edl2J8M");
+        FirebaseClient client = ServiceGenerator.createService(FirebaseClient.class);
+        Call<User> call = client.getUser("-K_0dp55MnCf5edl2J8M", idToken);
 
         try {
+            Log.i("SpekoSyncAdapter", "getUser: \n");
             User user = call.execute().body();
-            Log.i(LOG_TAG, "Deu certo!: \n" + user.getName());
+            Log.i("SpekoSyncAdapter", "Deu certo!: \n" + user.getName());
 
-        } catch (IOException e) {
-            Log.e(LOG_TAG, "Deu ruim: \n" + e.getMessage());
+        }catch (IOException e) {
+            Log.e("SpekoSyncAdapter", "Deu ruim: \n" + e.getMessage());
             // handle errors
         }
-
 
     }
 
@@ -64,6 +81,8 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
 
         Log.d("SpekoSyncAdapter", "initializeSyncAdapter");
         mFirebaseDatabase = FirebaseDatabase.getInstance();
+        mFirebaseAuth = FirebaseAuth.getInstance();
+
 
     }
 }
