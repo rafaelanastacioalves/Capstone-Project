@@ -67,12 +67,12 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
                 "Bearer",
                 idToken)
         );
-        Call<User> call = client.getUser("-K_0dp55MnCf5edl2J8M", idToken);
+        Call<User> call = client.getUser(mFirebaseAuth.getCurrentUser().getUid(), idToken);
 
         try {
             Log.i("SpekoSyncAdapter", "getUser: \n");
             User user = call.execute().body();
-            Log.i("SpekoSyncAdapter", "Deu certo!: \n" + user.getName());
+            Log.i("SpekoSyncAdapter", "Deu certo!: \n" + user.toString());
 
         }catch (IOException e) {
             Log.e("SpekoSyncAdapter", "Deu ruim: \n" + e.getMessage());
