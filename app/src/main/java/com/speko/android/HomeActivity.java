@@ -4,6 +4,7 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -12,8 +13,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
-import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -31,6 +32,8 @@ public class HomeActivity extends AppCompatActivity  {
     // The account name
     public static final String ACCOUNT = "dummyaccount";
     private static final int RC_SIGN_IN = 1;
+
+    private final String LOG_TAG = getClass().getSimpleName();
     // Instance fields
     Account mAccount;
     private ContentResolver mResolver;
@@ -59,7 +62,8 @@ public class HomeActivity extends AppCompatActivity  {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         mFirebaseAuth = FirebaseAuth.getInstance();
-        setFireBaseToken();
+        userNotLoggedcheck();
+//        setFireBaseToken();
 
 
 
@@ -83,15 +87,8 @@ public class HomeActivity extends AppCompatActivity  {
                     // User is signed out
                     //TODO implement this
 //                    onSignedOutCleanup();
-                    startActivityForResult(
-                            AuthUI.getInstance()
-                                    .createSignInIntentBuilder()
-                                    .setIsSmartLockEnabled(false)
-                                    .setProviders(
-                                            AuthUI.FACEBOOK_PROVIDER,
-                                            AuthUI.GOOGLE_PROVIDER)
-                                    .build(),
-                            RC_SIGN_IN);
+                    Intent i = new Intent(getApplicationContext(), LoginActivity.class);
+                    startActivity(i);
                 }
             }
         };
@@ -101,6 +98,35 @@ public class HomeActivity extends AppCompatActivity  {
 
 
 
+    }
+
+    private void userNotLoggedcheck() {
+
+        FirebaseUser user = mFirebaseAuth.getCurrentUser();
+        if (user == null) {
+            Log.i(LOG_TAG, "User Not Logged, calling LoginActivity");
+            // User is signed in
+
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+        }
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RC_SIGN_IN) {
+            if (resultCode == RESULT_OK) {
+                // Sign-in succeeded, set up the UI
+                Toast.makeText(this, "Signed in!", Toast.LENGTH_SHORT).show();
+            } else if (resultCode == RESULT_CANCELED) {
+                // Sign in was canceled by the user, finish the activity
+                Toast.makeText(this, "Sign in canceled", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+
+        }
     }
 
     private void setFireBaseToken() {

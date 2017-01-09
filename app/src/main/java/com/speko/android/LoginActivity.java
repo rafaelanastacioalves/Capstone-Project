@@ -43,16 +43,20 @@ public class LoginActivity extends AppCompatActivity {
 
         } else {
             // not signed in
-            startActivityForResult(
-                    AuthUI.getInstance()
-                            .createSignInIntentBuilder()
-                            .setIsSmartLockEnabled(!BuildConfig.DEBUG)
-                            .setProviders(Arrays.asList(
-                                    new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build(),
-                                    new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build()))
-                                    .build(),
-                    RC_SIGN_IN);
+            callFirebaseLogin();
         }
+    }
+
+    private void callFirebaseLogin() {
+        startActivityForResult(
+                AuthUI.getInstance()
+                        .createSignInIntentBuilder()
+                        .setIsSmartLockEnabled(!BuildConfig.DEBUG)
+                        .setProviders(Arrays.asList(
+                                new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build(),
+                                new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build()))
+                                .build(),
+                RC_SIGN_IN);
     }
 
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -71,7 +75,10 @@ public class LoginActivity extends AppCompatActivity {
             if (resultCode == RESULT_CANCELED) {
                 //TODO Implement
 //                showSnackbar(R.string.sign_in_cancelled);
-                return;
+
+                setResult(RESULT_CANCELED);
+
+                finish();
             }
 
             // No network
@@ -111,6 +118,7 @@ public class LoginActivity extends AppCompatActivity {
                             DataSnapshot childSnapshot = dataSnapshot.child(authUser.getUid());
                             Log.d(LOG_TAG, "There is the user!: " + childSnapshot + "\n" +
                                     "should go to main activity");
+                            setResult(RESULT_OK);
                             startActivity(new Intent(getApplicationContext(), HomeActivity.class));
                             finish();
 
