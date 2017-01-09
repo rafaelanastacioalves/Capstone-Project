@@ -71,6 +71,7 @@ public class HomeActivity extends AppCompatActivity  {
 
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                Log.i(LOG_TAG, "onAuthStateChanged");
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
                     // User is signed in
