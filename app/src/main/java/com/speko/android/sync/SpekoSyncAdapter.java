@@ -8,12 +8,16 @@ import android.content.SyncResult;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
-import com.speko.android.data.UserEntity;
+import com.speko.android.data.User;
+import com.speko.android.retrofit.AccessToken;
+import com.speko.android.retrofit.FirebaseClient;
+import com.speko.android.retrofit.ServiceGenerator;
+
+import java.io.IOException;
+
+import retrofit2.Call;
 
 
 /**
@@ -21,9 +25,9 @@ import com.speko.android.data.UserEntity;
  */
 public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
     private static FirebaseDatabase mFirebaseDatabase;
-    private static DatabaseReference mMessagesDatabaseReference;
+    private static FirebaseAuth mFirebaseAuth;
     private final String LOG_TAG = this.getClass().getSimpleName();
-    private ChildEventListener mChildEventListener;
+    private static String userToken;
 
 
     public SpekoSyncAdapter(Context context, boolean autoInitialize) {
@@ -38,46 +42,51 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
 
     }
 
+    public static void setUserToken(String userToken) {
+        SpekoSyncAdapter.userToken = userToken;
+    }
+
     @Override
     public void onPerformSync(Account account, Bundle bundle, String s, ContentProviderClient contentProviderClient, SyncResult syncResult) {
         Log.d(LOG_TAG, "onPerformSync");
-        addUser();
-        attachDatabaseReadListener();
+
+
+            if (userToken !=null){
+                getUser(userToken);
+
+            }else{
+                Log.w(LOG_TAG, "userToken not setted!");
+            }
+
+
+
     }
 
-    private void addUser() {
-        UserEntity userEntity = new UserEntity("Rafael");
-        mMessagesDatabaseReference.push().setValue(userEntity);
-    }
+    public static void getUser(String idToken){
+        // Fetch and print a list of the contributors to this library.
+        FirebaseClient client = ServiceGenerator.createService(FirebaseClient.class, new AccessToken(
+                "Bearer",
+                idToken)
+        );
+        Call<User> call = client.getUser(mFirebaseAuth.getCurrentUser().getUid(), idToken);
 
-    private void attachDatabaseReadListener() {
-        Log.d(LOG_TAG, "attachDatabaseReadListener");
+        try {
+            Log.i("SpekoSyncAdapter", "getUser: \n");
+            User user = call.execute().body();
+            Log.i("SpekoSyncAdapter", "Deu certo!: \n" + user.toString());
 
-        if (mChildEventListener == null) {
-            mChildEventListener = new ChildEventListener() {
-                private String LOG_TAG = getClass().getSimpleName();
-                @Override
-                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                    Log.d(LOG_TAG, "onChildAdded");
-
-                    UserEntity userEntity = dataSnapshot.getValue(UserEntity.class);
-                }
-
-
-                public void onChildChanged(DataSnapshot dataSnapshot, String s) {}
-                public void onChildRemoved(DataSnapshot dataSnapshot) {}
-                public void onChildMoved(DataSnapshot dataSnapshot, String s) {}
-                public void onCancelled(DatabaseError databaseError) {}
-            };
-            mMessagesDatabaseReference.addChildEventListener(mChildEventListener);
+        }catch (IOException e) {
+            Log.e("SpekoSyncAdapter", "Deu ruim: \n" + e.getMessage());
+            // handle errors
         }
+
     }
 
     public static void initializeSyncAdapter(){
 
         Log.d("SpekoSyncAdapter", "initializeSyncAdapter");
         mFirebaseDatabase = FirebaseDatabase.getInstance();
-        mMessagesDatabaseReference = mFirebaseDatabase.getReference().child("users");
+        mFirebaseAuth = FirebaseAuth.getInstance();
 
 
     }

@@ -5,7 +5,7 @@
     <!-- SyncAdapter related -->
     <string name="sync_account_type">android.speko.com</string>
     <string name="content_authority">com.speko.android</string>
-
+    <string name="firebase_database_node_users">users</string>
 
 
 </resources>
