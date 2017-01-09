@@ -102,7 +102,7 @@ public class LoginActivity extends AppCompatActivity {
                             Log.d(LOG_TAG, "There is no user. Should create in database");
                             firebaseDatabase
                                     .getReference()
-                                    .child("users")
+                                    .child(getString(R.string.firebase_database_node_users))
                                     .child(authUser.getUid())
                                     .setValue(new User(authUser.getDisplayName()));
 
@@ -125,29 +125,8 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 };
 
-                firebaseDatabase.getReference().child("users").addValueEventListener(userEventListener);
+                firebaseDatabase.getReference().child(getString(R.string.firebase_database_node_users)).addValueEventListener(userEventListener);
 
-
-
-//        if (userReference == null){
-//            Log.d(LOG_TAG,"Storing new user");
-//            Toast.makeText(this,"Storing new user", Toast.LENGTH_SHORT).show();
-//            userReference.setValue(
-//                    new User("Rafa"), new DatabaseReference.CompletionListener() {
-//                        @Override
-//                        public void onComplete(DatabaseError databaseError, DatabaseReference firebaseDatabase) {
-//                            // if no errors
-//                            if(databaseError == null){
-//                                startActivity(new Intent(getApplicationContext(), HomeActivity.class));
-//                                finish();
-//                            }else{
-//                                Log.e(LOG_TAG,"Deu ruim no database: \n" + databaseError.getDetails());
-//                                Toast.makeText(getApplicationContext(),"Ops, something is wrong", Toast.LENGTH_SHORT).show();
-//
-//                            }
-//                        }
-//                    }
-//            );
         }
 
     @Override
