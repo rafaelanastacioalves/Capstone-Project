@@ -26,6 +26,7 @@ public class LoginActivity extends AppCompatActivity {
     private final String LOG_TAG = getClass().getSimpleName();
     private FirebaseAuth auth;
     private FirebaseDatabase firebaseDatabase;
+    private ValueEventListener userEventListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,9 +91,7 @@ public class LoginActivity extends AppCompatActivity {
         String uid = authUser.getUid();
         Log.d(LOG_TAG,"Querying possible reference to the user in database with uid: " + uid);
 
-
-
-                firebaseDatabase.getReference().child("users").addValueEventListener(new ValueEventListener() {
+                userEventListener = new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         //if user doesn't exist
@@ -101,7 +100,7 @@ public class LoginActivity extends AppCompatActivity {
                         if (!dataSnapshot.hasChild(authUser.getUid()) ){
                             FirebaseUser authUser = auth.getCurrentUser();
                             Log.d(LOG_TAG, "There is no user. Should create in database");
-                                    firebaseDatabase
+                            firebaseDatabase
                                     .getReference()
                                     .child("users")
                                     .child(authUser.getUid())
@@ -124,7 +123,9 @@ public class LoginActivity extends AppCompatActivity {
                     public void onCancelled(DatabaseError databaseError) {
 
                     }
-                });
+                };
+
+                firebaseDatabase.getReference().child("users").addValueEventListener(userEventListener);
 
 
 
@@ -149,4 +150,11 @@ public class LoginActivity extends AppCompatActivity {
 //            );
         }
 
+    @Override
+    protected void onPause() {
+        if(userEventListener != null){
+            firebaseDatabase.getReference().child("users").removeEventListener(userEventListener);
+        }
+        super.onPause();
     }
+}
