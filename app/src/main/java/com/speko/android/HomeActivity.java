@@ -4,10 +4,7 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.database.ContentObserver;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -101,21 +98,7 @@ public class HomeActivity extends AppCompatActivity  {
 
 
 
-//        Log.d("HomeActibvity", "requestSync");
-//
-//        Bundle b = new Bundle();
-//        // Disable sync backoff and ignore sync preferences. In other words...perform sync NOW!
-//        b.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
-//        b.putBoolean(ContentResolver.SYNC_EXTRAS_EXPEDITED, true);
-//        ContentResolver.requestSync(mAccount,AUTHORITY,b);
 
-//        TableObserver observer = new TableObserver(false);
-
-//        Log.d("HomeActibvity", "ContentObserver ");
-//        Log.d("HomeActibvity", "NotifyChange ");
-//
-//        mResolver.registerContentObserver(UsersProvider.URI, true, observer);
-//        mResolver.notifyChange(UsersProvider.URI, null, true);
 
 
     }
@@ -202,51 +185,5 @@ public class HomeActivity extends AppCompatActivity  {
 
     }
 
-    public class TableObserver extends ContentObserver {
 
-
-        private boolean selfChange;
-
-        public TableObserver(Handler handler) {
-            super(handler);
-        }
-
-        public TableObserver(boolean b) {
-            super(null);
-            this.selfChange = b;
-        }
-
-        /*
-                                 * Define a method that's called when data in the
-                                 * observed content provider changes.
-                                 * This method signature is provided for compatibility with
-                                 * older platforms.
-                                 */
-        @Override
-        public void onChange(boolean selfChange) {
-            Log.d("HomeActibvity", "onChange(selfChange)");
-            /*
-             * Invoke the method signature available as of
-             * Android platform version 4.1, with a null URI.
-             */
-            onChange(selfChange, null);
-        }
-
-        /*
-         * Define a method that's called when data in the
-         * observed content provider changes.
-         */
-        @Override
-        public void onChange(boolean selfChange, Uri changeUri) {
-            /*
-             * Ask the framework to run your sync adapter.
-             * To maintain backward compatibility, assume that
-             * changeUri is null.
-             */
-            Log.d("HomeActibvity", "onChange(selfChange, changeUri)");
-
-            ContentResolver.requestSync(mAccount, AUTHORITY, null);
-        }
-
-    }
 }
