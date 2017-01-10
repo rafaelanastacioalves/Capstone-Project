@@ -15,12 +15,14 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GetTokenResult;
 import com.speko.android.sync.SpekoSyncAdapter;
+import io.fabric.sdk.android.Fabric;
 
 public class HomeActivity extends AppCompatActivity  {
 
@@ -43,6 +45,7 @@ public class HomeActivity extends AppCompatActivity  {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
         Log.d("HomeActibvity", "onCreate");
 
         setContentView(R.layout.activity_home);
