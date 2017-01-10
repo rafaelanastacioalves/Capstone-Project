@@ -10,5 +10,13 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
+    <!-- Languages entries for user selection-->
+    <string name="language_entry_pt_br">PT-BR</string>
+    <string name="language_entry_en_us">EN-US</string>
+
+    <!-- Languages values for use by the system. Not translatable-->
+    <string name="language_value_pt_br" translatable="false">PT-BR</string>
+    <string name="language_value_en_us" translatable="false">EN-US</string>
+
 
 </resources>

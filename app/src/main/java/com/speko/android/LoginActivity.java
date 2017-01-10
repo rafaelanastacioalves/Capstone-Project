@@ -1,12 +1,12 @@
 package com.speko.android;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 import com.firebase.ui.auth.AuthUI;
@@ -17,6 +17,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.speko.android.data.User;
 
 import java.util.Arrays;
 
@@ -120,12 +121,6 @@ public class LoginActivity extends AppCompatActivity implements FillNewUserDataF
                             transaction.commit();
 
 
-//
-//                            firebaseDatabase
-//                                    .getReference()
-//                                    .child(getString(R.string.firebase_database_node_users))
-//                                    .child(authUser.getUid())
-//                                    .setValue(new User(authUser.getDisplayName()));
 
                         }else{
                             // user exists
@@ -160,7 +155,27 @@ public class LoginActivity extends AppCompatActivity implements FillNewUserDataF
     }
 
     @Override
-    public void onFragmentInteraction(Context context) {
+    public void onFragmentInteraction(User user) {
+        Log.i(LOG_TAG,"onFragmentInteraction");
         //TODO Implement interaction with Activity
+
+        final FirebaseUser authUser = auth.getCurrentUser();
+
+        //adding more Provider User info
+        user.setName(authUser.getDisplayName());
+        user.setEmail(authUser.getEmail());
+
+        firebaseDatabase
+                .getReference()
+                .child(getString(R.string.firebase_database_node_users))
+                .child(authUser.getUid())
+                .setValue(user);
+
+        Toast.makeText(this,"Signed Up Successfully!",Toast.LENGTH_SHORT).show();
+
+        //TODO Refactor this
+        setResult(RESULT_OK);
+        startActivity(new Intent(getApplicationContext(), HomeActivity.class));
+        finish();
     }
 }

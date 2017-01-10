@@ -3,9 +3,18 @@ package com.speko.android;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.AppCompatButton;
+import android.support.v7.widget.AppCompatSpinner;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
+import com.speko.android.data.User;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 
 /**
@@ -15,6 +24,16 @@ import android.view.ViewGroup;
  * to handle interaction events.
  */
 public class FillNewUserDataFragment extends Fragment {
+
+    @BindView(R.id.signup_textview_input_age)
+    TextView age;
+
+    @BindView(R.id.signup_spinner_input_age_fluent_language)
+    AppCompatSpinner spinner_fluent_language;
+
+    @BindView(R.id.signup_button)
+    AppCompatButton signupButton;
+
 
     private OnFragmentInteractionListener mListener;
 
@@ -27,7 +46,9 @@ public class FillNewUserDataFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_fill_new_user_data, container, false);
+        View view = inflater.inflate(R.layout.fragment_fill_new_user_data, container, false);
+        ButterKnife.bind(this,view);
+        return view;
     }
 
 
@@ -41,6 +62,7 @@ public class FillNewUserDataFragment extends Fragment {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }
+
     }
 
     @Override
@@ -61,6 +83,14 @@ public class FillNewUserDataFragment extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onFragmentInteraction(Context context);
+        void onFragmentInteraction(User user);
+    }
+
+    @OnClick(R.id.signup_button)
+    public void signup(View view){
+        User user = new User();
+        user.setAge(Integer.parseInt((age.getText().toString())));
+        user.setFluentLanguage(spinner_fluent_language.getSelectedItem().toString());
+        mListener.onFragmentInteraction(user);
     }
 }

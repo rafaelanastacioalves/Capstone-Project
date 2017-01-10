@@ -1,53 +1,43 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+<android.support.v7.widget.GridLayout android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.speko.android.FillNewUserDataFragment">
+    xmlns:tools="http://schemas.android.com/tools"
+    app:columnCount="2"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <GridLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:columnCount="2">
-
-        <TextView
-            android:layout_columnWeight="0.4"
-            android:width="0dp"
-            android:gravity="center"
-            android:text="Age" />
-
-        <EditText
-            android:id="@+id/age_edittext"
+        <android.support.v7.widget.AppCompatTextView
+            android:text="Age"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_columnWeight="0.6" />
-
-        <TextView
-            android:layout_columnWeight="0.4"
-            android:width="0dp"
-            android:gravity="center"
-            android:text="Native Language"
+            app:layout_columnWeight="1"
+            />
+        <android.support.design.widget.TextInputEditText
+            android:layout_width="0dp"
+            android:id="@+id/signup_textview_input_age"
+            app:layout_columnWeight="1"
 
             />
 
-        <EditText
-            android:id="@+id/native_languate_textview"
+        <android.support.v7.widget.AppCompatTextView
+            android:text="Fluent Language"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_columnWeight="0.6" />
-        <Button
-            android:text="Finish"
-            android:layout_columnWeight="1"
-            android:layout_gravity="center"
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"/>
-        <FrameLayout
-            android:layout_height="0dp"
-            android:layout_columnWeight="0"
-            android:layout_width="0dp"/>
+            app:layout_columnWeight="1"
+            />
+        <android.support.v7.widget.AppCompatSpinner
+            android:id="@+id/signup_spinner_input_age_fluent_language"
+            android:entries="@array/options_entries_languades"
+            tools:listheader="option"
+            android:layout_width="0dp"
+            app:layout_columnWeight="1"
+            />
 
-    </GridLayout>
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/signup_button"
+            android:text="Sign Up"
+            app:layout_gravity="center_horizontal"
+            app:layout_columnSpan="2"
+            />
 
 
+</android.support.v7.widget.GridLayout>
 
 
-</ScrollView>
