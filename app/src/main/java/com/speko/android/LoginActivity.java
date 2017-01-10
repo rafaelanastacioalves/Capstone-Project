@@ -1,7 +1,10 @@
 package com.speko.android;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
@@ -14,13 +17,12 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.speko.android.data.User;
 
 import java.util.Arrays;
 
 import io.fabric.sdk.android.Fabric;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity implements FillNewUserDataFragment.OnFragmentInteractionListener {
 
     private static final int RC_SIGN_IN = 123;
     private final String LOG_TAG = getClass().getSimpleName();
@@ -31,6 +33,8 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_login);
+
         Fabric.with(this, new Crashlytics());
         Log.d(LOG_TAG,"onCreate");
         firebaseDatabase = FirebaseDatabase.getInstance();
@@ -105,13 +109,23 @@ public class LoginActivity extends AppCompatActivity {
 
                         Log.d(LOG_TAG, "Snapshot: " + dataSnapshot.toString());
                         if (!dataSnapshot.hasChild(authUser.getUid()) ){
+
+
                             FirebaseUser authUser = auth.getCurrentUser();
                             Log.d(LOG_TAG, "There is no user. Should create in database");
-                            firebaseDatabase
-                                    .getReference()
-                                    .child(getString(R.string.firebase_database_node_users))
-                                    .child(authUser.getUid())
-                                    .setValue(new User(authUser.getDisplayName()));
+
+                            Fragment newUserFragment = new FillNewUserDataFragment();
+                            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                            transaction.replace(R.id.login_fragment_container, newUserFragment);
+                            transaction.commit();
+
+
+//
+//                            firebaseDatabase
+//                                    .getReference()
+//                                    .child(getString(R.string.firebase_database_node_users))
+//                                    .child(authUser.getUid())
+//                                    .setValue(new User(authUser.getDisplayName()));
 
                         }else{
                             // user exists
@@ -143,5 +157,10 @@ public class LoginActivity extends AppCompatActivity {
             firebaseDatabase.getReference().child("users").removeEventListener(userEventListener);
         }
         super.onPause();
+    }
+
+    @Override
+    public void onFragmentInteraction(Context context) {
+        //TODO Implement interaction with Activity
     }
 }

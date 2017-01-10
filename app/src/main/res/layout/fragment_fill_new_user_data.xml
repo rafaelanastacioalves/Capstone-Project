@@ -1,0 +1,53 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.speko.android.FillNewUserDataFragment">
+
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:columnCount="2">
+
+        <TextView
+            android:layout_columnWeight="0.4"
+            android:width="0dp"
+            android:gravity="center"
+            android:text="Age" />
+
+        <EditText
+            android:id="@+id/age_edittext"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="0.6" />
+
+        <TextView
+            android:layout_columnWeight="0.4"
+            android:width="0dp"
+            android:gravity="center"
+            android:text="Native Language"
+
+            />
+
+        <EditText
+            android:id="@+id/native_languate_textview"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_columnWeight="0.6" />
+        <Button
+            android:text="Finish"
+            android:layout_columnWeight="1"
+            android:layout_gravity="center"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"/>
+        <FrameLayout
+            android:layout_height="0dp"
+            android:layout_columnWeight="0"
+            android:layout_width="0dp"/>
+
+    </GridLayout>
+
+
+
+
+</ScrollView>
