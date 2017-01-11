@@ -28,13 +28,13 @@ android {
         }
     }
     compileSdkVersion 25
-    buildToolsVersion "25.0.1"
+    buildToolsVersion "25.0.2"
     defaultConfig {
         applicationId "com.speko.android"
         minSdkVersion 16
         targetSdkVersion 25
         versionCode 5
-        versionName "0.0.5"
+        versionName "0.0.7"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
