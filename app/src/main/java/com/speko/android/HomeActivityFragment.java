@@ -24,6 +24,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.speko.android.data.User;
 
 import butterknife.BindView;
@@ -51,6 +52,8 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
     private FirebaseUser authUser;
     private FirebaseListAdapter<User> mAdapter;
     private DatabaseReference ref;
+    private ChildEventListener userListListener;
+    private Query mUserQueryByEmail;
 
     public HomeActivityFragment() {
     }
@@ -110,36 +113,44 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
         super.onStart();
     }
 
+    @Override
+    public void onPause() {
+        if (mUserQueryByEmail != null){
+            mUserQueryByEmail.removeEventListener(userListListener);
+            mUserQueryByEmail = null;
+        }
+        super.onPause();
+    }
+
     @OnClick(R.id.fragment_button_confirm)
     public void addUser(View v){
 
         String friendEmail = emailInputTextView.getText().toString();
 
         //TODO Check if user with that email exists
-        firebaseDatabase.getReference()
-                .child("users").orderByChild("email").equalTo(friendEmail).addChildEventListener(new ChildEventListener() {
+        userListListener = new ChildEventListener() {
 
 
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
 
-                if(dataSnapshot.exists()){
-                    Log.i(LOG_TAG,"Usuário procurado existe! Tem " +
+                if (dataSnapshot.exists()) {
+                    Log.i(LOG_TAG, "Usuário procurado existe! Tem " +
                             dataSnapshot.getChildrenCount() + " filhos \n" +
-                    "E seu ID é " + dataSnapshot.getKey());
-                    Toast.makeText(getActivity(),"Usuário procurado existe! : \n" ,Toast.LENGTH_SHORT)
+                            "E seu ID é " + dataSnapshot.getKey());
+                    Toast.makeText(getActivity(), "Usuário procurado existe! : \n", Toast.LENGTH_SHORT)
                             .show();
                     User userFriend = dataSnapshot.getValue(User.class);
-                    Log.i(LOG_TAG,userFriend.getEmail() + userFriend.getName()  );
+                    Log.i(LOG_TAG, userFriend.getEmail() + userFriend.getName());
 
                     firebaseDatabase.getReference()
                             .child("friends")
                             .child(authUser.getUid())
                             // the getKey because it contains the UId of the friend
                             .child(dataSnapshot.getKey()).setValue(userFriend);
-                }else {
-                    Log.i(LOG_TAG,"Usuário procurado não existe!");
-                    Toast.makeText(getActivity(),"Usuário procurado NÃO existe!",Toast.LENGTH_SHORT)
+                } else {
+                    Log.i(LOG_TAG, "Usuário procurado não existe!");
+                    Toast.makeText(getActivity(), "Usuário procurado NÃO existe!", Toast.LENGTH_SHORT)
                             .show();
                 }
 
@@ -164,7 +175,11 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
             public void onCancelled(DatabaseError databaseError) {
 
             }
-        });
+        };
+        mUserQueryByEmail = firebaseDatabase.getReference()
+                .child("users").orderByChild("email").equalTo(friendEmail);
+
+        mUserQueryByEmail.addChildEventListener(userListListener);
 
 
 
