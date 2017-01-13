@@ -36,6 +36,7 @@ public class LoginActivity extends AppCompatActivity implements FillNewUserDataF
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
         Fabric.with(this, new Crashlytics());
         Log.d(LOG_TAG,"onCreate");
