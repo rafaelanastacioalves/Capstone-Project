@@ -176,6 +176,10 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
 
             }
         };
+
+
+        //TODO is it possible to get into the child after query so we can
+        // use singleValueListeners instead of ChildValueListeners ?
         mUserQueryByEmail = firebaseDatabase.getReference()
                 .child("users").orderByChild("email").equalTo(friendEmail);
 
