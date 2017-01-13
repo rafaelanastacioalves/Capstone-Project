@@ -7,10 +7,17 @@ package com.speko.android.data;
 public class User {
     private String name;
     private int age;
-    private String Email;
+    private String email;
     private String fluentLanguage;
 
     public User(){
+    }
+
+    public User(String name, int age, String email, String fluentLanguage){
+        this.name = name;
+        this.age = age;
+        this.email = email;
+        this.fluentLanguage = fluentLanguage;
     }
     public User(String name){
         this.name = name;
@@ -32,12 +39,13 @@ public class User {
         this.age = age;
     }
 
+    // TODO this still works if I change from email to email?
     public String getEmail() {
-        return Email;
+        return email;
     }
 
     public void setEmail(String email) {
-        Email = email;
+        this.email = email;
     }
 
     public String getFluentLanguage() {
