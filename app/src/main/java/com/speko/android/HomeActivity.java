@@ -56,6 +56,7 @@ public class HomeActivity extends AppCompatActivity  {
         mResolver = getContentResolver();
 
         mFirebaseAuth = FirebaseAuth.getInstance();
+
         userNotLoggedcheck();
 
         Fragment homeActivityFragment = new HomeActivityFragment();

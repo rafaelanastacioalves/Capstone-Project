@@ -24,7 +24,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Logger;
 import com.speko.android.data.User;
 
 import butterknife.BindView;
@@ -62,6 +61,37 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         ButterKnife.bind(this,view);
 
+
+
+
+        return view;
+    }
+
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+
+
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        getLoaderManager().initLoader(FRIENDS_LOADER, null, this);
+
+        super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
+    public void onStart() {
+
+        // we putted here because until onActivityCreated, the activity hasn' decided to
+        // put the user to login Ativity when necessary
+
+        firebaseDatabase = FirebaseDatabase.getInstance();
+
+        authUser = FirebaseAuth.getInstance().getCurrentUser();
+
         ref = FirebaseDatabase.getInstance().getReference()
                 .child("friends")
                 .child(authUser.getUid());
@@ -77,26 +107,7 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
         Log.i(LOG_TAG, "setting adapter");
         userList.setAdapter(mAdapter);
 
-
-
-        return view;
-    }
-
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-
-        firebaseDatabase = FirebaseDatabase.getInstance();
-        firebaseDatabase.setLogLevel(Logger.Level.DEBUG);
-        authUser = FirebaseAuth.getInstance().getCurrentUser();
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        getLoaderManager().initLoader(FRIENDS_LOADER, null, this);
-
-        super.onActivityCreated(savedInstanceState);
+        super.onStart();
     }
 
     @OnClick(R.id.fragment_button_confirm)
