@@ -114,7 +114,7 @@ public class LoginActivity extends AppCompatActivity implements FillNewUserDataF
                         //if user doesn't exist
 
                         Log.d(LOG_TAG, "Snapshot: " + dataSnapshot.toString());
-                        if (!dataSnapshot.hasChild(authUser.getUid()) ){
+                        if (!dataSnapshot.exists() ){
 
 
                             FirebaseUser authUser = auth.getCurrentUser();
@@ -129,8 +129,8 @@ public class LoginActivity extends AppCompatActivity implements FillNewUserDataF
 
                         }else{
                             // user exists
-                            DataSnapshot childSnapshot = dataSnapshot.child(authUser.getUid());
-                            Log.d(LOG_TAG, "There is the user!: " + childSnapshot + "\n" +
+
+                            Log.d(LOG_TAG, "There is the user!: " + dataSnapshot + "\n" +
                                     "should go to main activity");
                             setResult(RESULT_OK);
                             startActivity(new Intent(getApplicationContext(), HomeActivity.class));
@@ -147,7 +147,10 @@ public class LoginActivity extends AppCompatActivity implements FillNewUserDataF
                     }
                 };
 
-                firebaseDatabase.getReference().child(getString(R.string.firebase_database_node_users)).addValueEventListener(userEventListener);
+                firebaseDatabase.getReference()
+                        .child(getString(R.string.firebase_database_node_users))
+                        .child(authUser.getUid())
+                        .addValueEventListener(userEventListener);
 
         }
 
