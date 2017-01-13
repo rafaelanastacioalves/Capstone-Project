@@ -150,7 +150,7 @@ public class LoginActivity extends AppCompatActivity implements FillNewUserDataF
                 firebaseDatabase.getReference()
                         .child(getString(R.string.firebase_database_node_users))
                         .child(authUser.getUid())
-                        .addValueEventListener(userEventListener);
+                        .addListenerForSingleValueEvent(userEventListener);
 
         }
 
