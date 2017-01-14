@@ -24,7 +24,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Logger;
+import com.google.firebase.database.Query;
 import com.speko.android.data.User;
 
 import butterknife.BindView;
@@ -52,6 +52,8 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
     private FirebaseUser authUser;
     private FirebaseListAdapter<User> mAdapter;
     private DatabaseReference ref;
+    private ChildEventListener userListListener;
+    private Query mUserQueryByEmail;
 
     public HomeActivityFragment() {
     }
@@ -61,6 +63,37 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         ButterKnife.bind(this,view);
+
+
+
+
+        return view;
+    }
+
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+
+
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        getLoaderManager().initLoader(FRIENDS_LOADER, null, this);
+
+        super.onActivityCreated(savedInstanceState);
+    }
+
+    @Override
+    public void onStart() {
+
+        // we putted here because until onActivityCreated, the activity hasn' decided to
+        // put the user to login Ativity when necessary
+
+        firebaseDatabase = FirebaseDatabase.getInstance();
+
+        authUser = FirebaseAuth.getInstance().getCurrentUser();
 
         ref = FirebaseDatabase.getInstance().getReference()
                 .child("friends")
@@ -77,26 +110,16 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
         Log.i(LOG_TAG, "setting adapter");
         userList.setAdapter(mAdapter);
 
-
-
-        return view;
-    }
-
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-
-        firebaseDatabase = FirebaseDatabase.getInstance();
-        firebaseDatabase.setLogLevel(Logger.Level.DEBUG);
-        authUser = FirebaseAuth.getInstance().getCurrentUser();
-        super.onCreate(savedInstanceState);
+        super.onStart();
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        getLoaderManager().initLoader(FRIENDS_LOADER, null, this);
-
-        super.onActivityCreated(savedInstanceState);
+    public void onPause() {
+        if (mUserQueryByEmail != null){
+            mUserQueryByEmail.removeEventListener(userListListener);
+            mUserQueryByEmail = null;
+        }
+        super.onPause();
     }
 
     @OnClick(R.id.fragment_button_confirm)
@@ -105,30 +128,29 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
         String friendEmail = emailInputTextView.getText().toString();
 
         //TODO Check if user with that email exists
-        firebaseDatabase.getReference()
-                .child("users").orderByChild("email").equalTo(friendEmail).addChildEventListener(new ChildEventListener() {
+        userListListener = new ChildEventListener() {
 
 
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
 
-                if(dataSnapshot.exists()){
-                    Log.i(LOG_TAG,"Usuário procurado existe! Tem " +
+                if (dataSnapshot.exists()) {
+                    Log.i(LOG_TAG, "Usuário procurado existe! Tem " +
                             dataSnapshot.getChildrenCount() + " filhos \n" +
-                    "E seu ID é " + dataSnapshot.getKey());
-                    Toast.makeText(getActivity(),"Usuário procurado existe! : \n" ,Toast.LENGTH_SHORT)
+                            "E seu ID é " + dataSnapshot.getKey());
+                    Toast.makeText(getActivity(), "Usuário procurado existe! : \n", Toast.LENGTH_SHORT)
                             .show();
                     User userFriend = dataSnapshot.getValue(User.class);
-                    Log.i(LOG_TAG,userFriend.getEmail() + userFriend.getName()  );
+                    Log.i(LOG_TAG, userFriend.getEmail() + userFriend.getName());
 
                     firebaseDatabase.getReference()
                             .child("friends")
                             .child(authUser.getUid())
                             // the getKey because it contains the UId of the friend
                             .child(dataSnapshot.getKey()).setValue(userFriend);
-                }else {
-                    Log.i(LOG_TAG,"Usuário procurado não existe!");
-                    Toast.makeText(getActivity(),"Usuário procurado NÃO existe!",Toast.LENGTH_SHORT)
+                } else {
+                    Log.i(LOG_TAG, "Usuário procurado não existe!");
+                    Toast.makeText(getActivity(), "Usuário procurado NÃO existe!", Toast.LENGTH_SHORT)
                             .show();
                 }
 
@@ -153,7 +175,15 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
             public void onCancelled(DatabaseError databaseError) {
 
             }
-        });
+        };
+
+
+        //TODO is it possible to get into the child after query so we can
+        // use singleValueListeners instead of ChildValueListeners ?
+        mUserQueryByEmail = firebaseDatabase.getReference()
+                .child("users").orderByChild("email").equalTo(friendEmail);
+
+        mUserQueryByEmail.addChildEventListener(userListListener);
 
 
 

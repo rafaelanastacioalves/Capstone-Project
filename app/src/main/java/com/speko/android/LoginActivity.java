@@ -16,6 +16,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Logger;
 import com.google.firebase.database.ValueEventListener;
 import com.speko.android.data.User;
 
@@ -35,10 +36,14 @@ public class LoginActivity extends AppCompatActivity implements FillNewUserDataF
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
         Fabric.with(this, new Crashlytics());
         Log.d(LOG_TAG,"onCreate");
         firebaseDatabase = FirebaseDatabase.getInstance();
+
+        //supposing its first usage is here. Must be first use!
+        firebaseDatabase.setLogLevel(Logger.Level.DEBUG);
 
         auth = FirebaseAuth.getInstance();
         if (auth.getCurrentUser() != null) {
@@ -109,7 +114,7 @@ public class LoginActivity extends AppCompatActivity implements FillNewUserDataF
                         //if user doesn't exist
 
                         Log.d(LOG_TAG, "Snapshot: " + dataSnapshot.toString());
-                        if (!dataSnapshot.hasChild(authUser.getUid()) ){
+                        if (!dataSnapshot.exists() ){
 
 
                             FirebaseUser authUser = auth.getCurrentUser();
@@ -124,8 +129,8 @@ public class LoginActivity extends AppCompatActivity implements FillNewUserDataF
 
                         }else{
                             // user exists
-                            DataSnapshot childSnapshot = dataSnapshot.child(authUser.getUid());
-                            Log.d(LOG_TAG, "There is the user!: " + childSnapshot + "\n" +
+
+                            Log.d(LOG_TAG, "There is the user!: " + dataSnapshot + "\n" +
                                     "should go to main activity");
                             setResult(RESULT_OK);
                             startActivity(new Intent(getApplicationContext(), HomeActivity.class));
@@ -142,7 +147,10 @@ public class LoginActivity extends AppCompatActivity implements FillNewUserDataF
                     }
                 };
 
-                firebaseDatabase.getReference().child(getString(R.string.firebase_database_node_users)).addValueEventListener(userEventListener);
+                firebaseDatabase.getReference()
+                        .child(getString(R.string.firebase_database_node_users))
+                        .child(authUser.getUid())
+                        .addListenerForSingleValueEvent(userEventListener);
 
         }
 
