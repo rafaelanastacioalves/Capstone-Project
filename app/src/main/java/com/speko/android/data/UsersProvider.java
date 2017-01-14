@@ -1,52 +1,45 @@
 package com.speko.android.data;
 
-import android.content.ContentProvider;
+
 import android.content.ContentResolver;
-import android.content.ContentValues;
-import android.database.Cursor;
 import android.net.Uri;
-import android.support.annotation.Nullable;
+
+import net.simonvt.schematic.annotation.ContentProvider;
+import net.simonvt.schematic.annotation.ContentUri;
+import net.simonvt.schematic.annotation.TableEndpoint;
+
+import static com.speko.android.data.UserContract.CONTENT_AUTHORITY;
 
 /**
  * Created by rafaelalves on 19/12/16.
  */
 
-public class UsersProvider extends ContentProvider {
+@ContentProvider(authority = CONTENT_AUTHORITY, database = UsersDatabase.class)
+public final class UsersProvider {
 
-    private static String AUTHORITY = "com.speko.android.data";
     public static final Uri URI
-            = new Uri.Builder().scheme(ContentResolver.SCHEME_CONTENT).authority(AUTHORITY).build();
+            = new Uri.Builder().scheme(ContentResolver.SCHEME_CONTENT).authority(CONTENT_AUTHORITY).build();
 
-    @Override
-    public boolean onCreate() {
-        return true;
+    static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
+
+    interface Path{
+        String USER = "user";
+        String FRIENDS = "friends";
+
     }
 
-    @Nullable
-    @Override
-    public Cursor query(Uri uri, String[] strings, String s, String[] strings1, String s1) {
-        return null;
+    private static Uri buildUri(String... paths) {
+        Uri.Builder builder = BASE_CONTENT_URI.buildUpon();
+        for (String path : paths) {
+            builder.appendPath(path);
+        }
+        return builder.build();
     }
 
-    @Nullable
-    @Override
-    public String getType(Uri uri) {
-        return null;
-    }
-
-    @Nullable
-    @Override
-    public Uri insert(Uri uri, ContentValues contentValues) {
-        return null;
-    }
-
-    @Override
-    public int delete(Uri uri, String s, String[] strings) {
-        return 0;
-    }
-
-    @Override
-    public int update(Uri uri, ContentValues contentValues, String s, String[] strings) {
-        return 0;
+    @TableEndpoint(table = UsersDatabase.USERS_TABLE) public static class Users {
+        @ContentUri(
+                path = Path.USER,
+                type = "vnd.android.cursor.dir/user")
+        public static final Uri USER_URI = buildUri(Path.USER);
     }
 }
