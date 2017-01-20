@@ -24,4 +24,7 @@ public interface UserColumns {
     @DataType(TEXT) @NotNull
     String FLUENT_LANGUAGE = "fluent_language";
 
+    @DataType(TEXT) @NotNull
+    String FRIEND_OF = "friend_of";
+
 }

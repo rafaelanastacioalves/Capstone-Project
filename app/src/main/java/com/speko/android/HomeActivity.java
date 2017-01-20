@@ -189,7 +189,7 @@ public class HomeActivity extends AppCompatActivity  {
             /*
              * If you don't set android:syncable="true" in
              * in your <provider> element in the manifest,
-             * then call context.setIsSyncable(account, AUTHORITY, 1)
+             * then call context.setIsSyncable(account, CONTENT_AUTHORITY, 1)
              * here.
              */
 

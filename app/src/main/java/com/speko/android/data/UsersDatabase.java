@@ -16,6 +16,5 @@ public class UsersDatabase {
     public static final int VERSION = 1;
 
     @Table(UserColumns.class)       public static final String USERS_TABLE = "users";
-    @Table(FriendshipColumns.class) public static final String FRIENDS_TABLE = "friends";
 
 }

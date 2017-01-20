@@ -6,6 +6,7 @@ import android.net.Uri;
 
 import net.simonvt.schematic.annotation.ContentProvider;
 import net.simonvt.schematic.annotation.ContentUri;
+import net.simonvt.schematic.annotation.InexactContentUri;
 import net.simonvt.schematic.annotation.TableEndpoint;
 
 import static com.speko.android.data.UserContract.CONTENT_AUTHORITY;
@@ -41,5 +42,17 @@ public final class UsersProvider {
                 path = Path.USER,
                 type = "vnd.android.cursor.dir/user")
         public static final Uri USER_URI = buildUri(Path.USER);
+        @InexactContentUri(
+                name = "FRIENDS_LIST",
+                path = Path.USER + "/" + Path.FRIENDS + "/*",
+                type = "vnd.android.cursor.item/friends",
+                whereColumn = UserColumns.FRIEND_OF,
+                pathSegment = 2
+        )
+        public static final Uri usersFrom(String firebaseUserId){
+            return buildUri(Path.USER,Path.FRIENDS, firebaseUserId);
+        }
     }
+
+
 }
