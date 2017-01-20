@@ -9,7 +9,6 @@ buildscript {
 }
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
-apply plugin: 'com.neenbedankt.android-apt'
 
 
 repositories {
@@ -87,7 +86,7 @@ dependencies {
 
     //schematic
     compile 'net.simonvt.schematic:schematic:0.6.7'
-    apt 'net.simonvt.schematic:schematic-compiler:0.6.7'
+    annotationProcessor 'net.simonvt.schematic:schematic-compiler:0.6.7'
 
     compile 'com.android.support:appcompat-v7:25.1.0'
 }

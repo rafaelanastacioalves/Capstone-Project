@@ -79,7 +79,7 @@
 
         <provider
             android:authorities="com.speko.android.data"
-            android:name=".data.UsersProvider"
+            android:name=".data.generated.UsersProvider"
             android:exported="false"
              />
 
