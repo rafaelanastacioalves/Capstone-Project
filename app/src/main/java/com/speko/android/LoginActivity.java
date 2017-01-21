@@ -172,6 +172,7 @@ public class LoginActivity extends AppCompatActivity implements FillNewUserDataF
         //adding more Provider User info
         user.setName(authUser.getDisplayName());
         user.setEmail(authUser.getEmail());
+        user.setId(authUser.getUid());
 
         firebaseDatabase
                 .getReference()
