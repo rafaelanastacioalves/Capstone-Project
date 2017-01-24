@@ -16,7 +16,7 @@ public class SpekoSyncService extends Service {
     @Override
     public void onCreate() {
 
-            Log.d("SunshineSyncService", "onCreate - SunshineSyncService");
+            Log.d("SpekoSyncService", "onCreate - SpekoSyncService");
             synchronized (sSyncAdapterLock) {
                 if (sSpekoSyncAdapter == null) {
                     sSpekoSyncAdapter = new SpekoSyncAdapter(getApplicationContext(), true);

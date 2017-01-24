@@ -3,6 +3,7 @@ package com.speko.android.retrofit;
 import com.speko.android.data.Friend;
 import com.speko.android.data.User;
 
+import java.util.HashMap;
 import java.util.List;
 
 import retrofit2.Call;
@@ -27,6 +28,11 @@ public interface FirebaseClient {
 
     @GET("/users/{userId}.json")
     Call<User> getUser(
+            @Path("userId") String owner,
+            @Query("auth") String token);
+
+    @GET("/friends/{userId}.json")
+    Call<HashMap<String,User>> getUserFriends(
             @Path("userId") String owner,
             @Query("auth") String token);
 }

@@ -2,21 +2,20 @@ package com.speko.android;
 
 import android.database.Cursor;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.firebase.ui.database.FirebaseListAdapter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -26,6 +25,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.speko.android.data.User;
+import com.speko.android.data.UserColumns;
+import com.speko.android.data.UsersDatabase;
+import com.speko.android.data.UsersProvider;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -45,15 +47,26 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
     AppCompatEditText emailInputTextView;
 
     @BindView(R.id.user_list)
-    ListView userList;
+    RecyclerView userList;
 
     private static final int FRIENDS_LOADER = 1;
     private FirebaseDatabase firebaseDatabase;
     private FirebaseUser authUser;
-    private FirebaseListAdapter<User> mAdapter;
+    private FriendsAdapter mAdapter;
     private DatabaseReference ref;
     private ChildEventListener userListListener;
     private Query mUserQueryByEmail;
+
+
+    private static final String[] USER_COLUMNS = {
+            UsersDatabase.USERS_TABLE + "." + UserColumns.FIREBASE_ID,
+            UserColumns.NAME,
+            UserColumns.EMAIL
+    };
+
+    static final int COL_USER_ID = 0;
+    static final int COL_USER_NAME = 1;
+    static final int COL_EMAIL = 2;
 
     public HomeActivityFragment() {
     }
@@ -64,6 +77,9 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         ButterKnife.bind(this,view);
 
+        userList.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+
 
 
 
@@ -71,41 +87,26 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
     }
 
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
 
 
-        super.onCreate(savedInstanceState);
-    }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        getLoaderManager().initLoader(FRIENDS_LOADER, null, this);
-
-        super.onActivityCreated(savedInstanceState);
-    }
 
     @Override
     public void onStart() {
 
         // we putted here because until onActivityCreated, the activity hasn' decided to
         // put the user to login Ativity when necessary
-
         firebaseDatabase = FirebaseDatabase.getInstance();
-
         authUser = FirebaseAuth.getInstance().getCurrentUser();
+
+        Log.i(LOG_TAG,"Initloader");
+        getLoaderManager().initLoader(FRIENDS_LOADER, null, this);
+
 
         ref = FirebaseDatabase.getInstance().getReference()
                 .child("friends")
                 .child(authUser.getUid());
-        mAdapter = new FirebaseListAdapter<User>(getActivity(), User.class, android.R.layout.two_line_list_item, ref) {
-            @Override
-            protected void populateView(View view, User user, int position) {
-                ((TextView)view.findViewById(android.R.id.text1)).setText(user.getName());
-                ((TextView)view.findViewById(android.R.id.text2)).setText(user.getEmail());
-
-            }
-        };
+        mAdapter = new FriendsAdapter(getActivity());
 
         Log.i(LOG_TAG, "setting adapter");
         userList.setAdapter(mAdapter);
@@ -194,16 +195,23 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return null;
+        return new CursorLoader(getActivity(), UsersProvider.Users.usersFrom(authUser.getUid()),
+                USER_COLUMNS,
+                null,
+                null,
+                null);
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        Log.i(LOG_TAG, "onLoaderFinished with data: " + data.getCount());
+        mAdapter.swapCursor(data);
 
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
+        mAdapter.swapCursor(null);
 
     }
 

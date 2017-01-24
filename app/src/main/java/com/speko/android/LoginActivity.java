@@ -75,6 +75,8 @@ public class LoginActivity extends AppCompatActivity implements FillNewUserDataF
         if (requestCode == RC_SIGN_IN) {
             if (resultCode == RESULT_OK) {
                 // user is signed in!
+                Log.w(LOG_TAG, "Result OK");
+
                 newUserProcedure();
 
 
@@ -85,7 +87,7 @@ public class LoginActivity extends AppCompatActivity implements FillNewUserDataF
             if (resultCode == RESULT_CANCELED) {
                 //TODO Implement
 //                showSnackbar(R.string.sign_in_cancelled);
-
+                Log.w(LOG_TAG, "Result Cancelled");
                 setResult(RESULT_CANCELED);
 
                 finish();
@@ -93,6 +95,9 @@ public class LoginActivity extends AppCompatActivity implements FillNewUserDataF
 
             // No network
             if (resultCode == ResultCodes.RESULT_NO_NETWORK) {
+
+                Log.w(LOG_TAG, "Result no Network");
+
                 //TODO Implement
 //                showSnackbar(R.string.no_internet_connection);
                 return;
@@ -100,6 +105,9 @@ public class LoginActivity extends AppCompatActivity implements FillNewUserDataF
 
             // User is not signed in. Maybe just wait for the user to press
             // "sign in" again, or show a message.
+
+            Log.w(LOG_TAG, "Não deu certo login: \n" +
+                    "Result Code: " + resultCode);
         }
     }
 

@@ -1,6 +1,7 @@
 package com.speko.android.data;
 
 import net.simonvt.schematic.annotation.Database;
+import net.simonvt.schematic.annotation.IfNotExists;
 import net.simonvt.schematic.annotation.Table;
 
 /**
@@ -15,6 +16,7 @@ public class UsersDatabase {
 
     public static final int VERSION = 1;
 
-    @Table(UserColumns.class)       public static final String USERS_TABLE = "users";
+    @Table(UserColumns.class)   @IfNotExists public static final String USERS_TABLE = "users";
+
 
 }
