@@ -34,6 +34,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.UserView
 
     public void swapCursor(Cursor c){
         this.mCursor = c;
+        notifyDataSetChanged();
     }
 
     @Override
