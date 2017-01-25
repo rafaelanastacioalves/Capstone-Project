@@ -106,10 +106,6 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
         ref = FirebaseDatabase.getInstance().getReference()
                 .child("friends")
                 .child(authUser.getUid());
-        mAdapter = new FriendsAdapter(getActivity());
-
-        Log.i(LOG_TAG, "setting adapter");
-        userList.setAdapter(mAdapter);
 
         super.onStart();
     }
@@ -122,6 +118,12 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
         }
         super.onPause();
     }
+    @OnClick(R.id.sync_button)
+    public void sync(View v){
+        SpekoSyncAdapter.syncImmediatly(getActivity());
+//        getLoaderManager().restartLoader(FRIENDS_LOADER,null, this);
+    }
+
 
     @OnClick(R.id.fragment_button_confirm)
     public void addUser(View v){
