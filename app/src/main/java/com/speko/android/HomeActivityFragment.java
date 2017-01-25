@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -28,6 +29,7 @@ import com.speko.android.data.User;
 import com.speko.android.data.UserColumns;
 import com.speko.android.data.UsersDatabase;
 import com.speko.android.data.UsersProvider;
+import com.speko.android.sync.SpekoSyncAdapter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -48,6 +50,9 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
 
     @BindView(R.id.user_list)
     RecyclerView userList;
+
+    @BindView(R.id.sync_button)
+    Button sync_button;
 
     private static final int FRIENDS_LOADER = 1;
     private FirebaseDatabase firebaseDatabase;
@@ -74,10 +79,17 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.i(LOG_TAG, "onCreateView");
+
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         ButterKnife.bind(this,view);
 
         userList.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        mAdapter = new FriendsAdapter(getActivity());
+
+        Log.i(LOG_TAG, "setting adapter");
+        userList.setAdapter(mAdapter);
 
 
 
@@ -93,6 +105,7 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
 
     @Override
     public void onStart() {
+        Log.i(LOG_TAG, "onStart");
 
         // we putted here because until onActivityCreated, the activity hasn' decided to
         // put the user to login Ativity when necessary
@@ -197,6 +210,7 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        Log.i(LOG_TAG,"onCreateLoader");
         return new CursorLoader(getActivity(), UsersProvider.Users.usersFrom(authUser.getUid()),
                 USER_COLUMNS,
                 null,
@@ -206,13 +220,14 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        Log.i(LOG_TAG, "onLoaderFinished with data: " + data.getCount());
+        Log.i(LOG_TAG, "onLoaderFinished with total data: " + data.getCount());
         mAdapter.swapCursor(data);
 
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
+        Log.i(LOG_TAG,"onLoaderReset");
         mAdapter.swapCursor(null);
 
     }

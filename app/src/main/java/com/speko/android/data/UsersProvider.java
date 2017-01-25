@@ -24,7 +24,7 @@ public final class UsersProvider {
             = new Uri.Builder().scheme(ContentResolver.SCHEME_CONTENT).authority(CONTENT_AUTHORITY).build();
 
     static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
-    private final String LOG_TAG = getClass().getSimpleName();
+    private static final String LOG_TAG = "UsersProvider";
 
     interface Path{
         String USER = "user";
@@ -58,7 +58,7 @@ public final class UsersProvider {
     }
 
     @OnCreate
-    public void onCreate() {
+    public static void onCreate() {
 
         Log.i(LOG_TAG, "onCreate Provider ");
     }

@@ -1,9 +1,7 @@
 package com.speko.android;
 
 import android.accounts.Account;
-import android.accounts.AccountManager;
 import android.content.ContentResolver;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -98,6 +96,13 @@ public class HomeActivity extends AppCompatActivity  {
 
 
 
+    }
+
+    @Override
+    protected void onStart() {
+        Log.i(LOG_TAG, "onStart");
+
+        super.onStart();
     }
 
     private void userNotLoggedcheck() {
