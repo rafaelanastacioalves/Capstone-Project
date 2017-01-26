@@ -29,11 +29,12 @@ import java.util.HashMap;
 import retrofit2.Call;
 
 import static android.content.Context.ACCOUNT_SERVICE;
-import static com.speko.android.HomeActivity.ACCOUNT;
-import static com.speko.android.HomeActivity.ACCOUNT_TYPE;
-import static com.speko.android.HomeActivity.AUTHORITY;
+
 import static com.speko.android.data.UserColumns.FIREBASE_ID;
+import static com.speko.android.data.UserContract.ACCOUNT_TYPE;
+import static com.speko.android.data.UserContract.AUTHORITY;
 import static com.speko.android.data.UsersProvider.Users.USER_URI;
+import static com.speko.android.sync.SpekoAuthenticator.ACCOUNT;
 
 
 /**

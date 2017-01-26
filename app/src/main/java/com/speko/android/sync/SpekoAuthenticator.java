@@ -12,6 +12,8 @@ import android.os.Bundle;
  */
 
 public class SpekoAuthenticator extends AbstractAccountAuthenticator {
+    // The account name
+    public static final String ACCOUNT = "dummyaccount";
     public SpekoAuthenticator(Context context) {
         super(context);
     }

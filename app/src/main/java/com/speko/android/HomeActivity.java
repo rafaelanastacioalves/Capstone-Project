@@ -25,12 +25,9 @@ import io.fabric.sdk.android.Fabric;
 public class HomeActivity extends AppCompatActivity  {
 
     // Constants
-    // The authority for the sync adapter's content provider
-    public static final String AUTHORITY = "com.speko.android.data";
-    // An account type, in the form of a domain name
-    public static final String ACCOUNT_TYPE = "android.speko.com";
-    // The account name
-    public static final String ACCOUNT = "dummyaccount";
+
+
+
     private static final int RC_SIGN_IN = 1;
 
     private final String LOG_TAG = getClass().getSimpleName();
