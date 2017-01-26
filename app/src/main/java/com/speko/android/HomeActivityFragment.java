@@ -27,7 +27,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.speko.android.data.User;
 import com.speko.android.data.UserColumns;
-import com.speko.android.data.UsersDatabase;
 import com.speko.android.data.UsersProvider;
 import com.speko.android.sync.SpekoSyncAdapter;
 
@@ -64,7 +63,7 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
 
 
     private static final String[] USER_COLUMNS = {
-            UsersDatabase.USERS_TABLE + "." + UserColumns.FIREBASE_ID,
+            UserColumns.FIREBASE_ID,
             UserColumns.NAME,
             UserColumns.EMAIL
     };

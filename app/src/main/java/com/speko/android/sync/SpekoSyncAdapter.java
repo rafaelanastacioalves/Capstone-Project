@@ -45,7 +45,7 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
     private static final int FLEX_TIME = 1000; // every minute
     private static FirebaseDatabase mFirebaseDatabase;
     private static FirebaseAuth mFirebaseAuth;
-    private final String LOG_TAG = this.getClass().getSimpleName();
+    private static final String LOG_TAG = "SpekoSyncAdapter";
     private static String userToken;
 
 
@@ -270,17 +270,25 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
     public static void configurePeriodicSync(Context context, int syncInterval, int flexTime) {
         Account account = getSyncAccount(context);
         String authority = context.getString(R.string.content_authority);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            // we can enable inexact timers in our periodic sync
-            SyncRequest request = new SyncRequest.Builder().
-                    syncPeriodic(syncInterval, flexTime).
-                    setSyncAdapter(account, authority).
-                    setExtras(new Bundle()).build();
-            ContentResolver.requestSync(request);
-        } else {
-            ContentResolver.addPeriodicSync(account,
-                    authority, new Bundle(), syncInterval);
+        if (account!=null){
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                // we can enable inexact timers in our periodic sync
+                SyncRequest request = new SyncRequest.Builder().
+                        syncPeriodic(syncInterval, flexTime).
+                        setSyncAdapter(account, authority).
+                        setExtras(new Bundle()).build();
+                Log.i(LOG_TAG,"request: " + request.toString());
+
+                ContentResolver.requestSync(request);
+            } else {
+                ContentResolver.addPeriodicSync(account,
+                        authority, new Bundle(), syncInterval);
+            }
+        }else {
+            Log.i(LOG_TAG,"Account retornando null!" );
+
         }
+
     }
 
 }

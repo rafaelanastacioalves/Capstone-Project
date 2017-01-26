@@ -18,6 +18,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GetTokenResult;
+import com.speko.android.data.generated.UsersDatabase;
 import com.speko.android.sync.SpekoSyncAdapter;
 
 import io.fabric.sdk.android.Fabric;
@@ -36,12 +37,17 @@ public class HomeActivity extends AppCompatActivity  {
     private ContentResolver mResolver;
     private FirebaseAuth mFirebaseAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
+    private static UsersDatabase userDB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        userDB = UsersDatabase.getInstance(getApplicationContext());
+        userDB.onCreate(userDB.getReadableDatabase());
+
         Fabric.with(this, new Crashlytics());
-        Log.d("HomeActibvity", "onCreate");
+        Log.d("HomeActivity", "onCreate");
 
         setContentView(R.layout.activity_home);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
