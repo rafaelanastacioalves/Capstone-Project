@@ -170,7 +170,7 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
         getContext().getContentResolver().insert(USER_URI, userCV);
     }
 
-    public static User getUser(String idToken){
+    private static User getUser(String idToken){
         // Fetch and print a list of the contributors to this library.
         FirebaseClient client = ServiceGenerator.createService(FirebaseClient.class, new AccessToken(
                 "Bearer",
@@ -212,7 +212,7 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
      *
      * @param context The application context
      */
-    public static Account getSyncAccount(Context context) {
+    private static Account getSyncAccount(Context context) {
         // Create the account type and default account
         Account newAccount = new Account(
                 ACCOUNT, ACCOUNT_TYPE);
@@ -270,7 +270,7 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
     /**
      * Helper method to schedule the sync adapter periodic execution
      */
-    public static void configurePeriodicSync(Context context, int syncInterval, int flexTime) {
+    private static void configurePeriodicSync(Context context, int syncInterval, int flexTime) {
         Account account = getSyncAccount(context);
         String authority = context.getString(R.string.content_authority);
         if (account!=null){

@@ -72,3 +72,12 @@
         }
 
     }
+
+
+ -----------   Quando vamos clicar no botão de sync
+
+     @OnClick(R.id.sync_button)
+        public void sync(View v){
+            SpekoSyncAdapter.syncImmediatly(getActivity());
+    //        getLoaderManager().restartLoader(FRIENDS_LOADER,null, this);
+        }

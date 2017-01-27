@@ -20,6 +20,8 @@
 
     <!-- Button for test syncinc -->
     <string name="sync_button">Sync Button</string>
+    <string name="user_added">"Usuário adionado! "</string>
+    <string name="user_does_not_exist">Usuário procurado NÃO existe!</string>
 
 
 </resources>

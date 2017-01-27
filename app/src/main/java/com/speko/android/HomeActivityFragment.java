@@ -22,7 +22,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.speko.android.data.User;
@@ -57,7 +56,6 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
     private FirebaseDatabase firebaseDatabase;
     private FirebaseUser authUser;
     private FriendsAdapter mAdapter;
-    private DatabaseReference ref;
     private ChildEventListener userListListener;
     private Query mUserQueryByEmail;
 
@@ -115,9 +113,6 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
         getLoaderManager().initLoader(FRIENDS_LOADER, null, this);
 
 
-        ref = FirebaseDatabase.getInstance().getReference()
-                .child("friends")
-                .child(authUser.getUid());
 
         super.onStart();
     }
@@ -150,10 +145,8 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
 
                 if (dataSnapshot.exists()) {
-                    Log.i(LOG_TAG, "Usuário procurado existe! Tem " +
-                            dataSnapshot.getChildrenCount() + " filhos \n" +
-                            "E seu ID é " + dataSnapshot.getKey());
-                    Toast.makeText(getActivity(), "Usuário procurado existe! : \n", Toast.LENGTH_SHORT)
+                    Log.i(LOG_TAG, "Usuário procurado existe!");
+                    Toast.makeText(getActivity(), R.string.user_added, Toast.LENGTH_SHORT)
                             .show();
                     User userFriend = dataSnapshot.getValue(User.class);
                     Log.i(LOG_TAG, userFriend.getEmail() + userFriend.getName());
@@ -165,7 +158,7 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
                             .child(dataSnapshot.getKey()).setValue(userFriend);
                 } else {
                     Log.i(LOG_TAG, "Usuário procurado não existe!");
-                    Toast.makeText(getActivity(), "Usuário procurado NÃO existe!", Toast.LENGTH_SHORT)
+                    Toast.makeText(getActivity(), R.string.user_does_not_exist, Toast.LENGTH_SHORT)
                             .show();
                 }
 
@@ -194,7 +187,7 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
 
 
         //TODO is it possible to get into the child after query so we can
-        // use singleValueListeners instead of ChildValueListeners ?
+        //use singleValueListeners instead of ChildValueListeners ?
         mUserQueryByEmail = firebaseDatabase.getReference()
                 .child("users").orderByChild("email").equalTo(friendEmail);
 

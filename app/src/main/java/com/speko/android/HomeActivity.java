@@ -78,7 +78,6 @@ public class HomeActivity extends AppCompatActivity  {
                 if (user != null) {
                     // User is signed in
                     //TODO implement this
-//                    onSignedInInitialize(user.getDisplayName());
 
                     setFireBaseToken();
 
@@ -87,7 +86,6 @@ public class HomeActivity extends AppCompatActivity  {
                 } else {
                     // User is signed out
                     //TODO implement this
-//                    onSignedOutCleanup();
                     Intent i = new Intent(getApplicationContext(), LoginActivity.class);
                     startActivity(i);
                 }
