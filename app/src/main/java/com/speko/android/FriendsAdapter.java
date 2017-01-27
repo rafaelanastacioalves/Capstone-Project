@@ -9,6 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * Created by rafaelalves on 21/01/17.
  */
@@ -66,15 +69,14 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.UserView
 
     public class UserViewHolder extends RecyclerView.ViewHolder {
 
-        public final TextView mNameTextView;
-        public final TextView mUserEmailTextView;
+        @BindView(R.id.friend_viewholder_username) TextView mNameTextView;
+        @BindView(R.id.friend_viewholder_useremail) TextView mUserEmailTextView;
 
 
         public UserViewHolder(View itemView) {
             super(itemView);
+            ButterKnife.bind(this,itemView);
 
-            mNameTextView = (TextView) itemView.findViewById(R.id.friend_viewholder_username);
-            mUserEmailTextView = (TextView) itemView.findViewById(R.id.friend_viewholder_useremail);
         }
     }
 
