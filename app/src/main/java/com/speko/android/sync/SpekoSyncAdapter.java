@@ -75,7 +75,11 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
                 persistUser(user);
 
                 HashMap<String, User> userFriends = getFriends(userToken);
-                persistFriends(userFriends.values().toArray(new User[userFriends.size()]));
+                if (userFriends != null){
+                    persistFriends(userFriends.values().toArray(new User[userFriends.size()]));
+                    Log.i("SpekoSyncAdapter", "Deu certo!: \n" + user.toString());
+
+                }
 
 
             }else{
@@ -135,7 +139,6 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
         try {
             Log.i("SpekoSyncAdapter", "getFriends: \n");
             HashMap<String,User> user = call.execute().body();
-            Log.i("SpekoSyncAdapter", "Deu certo!: \n" + user.toString());
 
             return user;
         }catch (IOException e) {
