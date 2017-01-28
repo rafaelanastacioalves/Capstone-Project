@@ -123,20 +123,21 @@ public class HomeActivity extends AppCompatActivity  {
         Fragment frag = null;
         // init corresponding fragment
         switch (item.getItemId()) {
-            case R.id.action_conversations:
+            case R.id.action_search:
                 Log.i(LOG_TAG, "Selecting HomeActivityFragment");
 
                 frag = new HomeActivityFragment();
 
                 break;
-//            case R.id.menu_notifications:
-//                frag = MenuFragment.newInstance(getString(R.string.text_notifications),
-//                        getColorFromRes(R.color.color_notifications));
-//                break;
-//            case R.id.menu_search:
-//                frag = MenuFragment.newInstance(getString(R.string.text_search),
-//                        getColorFromRes(R.color.color_search));
-//                break;
+            case R.id.action_profile:
+                Log.i(LOG_TAG, "Selecting Profile");
+
+                frag = new ProfileFragment();
+                break;
+            case R.id.action_conversations:
+                Log.i(LOG_TAG, "Selecting Conversations");
+                frag = new ConversationsFragment();
+                break;
         }
 
         // update selected item
