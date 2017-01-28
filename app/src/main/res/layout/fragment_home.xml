@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:text="Add Friend by Email"/>
 
-    <EditText
+    <android.support.design.widget.TextInputEditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/fragment_edittext_add_user"/>

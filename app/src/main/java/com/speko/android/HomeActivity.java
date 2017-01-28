@@ -5,11 +5,12 @@ import android.content.ContentResolver;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
@@ -21,6 +22,8 @@ import com.google.firebase.auth.GetTokenResult;
 import com.speko.android.data.generated.UsersDatabase;
 import com.speko.android.sync.SpekoSyncAdapter;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import io.fabric.sdk.android.Fabric;
 
 public class HomeActivity extends AppCompatActivity  {
@@ -30,6 +33,7 @@ public class HomeActivity extends AppCompatActivity  {
 
 
     private static final int RC_SIGN_IN = 1;
+    private static final String SELECTED_ITEM = "arg_selected_item";
 
     private final String LOG_TAG = getClass().getSimpleName();
     // Instance fields
@@ -38,6 +42,10 @@ public class HomeActivity extends AppCompatActivity  {
     private FirebaseAuth mFirebaseAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     private static UsersDatabase userDB;
+
+    @BindView(R.id.bottom_view_layout_home_activity)
+    BottomNavigationView mBottomNavigationView;
+    private int mSelectedItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,8 +58,8 @@ public class HomeActivity extends AppCompatActivity  {
         Log.d("HomeActivity", "onCreate");
 
         setContentView(R.layout.activity_home);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        ButterKnife.bind(this);
+
 
         // Get the content resolver for your app
         mResolver = getContentResolver();
@@ -60,10 +68,6 @@ public class HomeActivity extends AppCompatActivity  {
 
         userNotLoggedcheck();
 
-        Fragment homeActivityFragment = new HomeActivityFragment();
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.home_activity_fragment_container, homeActivityFragment);
-        transaction.commit();
 //        setFireBaseToken();
 
 
@@ -94,9 +98,69 @@ public class HomeActivity extends AppCompatActivity  {
 
 
 
+        mBottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                selectFragment(item);
+                return true;
+            }
+        });
+
+        MenuItem selectedItem;
+        if (savedInstanceState != null) {
+            mSelectedItem = savedInstanceState.getInt(SELECTED_ITEM, 0);
+            selectedItem = mBottomNavigationView.getMenu().findItem(mSelectedItem);
+        } else {
+            selectedItem = mBottomNavigationView.getMenu().getItem(0);
+        }
+        selectFragment(selectedItem);
 
 
+    }
 
+
+    private void selectFragment(MenuItem item) {
+        Fragment frag = null;
+        // init corresponding fragment
+        switch (item.getItemId()) {
+            case R.id.action_conversations:
+                Log.i(LOG_TAG, "Selecting HomeActivityFragment");
+
+                frag = new HomeActivityFragment();
+
+                break;
+//            case R.id.menu_notifications:
+//                frag = MenuFragment.newInstance(getString(R.string.text_notifications),
+//                        getColorFromRes(R.color.color_notifications));
+//                break;
+//            case R.id.menu_search:
+//                frag = MenuFragment.newInstance(getString(R.string.text_search),
+//                        getColorFromRes(R.color.color_search));
+//                break;
+        }
+
+        // update selected item
+        mSelectedItem = item.getItemId();
+
+        // uncheck the other items.
+        for (int i = 0; i< mBottomNavigationView.getMenu().size(); i++) {
+            MenuItem menuItem = mBottomNavigationView.getMenu().getItem(i);
+            menuItem.setChecked(menuItem.getItemId() == item.getItemId());
+        }
+
+
+        if (frag != null) {
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            ft.replace (R.id.home_activity_fragment_container, frag, frag.getTag());
+            ft.commit();
+        }
+    }
+
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putInt(SELECTED_ITEM, mSelectedItem);
+        super.onSaveInstanceState(outState);
     }
 
     @Override

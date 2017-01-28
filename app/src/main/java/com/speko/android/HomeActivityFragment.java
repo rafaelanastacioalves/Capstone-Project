@@ -2,12 +2,12 @@ package com.speko.android;
 
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.AppCompatButton;
-import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -44,7 +44,7 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
     AppCompatButton buttonViewAddUser;
 
     @BindView(R.id.fragment_edittext_add_user)
-    AppCompatEditText emailInputTextView;
+    TextInputEditText emailInputTextView;
 
     @BindView(R.id.user_list)
     RecyclerView userList;
