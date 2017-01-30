@@ -35,4 +35,10 @@ public interface FirebaseClient {
     Call<HashMap<String,User>> getUserFriends(
             @Path("userId") String owner,
             @Query("auth") String token);
+
+    @GET("/users/.json?")
+    Call<HashMap<String,User>> getUsersListWith(
+            @Query("auth") String token,
+            @Query("orderBy") String orderByParameter,
+            @Query("equalTo") String equalTo);
 }

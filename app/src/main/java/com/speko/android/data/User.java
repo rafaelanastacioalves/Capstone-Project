@@ -11,6 +11,7 @@ public class User {
     private int age;
     private String email;
     private String fluentLanguage;
+    private String learningLanguage;
 
     public User(){
     }
@@ -64,5 +65,13 @@ public class User {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getLearningLanguage() {
+        return learningLanguage;
+    }
+
+    public void setLearningLanguage(String learningLanguage) {
+        this.learningLanguage = learningLanguage;
     }
 }

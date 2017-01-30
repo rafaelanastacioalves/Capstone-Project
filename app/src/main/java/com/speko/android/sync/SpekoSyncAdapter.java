@@ -24,12 +24,12 @@ import com.speko.android.retrofit.FirebaseClient;
 import com.speko.android.retrofit.ServiceGenerator;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 
 import retrofit2.Call;
 
 import static android.content.Context.ACCOUNT_SERVICE;
-
 import static com.speko.android.data.UserColumns.FIREBASE_ID;
 import static com.speko.android.data.UserContract.ACCOUNT_TYPE;
 import static com.speko.android.data.UserContract.AUTHORITY;
@@ -47,6 +47,7 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
     private static FirebaseAuth mFirebaseAuth;
     private static final String LOG_TAG = "SpekoSyncAdapter";
     private static String userToken;
+    private static User user;
 
 
     public SpekoSyncAdapter(Context context, boolean autoInitialize) {
@@ -70,22 +71,26 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
         Log.d(LOG_TAG, "onPerformSync");
 
 
-            if (userToken !=null){
-                User user = getUser(userToken);
-                persistUser(user);
+        if (userToken != null) {
+            User user = getUser(userToken);
+            persistUser(user);
 
-                HashMap<String, User> userFriends = getFriends(userToken);
-                if (userFriends != null){
-                    persistFriends(userFriends.values().toArray(new User[userFriends.size()]));
-                    Log.i("SpekoSyncAdapter", "Deu certo!: \n" + user.toString());
+            HashMap<String, User> userFriends = null;
+            try {
+                userFriends = getFriends(userToken);
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            if (userFriends != null) {
+                persistFriends(userFriends.values().toArray(new User[userFriends.size()]));
+                Log.i("SpekoSyncAdapter", "Deu certo!: \n" + user.toString());
 
-                }
-
-
-            }else{
-                Log.w(LOG_TAG, "userToken not setted!");
             }
 
+
+        } else {
+            Log.w(LOG_TAG, "userToken not setted!");
+        }
 
 
     }
@@ -93,7 +98,7 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
     private void persistFriends(User[] userFriends) {
 
 
-        int count =0;
+        int count = 0;
         for (User user :
                 userFriends) {
             ContentValues userCV = new ContentValues();
@@ -101,6 +106,7 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
             userCV.put(UserColumns.NAME, user.getName());
             userCV.put(UserColumns.EMAIL, user.getEmail());
             userCV.put(UserColumns.FLUENT_LANGUAGE, user.getFluentLanguage());
+            userCV.put(UserColumns.LEARNING_LANGUAGE, user.getLearningLanguage());
             userCV.put(UserColumns.FRIEND_OF, mFirebaseAuth.getCurrentUser().getUid());
 
             try {
@@ -114,10 +120,10 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
                 Log.e(LOG_TAG, "Insert not possible:" + e.getCause());
                 Log.d(LOG_TAG, "Trying to update");
                 Log.d(LOG_TAG, "Values: " + user.getId() + " "
-                + user.getName() + " "
-                + user.getEmail());
+                        + user.getName() + " "
+                        + user.getEmail());
                 int rows = getContext().getContentResolver().update(USER_URI, userCV,
-                        UserColumns.FIREBASE_ID + " = ?" , new String[] {user.getId() });
+                        UserColumns.FIREBASE_ID + " = ?", new String[]{user.getId()});
                 if (rows > 0) {
                     Log.i(LOG_TAG, "updated successfuly. Count: " + (count + 1));
                 }
@@ -127,21 +133,25 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
 
     }
 
-    private HashMap<String, User> getFriends(String idToken) {
+    private HashMap<String, User> getFriends(String idToken) throws UnsupportedEncodingException {
 
         // Fetch and print a list of the contributors to this library.
         FirebaseClient client = ServiceGenerator.createService(FirebaseClient.class, new AccessToken(
                 "Bearer",
                 idToken)
         );
-        Call<HashMap<String,User>> call = client.getUserFriends(mFirebaseAuth.getCurrentUser().getUid(), idToken);
+
+
+        Call<HashMap<String,User>> call = client.getUsersListWith(userToken
+                ,"\"fluentLanguage\""
+                , "\"" + user.getLearningLanguage() + "\"");
 
         try {
             Log.i("SpekoSyncAdapter", "getFriends: \n");
-            HashMap<String,User> user = call.execute().body();
+            HashMap<String, User> friends = call.execute().body();
 
-            return user;
-        }catch (IOException e) {
+            return friends;
+        } catch (IOException e) {
             Log.e("SpekoSyncAdapter", "Deu ruim: \n" + e.getMessage());
             // handle errors
         }
@@ -149,28 +159,26 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
         return null;
 
 
-
-
-
     }
 
     private void persistUser(User user) {
         ContentValues userCV = new ContentValues();
-        userCV.put(FIREBASE_ID,user.getId());
+        userCV.put(FIREBASE_ID, user.getId());
         userCV.put(UserColumns.NAME, user.getName());
         userCV.put(UserColumns.EMAIL, user.getEmail());
         userCV.put(UserColumns.FLUENT_LANGUAGE, user.getFluentLanguage());
+        userCV.put(UserColumns.LEARNING_LANGUAGE, user.getLearningLanguage());
 
         // deleting any row first
         getContext().getContentResolver().delete(USER_URI,
-                FIREBASE_ID + " = ?" ,
-                new String[] {user.getId()});
+                FIREBASE_ID + " = ?",
+                new String[]{user.getId()});
 
         // insterting
         getContext().getContentResolver().insert(USER_URI, userCV);
     }
 
-    private static User getUser(String idToken){
+    private static User getUser(String idToken) {
         // Fetch and print a list of the contributors to this library.
         FirebaseClient client = ServiceGenerator.createService(FirebaseClient.class, new AccessToken(
                 "Bearer",
@@ -180,11 +188,11 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
 
         try {
             Log.i("SpekoSyncAdapter", "getUser: \n");
-            User user = call.execute().body();
+            user = call.execute().body();
             Log.i("SpekoSyncAdapter", "Deu certo!: \n" + user.toString());
 
             return user;
-        }catch (IOException e) {
+        } catch (IOException e) {
             Log.e("SpekoSyncAdapter", "Deu ruim: \n" + e.getMessage());
             // handle errors
         }
@@ -192,17 +200,14 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
         return null;
 
 
-
-
     }
 
-    public static void initializeSyncAdapter(Context context){
+    public static void initializeSyncAdapter(Context context) {
 
         Log.d("SpekoSyncAdapter", "initializeSyncAdapter");
         mFirebaseDatabase = FirebaseDatabase.getInstance();
         mFirebaseAuth = FirebaseAuth.getInstance();
         getSyncAccount(context);
-
 
 
     }
@@ -231,8 +236,7 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
              * then call context.setIsSyncable(account, CONTENT_AUTHORITY, 1)
              * here.
              */
-            onAccountCreated(newAccount,context);
-
+            onAccountCreated(newAccount, context);
 
 
         } else {
@@ -273,22 +277,22 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
     private static void configurePeriodicSync(Context context, int syncInterval, int flexTime) {
         Account account = getSyncAccount(context);
         String authority = context.getString(R.string.content_authority);
-        if (account!=null){
+        if (account != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
                 // we can enable inexact timers in our periodic sync
                 SyncRequest request = new SyncRequest.Builder().
                         syncPeriodic(syncInterval, flexTime).
                         setSyncAdapter(account, authority).
                         setExtras(new Bundle()).build();
-                Log.i(LOG_TAG,"request: " + request.toString());
+                Log.i(LOG_TAG, "request: " + request.toString());
 
                 ContentResolver.requestSync(request);
             } else {
                 ContentResolver.addPeriodicSync(account,
                         authority, new Bundle(), syncInterval);
             }
-        }else {
-            Log.i(LOG_TAG,"Account retornando null!" );
+        } else {
+            Log.i(LOG_TAG, "Account retornando null!");
 
         }
 
