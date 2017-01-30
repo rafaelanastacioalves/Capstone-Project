@@ -141,10 +141,11 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
                 idToken)
         );
 
-
+        String parameterValue = user.getFluentLanguage() + "|" + user.getLearningLanguage();
+        String parameterKey = "learningCode";
         Call<HashMap<String,User>> call = client.getUsersListWith(userToken
-                ,"\"fluentLanguage\""
-                , "\"" + user.getLearningLanguage() + "\"");
+                ,"\"" + parameterKey + "\""
+                , "\"" + parameterValue + "\"");
 
         try {
             Log.i("SpekoSyncAdapter", "getFriends: \n");

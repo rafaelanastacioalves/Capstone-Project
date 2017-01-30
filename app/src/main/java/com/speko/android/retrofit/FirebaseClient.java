@@ -39,6 +39,6 @@ public interface FirebaseClient {
     @GET("/users/.json?")
     Call<HashMap<String,User>> getUsersListWith(
             @Query("auth") String token,
-            @Query("orderBy") String orderByParameter,
-            @Query("equalTo") String equalTo);
+            @Query("orderBy") String orderByKey,
+            @Query("equalTo") String equalToKey);
 }
