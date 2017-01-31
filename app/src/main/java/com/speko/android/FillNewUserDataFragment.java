@@ -31,6 +31,9 @@ public class FillNewUserDataFragment extends Fragment {
     @BindView(R.id.signup_spinner_input_age_fluent_language)
     AppCompatSpinner spinner_fluent_language;
 
+    @BindView(R.id.signup_spinner_input_age_language_of_interest)
+    AppCompatSpinner spinner_language_of_interest;
+
     @BindView(R.id.signup_button)
     AppCompatButton signupButton;
 
@@ -91,6 +94,13 @@ public class FillNewUserDataFragment extends Fragment {
         User user = new User();
         user.setAge(Integer.parseInt((age.getText().toString())));
         user.setFluentLanguage(spinner_fluent_language.getSelectedItem().toString());
+        user.setLearningLanguage(spinner_language_of_interest.getSelectedItem().toString());
+
+
+        user.setLearningCode(user.getFluentLanguage()
+        + "|"
+        + user.getLearningLanguage());
+
         mListener.onFragmentInteraction(user);
     }
 }

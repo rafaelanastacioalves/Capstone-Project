@@ -12,6 +12,7 @@ public class User {
     private String email;
     private String fluentLanguage;
     private String learningLanguage;
+    private String learningCode;
 
     public User(){
     }
@@ -73,5 +74,13 @@ public class User {
 
     public void setLearningLanguage(String learningLanguage) {
         this.learningLanguage = learningLanguage;
+    }
+
+    public String getLearningCode() {
+        return learningCode;
+    }
+
+    public void setLearningCode(String learningCode) {
+        this.learningCode = learningCode;
     }
 }
