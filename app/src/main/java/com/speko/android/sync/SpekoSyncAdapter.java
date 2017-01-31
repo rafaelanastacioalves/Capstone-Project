@@ -104,8 +104,10 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
             ContentValues userCV = new ContentValues();
             userCV.put(UserColumns.FIREBASE_ID, user.getId());
             userCV.put(UserColumns.NAME, user.getName());
+            userCV.put(UserColumns.AGE, user.getAge());
             userCV.put(UserColumns.EMAIL, user.getEmail());
             userCV.put(UserColumns.FLUENT_LANGUAGE, user.getFluentLanguage());
+            userCV.put(UserColumns.LEARNING_CODE, user.getLearningCode());
             userCV.put(UserColumns.LEARNING_LANGUAGE, user.getLearningLanguage());
             userCV.put(UserColumns.FRIEND_OF, mFirebaseAuth.getCurrentUser().getUid());
 
@@ -167,8 +169,10 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
         userCV.put(FIREBASE_ID, user.getId());
         userCV.put(UserColumns.NAME, user.getName());
         userCV.put(UserColumns.EMAIL, user.getEmail());
+        userCV.put(UserColumns.AGE, user.getAge());
         userCV.put(UserColumns.FLUENT_LANGUAGE, user.getFluentLanguage());
         userCV.put(UserColumns.LEARNING_LANGUAGE, user.getLearningLanguage());
+        userCV.put(UserColumns.LEARNING_CODE, user.getLearningCode());
 
         // deleting any row first
         getContext().getContentResolver().delete(USER_URI,

@@ -19,6 +19,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GetTokenResult;
+import com.google.firebase.database.FirebaseDatabase;
+import com.speko.android.data.User;
 import com.speko.android.data.generated.UsersDatabase;
 import com.speko.android.sync.SpekoSyncAdapter;
 
@@ -26,7 +28,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.fabric.sdk.android.Fabric;
 
-public class HomeActivity extends AppCompatActivity  {
+public class HomeActivity extends AppCompatActivity implements ProfileFragment.OnFragmentInteractionListener  {
 
     // Constants
 
@@ -46,6 +48,7 @@ public class HomeActivity extends AppCompatActivity  {
     @BindView(R.id.bottom_view_layout_home_activity)
     BottomNavigationView mBottomNavigationView;
     private int mSelectedItem;
+    private FirebaseDatabase firebaseDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -239,6 +242,24 @@ public class HomeActivity extends AppCompatActivity  {
     }
 
 
+    @Override
+    public void onFragmentInteraction(User user) {
+
+        final FirebaseUser authUser = mFirebaseAuth.getCurrentUser();
+
+        user.setLearningCode(user.getFluentLanguage()
+                + "|"
+                + user.getLearningLanguage());
+
+        //adding more Provider User info
+        user.setName(authUser.getDisplayName());
+        user.setEmail(authUser.getEmail());
+        user.setId(authUser.getUid());
+        Utility.setUser(user,this);
 
 
+        Toast.makeText(this, "ProfileUpdated!", Toast.LENGTH_SHORT).show();
+
+
+    }
 }

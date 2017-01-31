@@ -20,6 +20,10 @@ public interface UserColumns {
     @DataType(TEXT) @NotNull @IfNotExists
     String NAME = "name";
 
+    @DataType(TEXT) @IfNotExists
+    String AGE = "age";
+
+
     @DataType(TEXT) @NotNull
     String EMAIL = "email";
 
@@ -31,6 +35,9 @@ public interface UserColumns {
 
     @DataType(TEXT)
     String FRIEND_OF = "friend_of";
+
+    @DataType(TEXT) @NotNull
+    String LEARNING_CODE = "learning_code";
 
 
 

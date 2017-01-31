@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.LinearLayoutManager;
@@ -25,8 +24,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.speko.android.data.User;
-import com.speko.android.data.UserColumns;
-import com.speko.android.data.UsersProvider;
 import com.speko.android.sync.SpekoSyncAdapter;
 
 import butterknife.BindView;
@@ -40,7 +37,7 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
 
     private final String LOG_TAG = getClass().getSimpleName();
 
-    @BindView(R.id.fragment_button_confirm)
+    @BindView(R.id.fragment_button_profile_confirmation_change)
     AppCompatButton buttonViewAddUser;
 
     @BindView(R.id.fragment_edittext_add_user)
@@ -60,11 +57,6 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
     private Query mUserQueryByEmail;
 
 
-    private static final String[] USER_COLUMNS = {
-            UserColumns.FIREBASE_ID,
-            UserColumns.NAME,
-            UserColumns.EMAIL
-    };
 
     static final int COL_USER_ID = 0;
     static final int COL_USER_NAME = 1;
@@ -132,7 +124,7 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
     }
 
 
-    @OnClick(R.id.fragment_button_confirm)
+    @OnClick(R.id.fragment_button_profile_confirmation_change)
     public void addUser(View v){
 
         String friendEmail = emailInputTextView.getText().toString();
@@ -203,11 +195,7 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         Log.i(LOG_TAG,"onCreateLoader");
-        return new CursorLoader(getActivity(), UsersProvider.Users.usersFrom(authUser.getUid()),
-                USER_COLUMNS,
-                null,
-                null,
-                null);
+        return Utility.getUserFriendsCursorLoader(getContext());
     }
 
     @Override

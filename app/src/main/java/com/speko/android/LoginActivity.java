@@ -177,16 +177,16 @@ public class LoginActivity extends AppCompatActivity implements FillNewUserDataF
 
         final FirebaseUser authUser = auth.getCurrentUser();
 
+        user.setLearningCode(user.getFluentLanguage()
+                + "|"
+                + user.getLearningLanguage());
+
         //adding more Provider User info
         user.setName(authUser.getDisplayName());
         user.setEmail(authUser.getEmail());
         user.setId(authUser.getUid());
 
-        firebaseDatabase
-                .getReference()
-                .child(getString(R.string.firebase_database_node_users))
-                .child(authUser.getUid())
-                .setValue(user);
+        Utility.setUser(user,this);
 
         Toast.makeText(this,"Signed Up Successfully!",Toast.LENGTH_SHORT).show();
 

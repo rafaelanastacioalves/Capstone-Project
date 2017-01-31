@@ -27,7 +27,7 @@
         android:layout_width="match_parent"
         android:text="Confirm"
         android:layout_height="wrap_content"
-        android:id="@+id/fragment_button_confirm"/>
+        android:id="@+id/fragment_button_profile_confirmation_change"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/user_list"

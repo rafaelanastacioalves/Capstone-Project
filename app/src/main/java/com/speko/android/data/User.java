@@ -8,7 +8,7 @@ public class User {
 
     private String id;
     private String name;
-    private int age;
+    private String age;
     private String email;
     private String fluentLanguage;
     private String learningLanguage;
@@ -17,7 +17,7 @@ public class User {
     public User(){
     }
 
-    public User(String name, int age, String email, String fluentLanguage){
+    public User(String name, String age, String email, String fluentLanguage){
         this.name = name;
         this.age = age;
         this.email = email;
@@ -35,11 +35,11 @@ public class User {
         this.name = name;
     }
 
-    public int getAge() {
+    public String getAge() {
         return age;
     }
 
-    public void setAge(int age) {
+    public void setAge(String age) {
         this.age = age;
     }
 

@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.speko.android.data.UserColumns;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -45,9 +47,13 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.UserView
         mCursor.moveToPosition(position);
 
         Log.i(LOG_TAG, "onBindViewHolder");
-        String userName = mCursor.getString(HomeActivityFragment.COL_USER_NAME);
+        String userName = mCursor.getString(
+                mCursor.getColumnIndex(UserColumns.NAME)
+        );
         Log.i(LOG_TAG, "Name: " + userName);
-        String userEmail = mCursor.getString(HomeActivityFragment.COL_EMAIL);
+        String userEmail = mCursor.getString(
+                mCursor.getColumnIndex(UserColumns.EMAIL)
+        );
         Log.i(LOG_TAG, "Email: " + userEmail);
 
 

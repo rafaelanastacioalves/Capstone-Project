@@ -92,14 +92,12 @@ public class FillNewUserDataFragment extends Fragment {
     @OnClick(R.id.signup_button)
     public void signup(View view){
         User user = new User();
-        user.setAge(Integer.parseInt((age.getText().toString())));
+        user.setAge(age.getText().toString());
         user.setFluentLanguage(spinner_fluent_language.getSelectedItem().toString());
         user.setLearningLanguage(spinner_language_of_interest.getSelectedItem().toString());
 
 
-        user.setLearningCode(user.getFluentLanguage()
-        + "|"
-        + user.getLearningLanguage());
+
 
         mListener.onFragmentInteraction(user);
     }
