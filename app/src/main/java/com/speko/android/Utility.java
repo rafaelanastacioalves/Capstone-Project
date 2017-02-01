@@ -50,6 +50,9 @@ public class Utility {
     public static void setUser(User user, Context c){
         mUser = user;
         authUser = FirebaseAuth.getInstance().getCurrentUser();
+        if(firebaseDatabase==null){
+            firebaseDatabase = FirebaseDatabase.getInstance();
+        }
         firebaseDatabase.getReference()
                 .child(c.getString(R.string.firebase_database_node_users))
                 .child(authUser.getUid())

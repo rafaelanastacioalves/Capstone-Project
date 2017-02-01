@@ -13,12 +13,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.speko.android.data.User;
 import com.speko.android.sync.SpekoSyncAdapter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -98,6 +100,29 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
 
 
         return view;
+    }
+
+    @OnClick(R.id.fragment_button_profile_change)
+    public void changeProfile(View v){
+
+        User user = Utility.getUser(getContext());
+        user.setAge(ageEditText.getText().toString());
+        user.setFluentLanguage(spinner_fluent_language.getSelectedItem().toString());
+        user.setLearningLanguage(spinner_learning_language.getSelectedItem().toString());
+
+
+        user.setLearningCode(user.getFluentLanguage()
+                + "|"
+                + user.getLearningLanguage());
+
+
+        Utility.setUser(user,getActivity());
+
+        SpekoSyncAdapter.syncImmediatly(getActivity());
+
+        Toast.makeText(getActivity(), "ProfileUpdated!", Toast.LENGTH_SHORT).show();
+
+
     }
 
     private void setView() {

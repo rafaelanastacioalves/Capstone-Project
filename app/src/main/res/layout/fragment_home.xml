@@ -8,26 +8,19 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.speko.android.HomeActivityFragment"
-    tools:showIn="@layout/activity_home">
+   >
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/sync_button"
         android:text="@string/sync_button"/>
     <TextView
+        android:layout_margin="@dimen/activity_vertical_margin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Add Friend by Email"/>
+        android:text="@string/friends_that_can_help_you"/>
 
-    <android.support.design.widget.TextInputEditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/fragment_edittext_add_user"/>
-    <Button
-        android:layout_width="match_parent"
-        android:text="Confirm"
-        android:layout_height="wrap_content"
-        android:id="@+id/fragment_button_profile_confirmation_change"/>
+
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/user_list"

@@ -2,28 +2,21 @@ package com.speko.android;
 
 import android.database.Cursor;
 import android.os.Bundle;
-import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
-import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
-import com.speko.android.data.User;
 import com.speko.android.sync.SpekoSyncAdapter;
 
 import butterknife.BindView;
@@ -37,17 +30,13 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
 
     private final String LOG_TAG = getClass().getSimpleName();
 
-    @BindView(R.id.fragment_button_profile_confirmation_change)
-    AppCompatButton buttonViewAddUser;
 
-    @BindView(R.id.fragment_edittext_add_user)
-    TextInputEditText emailInputTextView;
+
+
 
     @BindView(R.id.user_list)
     RecyclerView userList;
 
-    @BindView(R.id.sync_button)
-    Button sync_button;
 
     private static final int FRIENDS_LOADER = 1;
     private FirebaseDatabase firebaseDatabase;
@@ -124,71 +113,7 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
     }
 
 
-    @OnClick(R.id.fragment_button_profile_confirmation_change)
-    public void addUser(View v){
 
-        String friendEmail = emailInputTextView.getText().toString();
-
-        //TODO Check if user with that email exists
-        userListListener = new ChildEventListener() {
-
-
-            @Override
-            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-
-                if (dataSnapshot.exists()) {
-                    Log.i(LOG_TAG, "Usuário procurado existe!");
-                    Toast.makeText(getActivity(), R.string.user_added, Toast.LENGTH_SHORT)
-                            .show();
-                    User userFriend = dataSnapshot.getValue(User.class);
-                    Log.i(LOG_TAG, userFriend.getEmail() + userFriend.getName());
-
-                    firebaseDatabase.getReference()
-                            .child("friends")
-                            .child(authUser.getUid())
-                            // the getKey because it contains the UId of the friend
-                            .child(dataSnapshot.getKey()).setValue(userFriend);
-                } else {
-                    Log.i(LOG_TAG, "Usuário procurado não existe!");
-                    Toast.makeText(getActivity(), R.string.user_does_not_exist, Toast.LENGTH_SHORT)
-                            .show();
-                }
-
-            }
-
-            @Override
-            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        };
-
-
-        //TODO is it possible to get into the child after query so we can
-        //use singleValueListeners instead of ChildValueListeners ?
-        mUserQueryByEmail = firebaseDatabase.getReference()
-                .child("users").orderByChild("email").equalTo(friendEmail);
-
-        mUserQueryByEmail.addChildEventListener(userListListener);
-
-
-
-
-    }
 
 
 
