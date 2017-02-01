@@ -71,7 +71,7 @@ public class Utility {
 
         }
 
-
+        c.close();
         return user;
     }
 
