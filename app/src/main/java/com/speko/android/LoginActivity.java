@@ -16,7 +16,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Logger;
 import com.google.firebase.database.ValueEventListener;
 import com.speko.android.data.User;
 
@@ -40,10 +39,8 @@ public class LoginActivity extends AppCompatActivity implements FillNewUserDataF
 
         Fabric.with(this, new Crashlytics());
         Log.d(LOG_TAG,"onCreate");
-        firebaseDatabase = FirebaseDatabase.getInstance();
 
-        //supposing its first usage is here. Must be first use!
-        firebaseDatabase.setLogLevel(Logger.Level.DEBUG);
+        firebaseDatabase = FirebaseDatabase.getInstance();
 
         auth = FirebaseAuth.getInstance();
         if (auth.getCurrentUser() != null) {

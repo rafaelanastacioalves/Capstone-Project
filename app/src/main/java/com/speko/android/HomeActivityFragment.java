@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -36,6 +37,9 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
 
     @BindView(R.id.user_list)
     RecyclerView userList;
+
+    @BindView(R.id.log_out)
+    Button logOut;
 
 
     private static final int FRIENDS_LOADER = 1;
@@ -116,6 +120,12 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
     public void sync(View v){
         SpekoSyncAdapter.syncImmediatly(getActivity());
 //        getLoaderManager().restartLoader(FRIENDS_LOADER,null, this);
+    }
+
+
+    @OnClick(R.id.log_out)
+    public void logOut(View v){
+        FirebaseAuth.getInstance().signOut();
     }
 
 

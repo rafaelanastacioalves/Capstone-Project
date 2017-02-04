@@ -32,5 +32,8 @@
     <string name="friends_that_can_help_you">Friends that can help you:</string>
     <string name="title_activity_chat">ChatActivity</string>
 
+    <string name="title_activity_chat">ChatActivity</string>
+    <string name="log_out">Log Out</string>
+
 
 </resources>
