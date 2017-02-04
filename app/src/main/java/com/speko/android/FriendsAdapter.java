@@ -18,16 +18,18 @@ import butterknife.ButterKnife;
  * Created by rafaelalves on 21/01/17.
  */
 
-public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.UserViewHolder> {
+public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.UserViewHolder>  {
 
 
     private final String LOG_TAG = getClass().getSimpleName();
     private final Context mContext;
     private Cursor mCursor;
+    private FriendsAdapterOnClickHandler mClickHanlder;
 
-    public FriendsAdapter(Context context){
+    public FriendsAdapter(Context context, FriendsAdapterOnClickHandler dh){
         Log.i(LOG_TAG, "Contructor");
         mContext = context;
+        mClickHanlder = dh;
     }
 
     @Override
@@ -62,6 +64,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.UserView
         holder.mUserEmailTextView.setText(userEmail);
     }
 
+
     @Override
     public int getItemCount() {
         if(mCursor == null){
@@ -73,16 +76,30 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.UserView
         }
     }
 
-    public class UserViewHolder extends RecyclerView.ViewHolder {
+    public static interface FriendsAdapterOnClickHandler{
+        void onClick(String friendID);
+    }
+
+
+    public class UserViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         @BindView(R.id.friend_viewholder_username) TextView mNameTextView;
         @BindView(R.id.friend_viewholder_useremail) TextView mUserEmailTextView;
+
 
 
         public UserViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this,itemView);
 
+        }
+
+        @Override
+        public void onClick(View v) {
+            int position = getAdapterPosition();
+            mCursor.moveToPosition(position);
+            String friendID = mCursor.getString(mCursor.getColumnIndex(UserColumns.FIREBASE_ID));
+            mClickHanlder.onClick(friendID);
         }
     }
 

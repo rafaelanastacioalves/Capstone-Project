@@ -105,4 +105,10 @@ public class Utility {
                 null);
     }
 
+    public static void getOrCreateFirebaseRoomIdWithUserID(String string) {
+        String signedUserID = getFirebaseAuthUser().getUid();
+        //TODO get room id based on the two users ID. Create a rule to identify those rooms
+
+
+    }
 }

@@ -64,7 +64,13 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
 
         userList.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        mAdapter = new FriendsAdapter(getActivity());
+        mAdapter = new FriendsAdapter(getActivity(), new FriendsAdapter.FriendsAdapterOnClickHandler(){
+
+            @Override
+            public void onClick(String userID) {
+                Utility.getOrCreateFirebaseRoomIdWithUserID(userID);
+            }
+        });
 
         Log.i(LOG_TAG, "setting adapter");
         userList.setAdapter(mAdapter);
