@@ -2,9 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.speko.android">
-    <uses-permission android:name="android.permission.INTERNET"/>
 
-    <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
 
     <!-- Permissions required by the sync adapter -->
     <uses-permission android:name="android.permission.READ_SYNC_SETTINGS" />
@@ -17,33 +17,26 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <activity
-
+            android:name=".HomeActivity"
             android:parentActivityName=".LoginActivity"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustPan"
-            
-            android:name=".HomeActivity">
+            android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
-
-        <activity android:name=".LoginActivity">
-            
-        </activity>
-
-
-        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_application_id"/>
+        <activity android:name=".LoginActivity"></activity>
 
         <meta-data
-            tools:replace="android:value"
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_application_id" />
+        <meta-data
             android:name="io.fabric.ApiKey"
-            android:value="b26c0f1b3cd4804fbb2f3ac24780fe6fd7253306" />
+            android:value="b26c0f1b3cd4804fbb2f3ac24780fe6fd7253306"
+            tools:replace="android:value" />
 
         <!-- The SyncAdapter service -->
         <service
@@ -55,36 +48,37 @@
             <intent-filter>
                 <action android:name="android.accounts.AccountAuthenticator" />
             </intent-filter>
+
             <meta-data
                 android:name="android.content.SyncAdapter"
                 android:resource="@xml/syncadapter" />
-
         </service>
-
-
-
-
-
-
-
 
         <!-- SyncAdapter's dummy authentication service -->
         <service android:name=".sync.SpekoAuthenticatorService">
-        <intent-filter>
-            <action android:name="android.accounts.AccountAuthenticator" />
-        </intent-filter>
+            <intent-filter>
+                <action android:name="android.accounts.AccountAuthenticator" />
+            </intent-filter>
+
             <meta-data
                 android:name="android.accounts.AccountAuthenticator"
                 android:resource="@xml/authenticator" />
         </service>
 
-
         <provider
-            android:authorities="com.speko.android.data"
             android:name=".data.generated.UsersProvider"
-            android:exported="false"
-             />
+            android:authorities="com.speko.android.data"
+            android:exported="false" />
 
+        <activity
+            android:name=".ChatActivity"
+            android:label="@string/title_activity_chat"
+            android:parentActivityName=".HomeActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.speko.android.HomeActivity" />
+        </activity>
     </application>
 
 </manifest>
