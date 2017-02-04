@@ -40,10 +40,15 @@ public class LoginActivity extends AppCompatActivity implements FillNewUserDataF
 
         Fabric.with(this, new Crashlytics());
         Log.d(LOG_TAG,"onCreate");
-        firebaseDatabase = FirebaseDatabase.getInstance();
 
-        //supposing its first usage is here. Must be first use!
-        firebaseDatabase.setLogLevel(Logger.Level.DEBUG);
+        if (firebaseDatabase == null){
+            firebaseDatabase = FirebaseDatabase.getInstance();
+
+            //supposing its first usage is here. Must be first use!
+            firebaseDatabase.setLogLevel(Logger.Level.DEBUG);
+            
+
+        }
 
         auth = FirebaseAuth.getInstance();
         if (auth.getCurrentUser() != null) {
