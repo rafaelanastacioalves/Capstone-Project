@@ -83,6 +83,8 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
                 Log.i(LOG_TAG, "onAuthStateChanged");
                 FirebaseUser user = firebaseAuth.getCurrentUser();
                 if (user != null) {
+                    Log.i(LOG_TAG, "user logged in");
+
                     // User is signed in
                     //TODO implement this
 
@@ -91,6 +93,8 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
 
 
                 } else {
+                    Log.i(LOG_TAG, "user logged out");
+
                     // User is signed out
                     //TODO implement this
                     Intent i = new Intent(getApplicationContext(), LoginActivity.class);
