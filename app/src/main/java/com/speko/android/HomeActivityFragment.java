@@ -1,5 +1,6 @@
 package com.speko.android;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -72,7 +73,10 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
 
             @Override
             public void onClick(String userID) {
+                Log.d(LOG_TAG,"onClick");
                 Utility.getOrCreateFirebaseRoomIdWithUserID(userID);
+                Intent i = new Intent(getActivity(), ChatActivity.class);
+                startActivity(i);
             }
         });
 

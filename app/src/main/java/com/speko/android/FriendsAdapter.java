@@ -91,6 +91,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.UserView
         public UserViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this,itemView);
+            itemView.setOnClickListener(this);
 
         }
 
