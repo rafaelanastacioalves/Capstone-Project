@@ -1,5 +1,6 @@
 package com.speko.android.retrofit;
 
+import com.speko.android.data.Chat;
 import com.speko.android.data.Friend;
 import com.speko.android.data.User;
 
@@ -41,4 +42,9 @@ public interface FirebaseClient {
             @Query("auth") String token,
             @Query("orderBy") String orderByKey,
             @Query("equalTo") String equalToKey);
+    @GET("chats/.json")
+    Call<HashMap<String,Chat>> getChatsListWith(
+            @Query("auth") String token,
+            @Query("orderBy") String orderByKey,
+            @Query("equalTo") Boolean equalToKey);
 }

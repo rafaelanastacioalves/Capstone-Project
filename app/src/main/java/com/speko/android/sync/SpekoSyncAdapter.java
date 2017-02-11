@@ -17,6 +17,8 @@ import android.util.Log;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 import com.speko.android.R;
+import com.speko.android.data.Chat;
+import com.speko.android.data.ChatMembersColumns;
 import com.speko.android.data.User;
 import com.speko.android.data.UserColumns;
 import com.speko.android.retrofit.AccessToken;
@@ -33,6 +35,7 @@ import static android.content.Context.ACCOUNT_SERVICE;
 import static com.speko.android.data.UserColumns.FIREBASE_ID;
 import static com.speko.android.data.UserContract.ACCOUNT_TYPE;
 import static com.speko.android.data.UserContract.AUTHORITY;
+import static com.speko.android.data.UsersProvider.ChatMembers.CHAT_URI;
 import static com.speko.android.data.UsersProvider.Users.USER_URI;
 import static com.speko.android.sync.SpekoAuthenticator.ACCOUNT;
 
@@ -74,6 +77,7 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
         if (userToken != null) {
             User user = getUser(userToken);
             persistUser(user);
+            persistChatListFrom(user);
 
             HashMap<String, User> userFriends = null;
             try {
@@ -88,12 +92,60 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
             }
 
 
+
+
+
+
         } else {
             Log.w(LOG_TAG, "userToken not setted!");
         }
 
 
     }
+
+    private void persistChatListFrom(User user) {
+        Log.i(LOG_TAG,"persistChatListFrom");
+        int count = 0;
+        Chat[] chastList = user.getChats().values().toArray(new Chat[user.getChats().size()]);
+        for (Chat chat :
+                chastList) {
+            ContentValues chatCV = new ContentValues();
+            chatCV.put(ChatMembersColumns.FIREBASE_CHAT_ID, chat.getChatId());
+            String[] chatMembersList = chat.getMembers().keySet().toArray(
+                    new String[chat.getMembers().keySet().size()]
+            );
+            for (String member_id : chatMembersList){
+                if (member_id != user.getId()){
+                    chatCV.put(ChatMembersColumns.OTHER_MEMBER_ID, member_id);
+
+                }
+            }
+
+            try {
+
+                Log.d(LOG_TAG, "trying to insert a row...");
+                //noinspection UnusedAssignment
+                Uri rowNumber = getContext().getContentResolver().insert(CHAT_URI, chatCV);
+                Log.d(LOG_TAG, "inserted ok! Count: " + (count + 1));
+
+            } catch (Exception e) {
+                Log.e(LOG_TAG, "Insert not possible:" + e.getCause());
+                Log.d(LOG_TAG, "Trying to update");
+                Log.d(LOG_TAG, "Values: " + chat.getChatId() + " "
+                        + chat.getMembers());
+                int rows = getContext().getContentResolver().update(CHAT_URI, chatCV,
+                        ChatMembersColumns.FIREBASE_CHAT_ID + " = ?", new String[]{chat.getChatId()});
+                if (rows > 0) {
+                    Log.i(LOG_TAG, "updated successfuly. Count: " + (count + 1));
+                }
+            }
+
+        }
+
+
+
+    }
+
 
     private void persistFriends(User[] userFriends) {
 

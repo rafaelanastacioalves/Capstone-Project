@@ -20,8 +20,10 @@ public class UsersDatabase {
 
     public static final int VERSION = 1;
 
-    @Table(UserColumns.class) @IfNotExists public static final String USERS_TABLE = "users";
-
+    @Table(UserColumns.class) @IfNotExists
+    public static final String USERS_TABLE = "users";
+    @Table(ChatMembersColumns.class) @IfNotExists
+    public static final String CHAT_MEMBERS_TABLE = "chat_members";
     @OnCreate
     public static void onCreate(SQLiteDatabase db) {
         Log.i("UsersDatabase", "onCreate" );

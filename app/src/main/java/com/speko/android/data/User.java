@@ -1,5 +1,7 @@
 package com.speko.android.data;
 
+import java.util.HashMap;
+
 /**
  * Created by rafaelanastacioalves on 12/26/16.
  */
@@ -13,6 +15,7 @@ public class User {
     private String fluentLanguage;
     private String learningLanguage;
     private String learningCode;
+    private HashMap<String,Chat> chats;
 
     public User(){
     }
@@ -82,5 +85,13 @@ public class User {
 
     public void setLearningCode(String learningCode) {
         this.learningCode = learningCode;
+    }
+
+    public HashMap<String, Chat> getChats() {
+        return chats;
+    }
+
+    public void setChats(HashMap<String, Chat> chats) {
+        this.chats = chats;
     }
 }

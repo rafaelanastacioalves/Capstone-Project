@@ -13,18 +13,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/log_out"
-        android:name="@string/log_out"/>
+        android:text="@string/log_out"/>
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/sync_button"
-        android:name="@string/sync_button"/>
+        android:text="@string/sync_button"/>
 
     <TextView
         android:layout_margin="@dimen/activity_vertical_margin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:name="@string/friends_that_can_help_you"/>
+        android:text="@string/friends_that_can_help_you"/>
 
 
 

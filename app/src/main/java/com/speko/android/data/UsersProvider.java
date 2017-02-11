@@ -29,6 +29,8 @@ public final class UsersProvider {
     interface Path{
         String USER = "user";
         String FRIENDS = "friends";
+        String CHAT_MEMBERS = "chat_members";
+        String OTHER_MEMBER = "other_member";
 
     }
 
@@ -56,6 +58,23 @@ public final class UsersProvider {
             return buildUri(Path.USER,Path.FRIENDS, firebaseUserId);
         }
     }
+
+    @TableEndpoint(table = UsersDatabase.CHAT_MEMBERS_TABLE) public static class ChatMembers {
+            @ContentUri(
+                    path = Path.CHAT_MEMBERS,
+                    type = "vnd.android.cursor.item/chat_members")
+            public static final Uri CHAT_URI = buildUri(Path.CHAT_MEMBERS);
+            @InexactContentUri(
+                    name = "FRIENDS_LIST",
+                    path = Path.CHAT_MEMBERS+ "/" + Path.OTHER_MEMBER + "/*",
+                    type = "vnd.android.cursor.item/chat",
+                    whereColumn = ChatMembersColumns.OTHER_MEMBER_ID,
+                    pathSegment = 2
+            )
+            public static final Uri chatInfoWithUser(String firebaseUserId){
+                return buildUri(Path.CHAT_MEMBERS,Path.OTHER_MEMBER, firebaseUserId);
+            }
+        }
 
     @OnCreate
     public static void onCreate() {
