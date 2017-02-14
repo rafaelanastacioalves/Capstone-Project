@@ -2,8 +2,10 @@ package com.speko.android;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,6 +30,7 @@ import butterknife.OnClick;
  */
 public class ChatActivityFragment extends Fragment {
 
+    public static final String CHAT_ID = "CHAT_ID";
     private final String LOG_TAG = getClass().getSimpleName();
     private DatabaseReference mFirebaseDatabaseReference;
     private ChildEventListener mFirebaseListener;
@@ -52,6 +55,10 @@ public class ChatActivityFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_chat, container, false);
 
         ButterKnife.bind(this,v);
+
+        Bundle arguments = getArguments();
+
+
 
         chatRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
@@ -78,6 +85,14 @@ public class ChatActivityFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+
+        AppCompatActivity activity = (AppCompatActivity) getActivity();
+        Toolbar toolbar = (Toolbar)activity.findViewById(R.id.toolbar);
+        activity.setSupportActionBar(toolbar);
+        activity.getSupportActionBar().setDisplayShowTitleEnabled(true);
+        activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+
 
         if(chatListAdapter == null){
             chatListAdapter = new ChatListAdapter(getActivity());
