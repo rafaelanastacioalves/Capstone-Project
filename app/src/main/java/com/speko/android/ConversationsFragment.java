@@ -1,21 +1,24 @@
 package com.speko.android;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 /**
  * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link ConversationsFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
  * Use the {@link ConversationsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
@@ -24,7 +27,12 @@ public class ConversationsFragment extends Fragment implements LoaderManager.Loa
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String USER_ID = "param1";
     private static final int CONVERSATIONS_LOADER = 2;
+    private ConversationsListAdapter mAdapter;
     private final String LOG_TAG = getClass().getSimpleName();
+
+    @BindView(R.id.conversations_list)
+    RecyclerView conversationsList;
+
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -69,8 +77,28 @@ public class ConversationsFragment extends Fragment implements LoaderManager.Loa
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.i(LOG_TAG, "onCreateView");
+
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_conversations, container, false);
+        View view = inflater.inflate(R.layout.fragment_conversations,container,false);
+        ButterKnife.bind(this,view);
+
+        conversationsList.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        mAdapter = new ConversationsListAdapter(getActivity(), new ConversationsListAdapter.ConversationsAdapterOnClickHandler() {
+            @Override
+            public void onClick(String friendID) {
+                Log.d(LOG_TAG,"onClick");
+                Utility.getOrCreateFirebaseRoomIdWithUserID(friendID);
+                Intent i = new Intent(getActivity(), ChatActivity.class);
+                startActivity(i);
+            }
+        });
+
+        Log.i(LOG_TAG, "setting adapter");
+        conversationsList.setAdapter(mAdapter);
+
+        return view;
     }
 
 
@@ -91,11 +119,12 @@ public class ConversationsFragment extends Fragment implements LoaderManager.Loa
     @Override
     public void onLoadFinished(Loader loader, Cursor data) {
         Log.i(LOG_TAG, "onLoaderFinished with total data: " + data.getCount());
-//        mAdapter.swapCursor(data);
+        mAdapter.swapCursor(data);
     }
 
     @Override
     public void onLoaderReset(Loader loader) {
-
+        Log.i(LOG_TAG,"onLoaderReset");
+        mAdapter.swapCursor(null);
     }
 }

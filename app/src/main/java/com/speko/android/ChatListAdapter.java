@@ -20,7 +20,7 @@ import butterknife.ButterKnife;
  * Created by rafaelalves on 21/01/17.
  */
 
-public class MessagesListAdapter extends RecyclerView.Adapter<MessagesListAdapter.UserViewHolder>  {
+public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.UserViewHolder>  {
 
 
     private final String LOG_TAG = getClass().getSimpleName();
@@ -28,7 +28,7 @@ public class MessagesListAdapter extends RecyclerView.Adapter<MessagesListAdapte
     private List<Message> mMessageList;
     private FriendsAdapterOnClickHandler mClickHanlder;
 
-    public MessagesListAdapter(Context context, FriendsAdapterOnClickHandler dh){
+    public ChatListAdapter(Context context, FriendsAdapterOnClickHandler dh){
         this(context);
         Log.i(LOG_TAG, "Constructor");
         mClickHanlder = dh;
@@ -36,7 +36,7 @@ public class MessagesListAdapter extends RecyclerView.Adapter<MessagesListAdapte
 
 
     }
-    public MessagesListAdapter(Context context){
+    public ChatListAdapter(Context context){
         if(mMessageList == null){
             mMessageList = new ArrayList<>();
 

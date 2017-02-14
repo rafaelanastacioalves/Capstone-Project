@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.speko.android.data.ChatMembersColumns;
 import com.speko.android.data.UserColumns;
 
 import butterknife.BindView;
@@ -18,15 +19,15 @@ import butterknife.ButterKnife;
  * Created by rafaelalves on 21/01/17.
  */
 
-public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.UserChatViewHolder>  {
+public class ConversationsListAdapter extends RecyclerView.Adapter<ConversationsListAdapter.UserChatViewHolder>  {
 
 
     private final String LOG_TAG = getClass().getSimpleName();
     private final Context mContext;
     private Cursor mCursor;
-    private FriendsAdapterOnClickHandler mClickHanlder;
+    private ConversationsAdapterOnClickHandler mClickHanlder;
 
-    public ChatsListAdapter(Context context, FriendsAdapterOnClickHandler dh){
+    public ConversationsListAdapter(Context context, ConversationsAdapterOnClickHandler dh){
         Log.i(LOG_TAG, "Contructor");
         mContext = context;
         mClickHanlder = dh;
@@ -35,7 +36,7 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.User
     @Override
     public UserChatViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Log.i(LOG_TAG, "OnCreateViewHolder");
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.friend_viewholder,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_viewholder,parent,false);
         return new UserChatViewHolder(view);
     }
 
@@ -50,18 +51,12 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.User
 
         Log.i(LOG_TAG, "onBindViewHolder");
         String userName = mCursor.getString(
-                mCursor.getColumnIndex(UserColumns.NAME)
+                mCursor.getColumnIndex(ChatMembersColumns.OTHER_MEMBER_NAME)
         );
-        Log.i(LOG_TAG, "Name: " + userName);
-        String userEmail = mCursor.getString(
-                mCursor.getColumnIndex(UserColumns.EMAIL)
-        );
-        Log.i(LOG_TAG, "Email: " + userEmail);
 
 
 
         holder.mNameTextView.setText(userName);
-        holder.mUserEmailTextView.setText(userEmail);
     }
 
 
@@ -76,15 +71,14 @@ public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.User
         }
     }
 
-    public static interface FriendsAdapterOnClickHandler{
+    public static interface ConversationsAdapterOnClickHandler {
         void onClick(String friendID);
     }
 
 
     public class UserChatViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        @BindView(R.id.friend_viewholder_username) TextView mNameTextView;
-        @BindView(R.id.friend_viewholder_useremail) TextView mUserEmailTextView;
+        @BindView(R.id.chat_friend_viewholder_username) TextView mNameTextView;
 
 
 
