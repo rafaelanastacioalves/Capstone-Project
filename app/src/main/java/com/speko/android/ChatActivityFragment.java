@@ -31,7 +31,7 @@ public class ChatActivityFragment extends Fragment {
     private final String LOG_TAG = getClass().getSimpleName();
     private DatabaseReference mFirebaseDatabaseReference;
     private ChildEventListener mFirebaseListener;
-    private ChatAdapter chatAdapter;
+    private MessagesListAdapter messagesListAdapter;
 
     public ChatActivityFragment() {
     }
@@ -79,9 +79,9 @@ public class ChatActivityFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
-        if(chatAdapter == null){
-            chatAdapter = new ChatAdapter(getActivity());
-            chatRecyclerView.setAdapter(chatAdapter);
+        if(messagesListAdapter == null){
+            messagesListAdapter = new MessagesListAdapter(getActivity());
+            chatRecyclerView.setAdapter(messagesListAdapter);
 
         }
         attachDatabaseReadListener();
@@ -122,7 +122,7 @@ public class ChatActivityFragment extends Fragment {
                     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                         Log.i(LOG_TAG, "onChildAdded");
                         Message m = dataSnapshot.getValue(Message.class);
-                        chatAdapter.add(m);
+                        messagesListAdapter.add(m);
                     }
 
                     @Override

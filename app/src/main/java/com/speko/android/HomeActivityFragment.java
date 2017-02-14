@@ -46,7 +46,7 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
     private static final int FRIENDS_LOADER = 1;
     private FirebaseDatabase firebaseDatabase;
     private FirebaseUser authUser;
-    private FriendsAdapter mAdapter;
+    private FriendsListAdapter mAdapter;
     private ChildEventListener userListListener;
     private Query mUserQueryByEmail;
 
@@ -69,7 +69,7 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
 
         userList.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        mAdapter = new FriendsAdapter(getActivity(), new FriendsAdapter.FriendsAdapterOnClickHandler(){
+        mAdapter = new FriendsListAdapter(getActivity(), new FriendsListAdapter.FriendsAdapterOnClickHandler(){
 
             @Override
             public void onClick(String userID) {

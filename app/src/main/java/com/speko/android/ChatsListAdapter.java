@@ -18,7 +18,7 @@ import butterknife.ButterKnife;
  * Created by rafaelalves on 21/01/17.
  */
 
-public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.UserViewHolder>  {
+public class ChatsListAdapter extends RecyclerView.Adapter<ChatsListAdapter.UserChatViewHolder>  {
 
 
     private final String LOG_TAG = getClass().getSimpleName();
@@ -26,17 +26,17 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.UserView
     private Cursor mCursor;
     private FriendsAdapterOnClickHandler mClickHanlder;
 
-    public FriendsAdapter(Context context, FriendsAdapterOnClickHandler dh){
+    public ChatsListAdapter(Context context, FriendsAdapterOnClickHandler dh){
         Log.i(LOG_TAG, "Contructor");
         mContext = context;
         mClickHanlder = dh;
     }
 
     @Override
-    public UserViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public UserChatViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Log.i(LOG_TAG, "OnCreateViewHolder");
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.friend_viewholder,parent,false);
-        return new UserViewHolder(view);
+        return new UserChatViewHolder(view);
     }
 
     public void swapCursor(Cursor c){
@@ -45,7 +45,7 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.UserView
     }
 
     @Override
-    public void onBindViewHolder(UserViewHolder holder, int position) {
+    public void onBindViewHolder(UserChatViewHolder holder, int position) {
         mCursor.moveToPosition(position);
 
         Log.i(LOG_TAG, "onBindViewHolder");
@@ -81,14 +81,14 @@ public class FriendsAdapter extends RecyclerView.Adapter<FriendsAdapter.UserView
     }
 
 
-    public class UserViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class UserChatViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         @BindView(R.id.friend_viewholder_username) TextView mNameTextView;
         @BindView(R.id.friend_viewholder_useremail) TextView mUserEmailTextView;
 
 
 
-        public UserViewHolder(View itemView) {
+        public UserChatViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this,itemView);
             itemView.setOnClickListener(this);

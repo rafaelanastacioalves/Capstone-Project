@@ -1,9 +1,12 @@
 package com.speko.android;
 
 import android.content.Context;
-import android.net.Uri;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,11 +19,12 @@ import android.view.ViewGroup;
  * Use the {@link ConversationsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ConversationsFragment extends Fragment {
+public class ConversationsFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private static final String USER_ID = "param1";
+    private static final int CONVERSATIONS_LOADER = 2;
+    private final String LOG_TAG = getClass().getSimpleName();
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -36,15 +40,13 @@ public class ConversationsFragment extends Fragment {
      * this fragment using the provided parameters.
      *
      * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
      * @return A new instance of fragment ConversationsFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static ConversationsFragment newInstance(String param1, String param2) {
+    public static ConversationsFragment newInstance(String param1) {
         ConversationsFragment fragment = new ConversationsFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putString(USER_ID, param1);
         fragment.setArguments(args);
         return fragment;
     }
@@ -53,9 +55,15 @@ public class ConversationsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            mParam1 = getArguments().getString(USER_ID);
         }
+    }
+
+    @Override
+    public void onStart() {
+        Log.i(LOG_TAG,"Initloader");
+        getLoaderManager().initLoader(CONVERSATIONS_LOADER, null, this);
+        super.onStart();
     }
 
     @Override
@@ -74,4 +82,20 @@ public class ConversationsFragment extends Fragment {
     }
 
 
+    @Override
+    public Loader onCreateLoader(int id, Bundle args) {
+        Log.i(LOG_TAG,"onCreateLoader");
+        return Utility.getUserConversationsCursorLoader(getContext());
+    }
+
+    @Override
+    public void onLoadFinished(Loader loader, Cursor data) {
+        Log.i(LOG_TAG, "onLoaderFinished with total data: " + data.getCount());
+//        mAdapter.swapCursor(data);
+    }
+
+    @Override
+    public void onLoaderReset(Loader loader) {
+
+    }
 }

@@ -79,6 +79,7 @@ public class Utility {
     }
 
     public static CursorLoader getUserFriendsCursorLoader(Context context){
+        //TODO remove this part, as we already have have "getFirebaseAuthUser"
          if (authUser==null){
              authUser = getFirebaseAuthUser();
          }
@@ -90,7 +91,8 @@ public class Utility {
     }
 
     private static FirebaseUser getFirebaseAuthUser() {
-        return FirebaseAuth.getInstance().getCurrentUser();
+        authUser = FirebaseAuth.getInstance().getCurrentUser();
+        return authUser;
     }
 
     public static Loader<Cursor> getUserCursorLoader(Context context) {
@@ -111,4 +113,12 @@ public class Utility {
 
 
     }
+
+    public static Loader getUserConversationsCursorLoader(Context context) {
+        return new CursorLoader(context, UsersProvider.ChatMembers.CHAT_URI
+                ,
+                null,
+                null,
+                null,
+                null);    }
 }

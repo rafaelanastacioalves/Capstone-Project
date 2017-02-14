@@ -16,7 +16,10 @@ public interface ChatMembersColumns {
     String FIREBASE_CHAT_ID = "firebase_chat_id";
 
     @DataType(TEXT)
-    String OTHER_MEMBER_ID = "other_member";
+    String OTHER_MEMBER_ID = "other_member_id";
+
+    @DataType(TEXT)
+    String OTHER_MEMBER_NAME = "other_member_name";
 
 
 

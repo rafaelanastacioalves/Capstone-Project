@@ -111,12 +111,13 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
                 chastList) {
             ContentValues chatCV = new ContentValues();
             chatCV.put(ChatMembersColumns.FIREBASE_CHAT_ID, chat.getChatId());
-            String[] chatMembersList = chat.getMembers().keySet().toArray(
-                    new String[chat.getMembers().keySet().size()]
+            User[] chatMembersList = chat.getMembers().values().toArray(
+                    new User[chat.getMembers().values().size()]
             );
-            for (String member_id : chatMembersList){
-                if (member_id != user.getId()){
-                    chatCV.put(ChatMembersColumns.OTHER_MEMBER_ID, member_id);
+            for (User other_user : chatMembersList){
+                if (other_user.getId() != user.getId()){
+                    chatCV.put(ChatMembersColumns.OTHER_MEMBER_ID, other_user.getId());
+                    chatCV.put(ChatMembersColumns.OTHER_MEMBER_NAME, other_user.getName());
 
                 }
             }

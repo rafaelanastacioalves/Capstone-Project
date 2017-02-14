@@ -143,7 +143,7 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
                 break;
             case R.id.action_conversations:
                 Log.i(LOG_TAG, "Selecting Conversations");
-                frag = new ConversationsFragment();
+                frag = ConversationsFragment.newInstance(Utility.getUser(this).getId());
                 break;
         }
 
