@@ -9,6 +9,7 @@ import android.support.v4.content.Loader;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
+import com.speko.android.data.ChatMembersColumns;
 import com.speko.android.data.User;
 import com.speko.android.data.UserColumns;
 import com.speko.android.data.UsersProvider;
@@ -107,10 +108,21 @@ public class Utility {
                 null);
     }
 
-    public static void getOrCreateFirebaseRoomIdWithUserID(String string) {
-        String signedUserID = getFirebaseAuthUser().getUid();
-        //TODO get room id based on the two users ID. Create a rule to identify those rooms
 
+    public static String getFirebaseRoomIdWithUserID(String otherUserId, Context context) {
+        String chatIdWithOtherUser = null;
+        Cursor c = context.getContentResolver().
+                query(UsersProvider.ChatMembers.chatInfoWithUser(otherUserId),
+                        null, null, null, null);
+        if (c.moveToFirst()){
+            chatIdWithOtherUser = c.getString(
+                    c.getColumnIndex(ChatMembersColumns.FIREBASE_CHAT_ID));
+        }
+
+        return chatIdWithOtherUser;
+    }
+
+    private static void createChatRoomForUsers(String id, String otherUserId) {
 
     }
 
@@ -121,4 +133,9 @@ public class Utility {
                 null,
                 null,
                 null);    }
+
+    public static void createRoomForUsers(String friendId, String id) {
+        //TODO
+        return ;
+    }
 }
