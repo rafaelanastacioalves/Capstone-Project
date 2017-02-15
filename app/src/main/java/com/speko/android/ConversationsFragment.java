@@ -89,8 +89,10 @@ public class ConversationsFragment extends Fragment implements LoaderManager.Loa
             @Override
             public void onClick(String friendID) {
                 Log.d(LOG_TAG,"onClick");
-                Utility.getOrCreateFirebaseRoomIdWithUserID(friendID);
+                String chatId = Utility.getFirebaseRoomIdWithUserID(friendID, getActivity());
                 Intent i = new Intent(getActivity(), ChatActivity.class);
+                i.putExtra(ChatActivityFragment.CHAT_ID, chatId);
+                i.putExtra(ChatActivityFragment.FRIEND_ID, friendID);
                 startActivity(i);
             }
         });

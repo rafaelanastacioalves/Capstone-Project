@@ -30,11 +30,17 @@ import butterknife.OnClick;
  */
 public class ChatActivityFragment extends Fragment {
 
-    public static final String CHAT_ID = "CHAT_ID";
+
     private final String LOG_TAG = getClass().getSimpleName();
     private DatabaseReference mFirebaseDatabaseReference;
     private ChildEventListener mFirebaseListener;
     private ChatListAdapter chatListAdapter;
+
+    public static final String CHAT_ID = "CHAT_ID";
+    public static final String FRIEND_ID = "FRIEND_ID";
+
+    private String chatId;
+    private String friendId;
 
     public ChatActivityFragment() {
     }
@@ -57,6 +63,9 @@ public class ChatActivityFragment extends Fragment {
         ButterKnife.bind(this,v);
 
         Bundle arguments = getArguments();
+        chatId = arguments.getString(ChatActivityFragment.CHAT_ID);
+        friendId = arguments.getString(ChatActivityFragment.FRIEND_ID);
+
 
 
 
@@ -112,11 +121,17 @@ public class ChatActivityFragment extends Fragment {
     @OnClick(R.id.chat_send_button)
     public void SendMessage(View v){
 
+        if(chatId == null && chatListAdapter.getItemCount() < 1) {
+            Utility.createRoomForUsers(friendId, Utility.getUser(getActivity()).getId());
+        }
+
         User user = Utility.getUser(getActivity());
         Message newMessage = new Message();
         newMessage.setText(String.valueOf(chatTextInput.getText()));
         newMessage.setName(user.getName());
         newMessage.setSenderId(user.getId());
+
+
 
         addMessageToFirebase(newMessage);
 

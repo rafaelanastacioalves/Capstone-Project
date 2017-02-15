@@ -72,10 +72,11 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
         mAdapter = new FriendsListAdapter(getActivity(), new FriendsListAdapter.FriendsAdapterOnClickHandler(){
 
             @Override
-            public void onClick(String userID) {
+            public void onClick(String friendUserID) {
                 Log.d(LOG_TAG,"onClick");
-                Utility.getOrCreateFirebaseRoomIdWithUserID(userID);
+                String chatId =  Utility.getFirebaseRoomIdWithUserID(friendUserID, getActivity());
                 Intent i = new Intent(getActivity(), ChatActivity.class);
+                i.putExtra(ChatActivityFragment.CHAT_ID, chatId);
                 startActivity(i);
             }
         });
