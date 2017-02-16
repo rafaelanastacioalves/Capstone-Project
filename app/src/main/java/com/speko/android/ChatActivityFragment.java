@@ -71,12 +71,14 @@ public class ChatActivityFragment extends Fragment {
 
         chatRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
+        if(chatId != null){
+            mFirebaseDatabaseReference = FirebaseDatabase.getInstance()
+                    .getReference()
+                    .child("chats")
+                    .child(chatId)
+                    .child("messages");
+        }
 
-        mFirebaseDatabaseReference = FirebaseDatabase.getInstance()
-                .getReference()
-                .child("chats")
-                .child("ID_1")
-                .child("messages");
 
 
         return v;
