@@ -164,7 +164,7 @@ public class Utility {
                 null,
                 null);    }
 
-    public static void createRoomForUsers(Context context, String friendId, String userID) {
+    public static String createRoomForUsers(Context context, String friendId, String userID) {
         //TODO
         Chat chat = new Chat();
         HashMap<String, User> members = new HashMap<>();
@@ -204,5 +204,6 @@ public class Utility {
                 .child(user.getId())
                 .child("chats")
                 .updateChildren((Map) chatHashMap);
+        return chatId;
     }
 }

@@ -72,16 +72,27 @@ public class ChatActivityFragment extends Fragment {
         chatRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         if(chatId != null){
-            mFirebaseDatabaseReference = FirebaseDatabase.getInstance()
-                    .getReference()
-                    .child("chats")
-                    .child(chatId)
-                    .child("messages");
+            setupFirebaseChat(chatId);
         }
 
 
 
         return v;
+    }
+
+    private void setupFirebaseChat(String chatId) {
+        mFirebaseDatabaseReference = FirebaseDatabase.getInstance()
+                .getReference()
+                .child("chats")
+                .child(chatId)
+                .child("messages");
+
+        // if it is null, chatId is not set and we need to set it properly and attach call
+        // the following method again
+        if (mFirebaseDatabaseReference != null){
+            attachDatabaseReadListener();
+
+        }
     }
 
     @Override
@@ -104,17 +115,15 @@ public class ChatActivityFragment extends Fragment {
         activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
+        setupChatListAdapter();
 
+
+    }
+
+    private void setupChatListAdapter() {
         if(chatListAdapter == null){
             chatListAdapter = new ChatListAdapter(getActivity());
             chatRecyclerView.setAdapter(chatListAdapter);
-
-        }
-
-        // if it is null, chatId is not set and we need to set it properly and attach call
-        // the following method again
-        if (mFirebaseDatabaseReference != null){
-            attachDatabaseReadListener();
 
         }
     }
@@ -124,13 +133,17 @@ public class ChatActivityFragment extends Fragment {
             mFirebaseDatabaseReference.removeEventListener(mFirebaseListener);
             mFirebaseListener = null;
         }
+
+
     }
 
     @OnClick(R.id.chat_send_button)
     public void SendMessage(View v){
 
         if(chatId == null && chatListAdapter.getItemCount() < 1) {
-            Utility.createRoomForUsers(getActivity(),friendId, Utility.getUser(getActivity()).getId());
+            String chatId = Utility.createRoomForUsers(getActivity(),friendId, Utility.getUser(getActivity()).getId());
+            setupFirebaseChat(chatId);
+            setupChatListAdapter();
         }
 
         User user = Utility.getUser(getActivity());
@@ -147,7 +160,7 @@ public class ChatActivityFragment extends Fragment {
     }
 
     private void addMessageToFirebase(Message m) {
-//        mFirebaseDatabaseReference.push().setValue(m);
+        mFirebaseDatabaseReference.push().setValue(m);
     }
 
 
