@@ -17,6 +17,7 @@ import com.speko.android.data.UserColumns;
 import com.speko.android.data.UsersProvider;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by rafaelalves on 31/01/17.
@@ -167,27 +168,41 @@ public class Utility {
         //TODO
         Chat chat = new Chat();
         HashMap<String, User> members = new HashMap<>();
-        User userFriend = getUserFriendFromDB(context,friendId);
-        Log.i("createRoomForUSers","Creating chat with \n" + userFriend +
-        "\n id: " + userFriend.getId());
+        User userFriend = getUserFriendFromDB(context, friendId);
+        Log.i("createRoomForUSers", "Creating chat with \n" + userFriend +
+                "\n id: " + userFriend.getId());
 
-        members.put(userFriend.getId(), new User(userFriend.getName(),userFriend.getId()));
+        members.put(userFriend.getId(), new User(userFriend.getName(), userFriend.getId()));
         User user = getUser(context);
 
-        Log.i("createRoomForUSers","Creating chat with \n" + user +
+        Log.i("createRoomForUSers", "Creating chat with \n" + user +
                 "\n id: " + user.getId());
 
 
         members.put(user.getId(), new User(user.getId(), user.getName()));
 
         chat.setMembers(members);
-        if (firebaseDatabase == null){
+        if (firebaseDatabase == null) {
             firebaseDatabase = FirebaseDatabase.getInstance();
         }
-        Log.i("createRoomForUSers","Creating chat with \n" + chat.getMembers());
-        firebaseDatabase.getReference()
+        Log.i("createRoomForUSers", "Creating chat with \n" + chat.getMembers());
+        String chatId = firebaseDatabase.getReference()
                 .child("chats")
                 .push()
-                .setValue(chat);
+                .getKey();
+
+        chat.setChatId(chatId);
+
+        HashMap<String, Chat> chatHashMap = new HashMap<String, Chat>();
+        chatHashMap.put(chatId, chat);
+        firebaseDatabase.getReference()
+                .child("chats")
+                .updateChildren((Map) chatHashMap);
+
+        firebaseDatabase.getReference()
+                .child("users")
+                .child(user.getId())
+                .child("chats")
+                .updateChildren((Map) chatHashMap);
     }
 }
