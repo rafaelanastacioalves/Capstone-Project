@@ -54,8 +54,20 @@ public final class UsersProvider {
                 whereColumn = UserColumns.FRIEND_OF,
                 pathSegment = 2
         )
-        public static final Uri usersFrom(String firebaseUserId){
+        public static final Uri usersFriendsFrom(String firebaseUserId){
             return buildUri(Path.USER,Path.FRIENDS, firebaseUserId);
+        }
+
+        @InexactContentUri(
+                name = "FRIEND",
+                path = Path.USER + "/*",
+                type = "vnd.android.cursor.item/user",
+                whereColumn = UserColumns.FIREBASE_ID,
+                pathSegment = 1
+
+        )
+        public static final Uri userWith(String firebaseId){
+            return buildUri(Path.USER, firebaseId);
         }
     }
 

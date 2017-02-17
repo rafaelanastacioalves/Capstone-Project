@@ -110,7 +110,13 @@ public class ChatActivityFragment extends Fragment {
             chatRecyclerView.setAdapter(chatListAdapter);
 
         }
-        attachDatabaseReadListener();
+
+        // if it is null, chatId is not set and we need to set it properly and attach call
+        // the following method again
+        if (mFirebaseDatabaseReference != null){
+            attachDatabaseReadListener();
+
+        }
     }
 
     private void detachDatabaseReadListener() {
@@ -124,7 +130,7 @@ public class ChatActivityFragment extends Fragment {
     public void SendMessage(View v){
 
         if(chatId == null && chatListAdapter.getItemCount() < 1) {
-            Utility.createRoomForUsers(friendId, Utility.getUser(getActivity()).getId());
+            Utility.createRoomForUsers(getActivity(),friendId, Utility.getUser(getActivity()).getId());
         }
 
         User user = Utility.getUser(getActivity());
@@ -141,7 +147,7 @@ public class ChatActivityFragment extends Fragment {
     }
 
     private void addMessageToFirebase(Message m) {
-        mFirebaseDatabaseReference.push().setValue(m);
+//        mFirebaseDatabaseReference.push().setValue(m);
     }
 
 

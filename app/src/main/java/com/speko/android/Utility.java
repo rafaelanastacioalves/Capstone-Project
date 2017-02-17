@@ -5,14 +5,18 @@ import android.database.Cursor;
 import android.support.annotation.Nullable;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
+import com.speko.android.data.Chat;
 import com.speko.android.data.ChatMembersColumns;
 import com.speko.android.data.User;
 import com.speko.android.data.UserColumns;
 import com.speko.android.data.UsersProvider;
+
+import java.util.HashMap;
 
 /**
  * Created by rafaelalves on 31/01/17.
@@ -20,6 +24,7 @@ import com.speko.android.data.UsersProvider;
 
 public class Utility {
 
+    private final String LOG_TAG = getClass().getSimpleName();
     private static User mUser;
     private static FirebaseDatabase firebaseDatabase;
     private static FirebaseUser authUser;
@@ -79,12 +84,36 @@ public class Utility {
         return user;
     }
 
+    private static User getUserFriendFromDB(Context context, String id){
+        Log.i("getUserFriendFromDB", "Retrieving user friend with id: " + id);
+
+        Cursor c = context.getContentResolver().query(UsersProvider.Users.userWith(id)
+                , null, null, null, null);
+        User user = new User();
+        if(c.moveToFirst()){
+            user.setLearningLanguage(c.getString(c.getColumnIndex(UserColumns.LEARNING_LANGUAGE)));
+            user.setLearningCode(c.getString(c.getColumnIndex(UserColumns.LEARNING_CODE)));
+            user.setFluentLanguage(c.getString(c.getColumnIndex(UserColumns.FLUENT_LANGUAGE)));
+            user.setId(c.getString(c.getColumnIndex(UserColumns.FIREBASE_ID)));
+            user.setName(c.getString(c.getColumnIndex(UserColumns.NAME)));
+            user.setEmail(c.getString(c.getColumnIndex(UserColumns.EMAIL)));
+            user.setAge(c.getString(c.getColumnIndex(UserColumns.AGE)));
+
+            Log.i("getUserFriendFromDB", "Retrieved user friend with id: " + user.getId());
+
+
+        }
+
+        c.close();
+        return user;
+    }
+
     public static CursorLoader getUserFriendsCursorLoader(Context context){
         //TODO remove this part, as we already have have "getFirebaseAuthUser"
          if (authUser==null){
              authUser = getFirebaseAuthUser();
          }
-         return new CursorLoader(context, UsersProvider.Users.usersFrom(authUser.getUid()),
+         return new CursorLoader(context, UsersProvider.Users.usersFriendsFrom(authUser.getUid()),
                 null,
                 null,
                 null,
@@ -134,8 +163,31 @@ public class Utility {
                 null,
                 null);    }
 
-    public static void createRoomForUsers(String friendId, String id) {
+    public static void createRoomForUsers(Context context, String friendId, String userID) {
         //TODO
-        return ;
+        Chat chat = new Chat();
+        HashMap<String, User> members = new HashMap<>();
+        User userFriend = getUserFriendFromDB(context,friendId);
+        Log.i("createRoomForUSers","Creating chat with \n" + userFriend +
+        "\n id: " + userFriend.getId());
+
+        members.put(userFriend.getId(), new User(userFriend.getName(),userFriend.getId()));
+        User user = getUser(context);
+
+        Log.i("createRoomForUSers","Creating chat with \n" + user +
+                "\n id: " + user.getId());
+
+
+        members.put(user.getId(), new User(user.getId(), user.getName()));
+
+        chat.setMembers(members);
+        if (firebaseDatabase == null){
+            firebaseDatabase = FirebaseDatabase.getInstance();
+        }
+        Log.i("createRoomForUSers","Creating chat with \n" + chat.getMembers());
+        firebaseDatabase.getReference()
+                .child("chats")
+                .push()
+                .setValue(chat);
     }
 }

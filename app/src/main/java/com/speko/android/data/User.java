@@ -20,6 +20,12 @@ public class User {
     public User(){
     }
 
+    public User(String name, String id){
+
+        this.name = name;
+        this.id = id;
+    }
+
     public User(String name, String age, String email, String fluentLanguage){
         this.name = name;
         this.age = age;

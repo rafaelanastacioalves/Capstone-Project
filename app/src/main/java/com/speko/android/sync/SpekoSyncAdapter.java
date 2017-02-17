@@ -155,6 +155,7 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
         for (User user :
                 userFriends) {
             ContentValues userCV = new ContentValues();
+            Log.i(LOG_TAG, "Inserting user friend with id: " + user.getId());
             userCV.put(UserColumns.FIREBASE_ID, user.getId());
             userCV.put(UserColumns.NAME, user.getName());
             userCV.put(UserColumns.AGE, user.getAge());

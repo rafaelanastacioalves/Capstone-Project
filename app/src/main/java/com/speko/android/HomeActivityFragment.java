@@ -77,6 +77,7 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
                 String chatId =  Utility.getFirebaseRoomIdWithUserID(friendUserID, getActivity());
                 Intent i = new Intent(getActivity(), ChatActivity.class);
                 i.putExtra(ChatActivityFragment.CHAT_ID, chatId);
+                i.putExtra(ChatActivityFragment.FRIEND_ID, friendUserID );
                 startActivity(i);
             }
         });
