@@ -204,6 +204,11 @@ public class Utility {
                 .child(user.getId())
                 .child("chats")
                 .updateChildren((Map) chatHashMap);
+        firebaseDatabase.getReference()
+                .child("users")
+                .child(userFriend.getId())
+                .child("chats")
+                .updateChildren((Map) chatHashMap);
         return chatId;
     }
 }
