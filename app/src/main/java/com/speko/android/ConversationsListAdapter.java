@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.speko.android.data.ChatMembersColumns;
-import com.speko.android.data.UserColumns;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -93,7 +92,7 @@ public class ConversationsListAdapter extends RecyclerView.Adapter<Conversations
         public void onClick(View v) {
             int position = getAdapterPosition();
             mCursor.moveToPosition(position);
-            String friendID = mCursor.getString(mCursor.getColumnIndex(UserColumns.FIREBASE_ID));
+            String friendID = mCursor.getString(mCursor.getColumnIndex(ChatMembersColumns.OTHER_MEMBER_ID));
             mClickHanlder.onClick(friendID);
         }
     }
