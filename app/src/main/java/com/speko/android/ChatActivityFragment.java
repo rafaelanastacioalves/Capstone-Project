@@ -20,6 +20,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.speko.android.data.Message;
 import com.speko.android.data.User;
+import com.speko.android.sync.SpekoSyncAdapter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -144,6 +145,7 @@ public class ChatActivityFragment extends Fragment {
             String chatId = Utility.createRoomForUsers(getActivity(),friendId, Utility.getUser(getActivity()).getId());
             setupFirebaseChat(chatId);
             setupChatListAdapter();
+            SpekoSyncAdapter.syncImmediatly(getActivity());
         }
 
         User user = Utility.getUser(getActivity());
