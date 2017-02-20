@@ -74,6 +74,8 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
             @Override
             public void onClick(String friendUserID) {
                 Log.d(LOG_TAG,"onClick");
+                //TODO should not allow click while sync adapter is updating.
+                //TODO This framgnet should confirm if syncAdapter is updating somehow!
                 String chatId =  Utility.getFirebaseRoomIdWithUserID(friendUserID, getActivity());
                 Intent i = new Intent(getActivity(), ChatActivity.class);
                 i.putExtra(ChatActivityFragment.CHAT_ID, chatId);
