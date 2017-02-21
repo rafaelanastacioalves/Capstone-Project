@@ -120,7 +120,10 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
                     new User[chat.getMembers().values().size()]
             );
             for (User other_user : chatMembersList){
-                if (other_user.getId() != user.getId()){
+                if (!other_user.getId().equals(user.getId())){
+                    Log.i(LOG_TAG, "other user to be setted: \n" +
+                    "id: " + other_user.getId() +
+                    "name: " + other_user.getName());
                     chatCV.put(ChatMembersColumns.OTHER_MEMBER_ID, other_user.getId());
                     chatCV.put(ChatMembersColumns.OTHER_MEMBER_NAME, other_user.getName());
 

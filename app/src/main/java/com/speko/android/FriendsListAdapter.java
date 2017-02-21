@@ -49,6 +49,9 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
         mCursor.moveToPosition(position);
 
         Log.i(LOG_TAG, "onBindViewHolder");
+        String id = mCursor.getString(mCursor.getColumnIndex(UserColumns.FIREBASE_ID));
+        Log.i(LOG_TAG, "user with id: " + id );
+
         String userName = mCursor.getString(
                 mCursor.getColumnIndex(UserColumns.NAME)
         );
@@ -100,6 +103,7 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
             int position = getAdapterPosition();
             mCursor.moveToPosition(position);
             String friendID = mCursor.getString(mCursor.getColumnIndex(UserColumns.FIREBASE_ID));
+            Log.i(LOG_TAG, "Friend List Adapter -> friendId " + friendID);
             mClickHanlder.onClick(friendID);
         }
     }

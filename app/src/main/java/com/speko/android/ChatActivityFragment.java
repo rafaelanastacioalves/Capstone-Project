@@ -1,6 +1,7 @@
 package com.speko.android;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,6 +14,8 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -142,10 +145,16 @@ public class ChatActivityFragment extends Fragment {
     public void SendMessage(View v){
 
         if(chatId == null && chatListAdapter.getItemCount() < 1) {
-            String chatId = Utility.createRoomForUsers(getActivity(),friendId, Utility.getUser(getActivity()).getId());
+            OnCompleteListener onCompleteListener = new OnCompleteListener() {
+                @Override
+                public void onComplete(@NonNull Task task) {
+                    Log.i("onComplete", "Room creation completed!");
+                    SpekoSyncAdapter.syncImmediatly(getActivity());
+                }
+            };
+            String chatId = Utility.createRoomForUsers(getActivity(),friendId, Utility.getUser(getActivity()).getId(), onCompleteListener);
             setupFirebaseChat(chatId);
             setupChatListAdapter();
-            SpekoSyncAdapter.syncImmediatly(getActivity());
         }
 
         User user = Utility.getUser(getActivity());

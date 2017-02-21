@@ -7,6 +7,7 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.util.Log;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
@@ -164,7 +165,7 @@ public class Utility {
                 null,
                 null);    }
 
-    public static String createRoomForUsers(Context context, String friendId, String userID) {
+    public static String createRoomForUsers(Context context, String friendId, String userID,OnCompleteListener onCompleteListener ) {
         //TODO
         Chat chat = new Chat();
         HashMap<String, User> members = new HashMap<>();
@@ -179,7 +180,7 @@ public class Utility {
                 "\n id: " + user.getId());
 
 
-        members.put(user.getId(), new User(user.getId(), user.getName()));
+        members.put(user.getId(), new User( user.getName(),user.getId()));
 
         chat.setMembers(members);
         if (firebaseDatabase == null) {
@@ -203,7 +204,9 @@ public class Utility {
                 .child("users")
                 .child(user.getId())
                 .child("chats")
-                .updateChildren((Map) chatHashMap);
+                .updateChildren((Map) chatHashMap).addOnCompleteListener(onCompleteListener);
+        ;
+
         firebaseDatabase.getReference()
                 .child("users")
                 .child(userFriend.getId())
