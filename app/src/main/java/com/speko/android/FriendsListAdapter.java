@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.speko.android.data.UserColumns;
@@ -25,6 +26,7 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
     private final Context mContext;
     private Cursor mCursor;
     private FriendsAdapterOnClickHandler mClickHanlder;
+    private Boolean viewItensClickable;
 
     public FriendsListAdapter(Context context, FriendsAdapterOnClickHandler dh){
         Log.i(LOG_TAG, "Contructor");
@@ -65,6 +67,10 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
 
         holder.mNameTextView.setText(userName);
         holder.mUserEmailTextView.setText(userEmail);
+        if(viewItensClickable != null){
+            holder.friendViewHolder.setClickable(viewItensClickable);
+
+        }
     }
 
 
@@ -79,6 +85,11 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
         }
     }
 
+    public void setViewItensClickable(boolean b) {
+        this.viewItensClickable = b;
+        notifyDataSetChanged();
+    }
+
     public static interface FriendsAdapterOnClickHandler{
         void onClick(String friendID);
     }
@@ -88,7 +99,7 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
 
         @BindView(R.id.friend_viewholder_username) TextView mNameTextView;
         @BindView(R.id.friend_viewholder_useremail) TextView mUserEmailTextView;
-
+        @BindView(R.id.friend_viewholder) LinearLayout friendViewHolder;
 
 
         public UserViewHolder(View itemView) {

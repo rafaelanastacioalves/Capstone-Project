@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -38,6 +39,13 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
 
     @BindView(R.id.log_out)
     Button logOut;
+
+    @BindView(R.id.sync_button)
+    Button sync_button;
+
+    @BindView(R.id.progress_bar)
+    ContentLoadingProgressBar progressBar;
+
 
 
     private static final int FRIENDS_LOADER = 1;
@@ -91,11 +99,21 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
     }
 
 
-
-
     private void setRefreshScreen(Boolean active) {
         //TODO Implement
         Log.i(LOG_TAG, "setRefresh: " + active.toString());
+        if (active) {
+            progressBar.show();
+            //if sync active, disable list clicking
+            mAdapter.setViewItensClickable(false);
+
+
+        } else {
+            progressBar.hide();
+            //if sync NOT active, enable list clicking
+            mAdapter.setViewItensClickable(true);
+
+        }
 
 
     }
