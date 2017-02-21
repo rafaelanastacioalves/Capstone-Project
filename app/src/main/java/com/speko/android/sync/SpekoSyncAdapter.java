@@ -7,6 +7,7 @@ import android.content.ContentProviderClient;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SyncInfo;
 import android.content.SyncRequest;
 import android.content.SyncResult;
 import android.net.Uri;
@@ -21,6 +22,7 @@ import com.speko.android.data.Chat;
 import com.speko.android.data.ChatMembersColumns;
 import com.speko.android.data.User;
 import com.speko.android.data.UserColumns;
+import com.speko.android.data.UserContract;
 import com.speko.android.retrofit.AccessToken;
 import com.speko.android.retrofit.FirebaseClient;
 import com.speko.android.retrofit.ServiceGenerator;
@@ -106,6 +108,9 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
     private void persistChatListFrom(User user) {
         Log.i(LOG_TAG,"persistChatListFrom");
         int count = 0;
+        if(user.getChats() == null){
+            return;
+        }
         Chat[] chastList = user.getChats().values().toArray(new Chat[user.getChats().size()]);
         for (Chat chat :
                 chastList) {
@@ -276,7 +281,7 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
      *
      * @param context The application context
      */
-    private static Account getSyncAccount(Context context) {
+    public static Account getSyncAccount(Context context) {
         // Create the account type and default account
         Account newAccount = new Account(
                 ACCOUNT, ACCOUNT_TYPE);
@@ -304,8 +309,8 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
              * or handle it internally.
              */
 
-            Log.w("HomeActivity", "Deu ruim com o Account");
-            return null;
+            Log.w("HomeActivity", "Deu ruim com o Account: " + newAccount);
+//            return null;
         }
 
         return newAccount;
@@ -328,6 +333,27 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
         bundle.putBoolean(ContentResolver.SYNC_EXTRAS_MANUAL, true);
         ContentResolver.requestSync(getSyncAccount(context),
                 AUTHORITY, bundle);
+    }
+
+    public static boolean isSyncActive(Context context) {
+
+        Account account = SpekoSyncAdapter.getSyncAccount(context);
+        String authority = UserContract.AUTHORITY;
+        Log.i("isSyncActive", "start with values: \n " +
+                "account: " + account.toString() + "\n" +
+                "authority: " + authority.toString());
+        for (SyncInfo syncInfo : ContentResolver.getCurrentSyncs()) {
+            Log.i("isSyncActive", "syncInfo: \n" +
+                    "account: " + syncInfo.account.toString() + "\n" +
+                    "authority: " + syncInfo.authority.toString() + "\n");
+
+            // just checked authority, as account seems to be cryptographed
+            if (syncInfo.authority.toString().equals(authority.toString())) {
+                return true;
+            }
+        }
+        return false;
+
     }
 
     /**

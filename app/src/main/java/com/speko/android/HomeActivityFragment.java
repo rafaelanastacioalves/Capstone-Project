@@ -33,9 +33,6 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
     private final String LOG_TAG = getClass().getSimpleName();
 
 
-
-
-
     @BindView(R.id.user_list)
     RecyclerView userList;
 
@@ -51,7 +48,6 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
     private Query mUserQueryByEmail;
 
 
-
     static final int COL_USER_ID = 0;
     static final int COL_USER_NAME = 1;
     static final int COL_EMAIL = 2;
@@ -65,21 +61,21 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
         Log.i(LOG_TAG, "onCreateView");
 
         View view = inflater.inflate(R.layout.fragment_home, container, false);
-        ButterKnife.bind(this,view);
+        ButterKnife.bind(this, view);
 
         userList.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        mAdapter = new FriendsListAdapter(getActivity(), new FriendsListAdapter.FriendsAdapterOnClickHandler(){
+        mAdapter = new FriendsListAdapter(getActivity(), new FriendsListAdapter.FriendsAdapterOnClickHandler() {
 
             @Override
             public void onClick(String friendUserID) {
-                Log.d(LOG_TAG,"onClick");
+                Log.d(LOG_TAG, "onClick");
                 //TODO should not allow click while sync adapter is updating.
                 //TODO This framgnet should confirm if syncAdapter is updating somehow!
-                String chatId =  Utility.getFirebaseRoomIdWithUserID(friendUserID, getActivity());
+                String chatId = Utility.getFirebaseRoomIdWithUserID(friendUserID, getActivity());
                 Intent i = new Intent(getActivity(), ChatActivity.class);
                 i.putExtra(ChatActivityFragment.CHAT_ID, chatId);
-                i.putExtra(ChatActivityFragment.FRIEND_ID, friendUserID );
+                i.putExtra(ChatActivityFragment.FRIEND_ID, friendUserID);
                 startActivity(i);
             }
         });
@@ -88,16 +84,27 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
         userList.setAdapter(mAdapter);
 
 
-
-
-
         return view;
     }
 
 
 
 
+    private void setRefreshScreen(Boolean active) {
+        //TODO Implement
+        Log.i(LOG_TAG, "setRefresh: " + active.toString());
 
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.i(LOG_TAG, "onResume");
+        if (SpekoSyncAdapter.isSyncActive(getContext())){
+            setRefreshScreen(true);
+        }
+    }
 
     @Override
     public void onStart() {
@@ -127,6 +134,7 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
     @OnClick(R.id.sync_button)
     public void sync(View v){
         SpekoSyncAdapter.syncImmediatly(getActivity());
+        setRefreshScreen(true);
 //        getLoaderManager().restartLoader(FRIENDS_LOADER,null, this);
     }
 
@@ -151,6 +159,8 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         Log.i(LOG_TAG, "onLoaderFinished with total data: " + data.getCount());
         mAdapter.swapCursor(data);
+
+        setRefreshScreen(false);
 
     }
 
