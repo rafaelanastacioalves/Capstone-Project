@@ -6,7 +6,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
         <android.support.v7.widget.AppCompatTextView
-            android:name="Age"
+            android:text="Age"
             android:layout_width="0dp"
             app:layout_columnWeight="1"
             />
@@ -18,7 +18,7 @@
             />
 
         <android.support.v7.widget.AppCompatTextView
-            android:name="Fluent Language"
+            android:text="Fluent Language"
             android:layout_width="0dp"
             app:layout_columnWeight="1"
             />
@@ -31,7 +31,7 @@
             />
 
         <android.support.v7.widget.AppCompatTextView
-            android:name="@string/language_of_interest"
+            android:text="@string/language_of_interest"
             android:layout_width="0dp"
             app:layout_columnWeight="1"
             />
@@ -45,7 +45,7 @@
 
         <android.support.v7.widget.AppCompatButton
             android:id="@+id/signup_button"
-            android:name="Sign Up"
+            android:text="Sign Up"
             app:layout_gravity="center_horizontal"
             app:layout_columnSpan="2"
             />

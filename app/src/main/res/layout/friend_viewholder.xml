@@ -8,9 +8,9 @@
     <TextView android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:id="@+id/friend_viewholder_username"
-        tools:name="Fulano de Tal"/>
+        tools:text="Fulano de Tal"/>
     <TextView
-        tools:name="fulaninho_de_tal@gmail.com"
+        tools:text="fulaninho_de_tal@gmail.com"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/friend_viewholder_useremail"/>

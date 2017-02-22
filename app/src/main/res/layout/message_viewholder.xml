@@ -7,19 +7,19 @@
     android:layout_height="wrap_content">
 
     <TextView
-        android:name="TextView"
+        android:text="TextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/message_viewholder_sender_username"
-        tools:name="Fulano"
+        tools:text="Fulano"
         android:layout_margin="5dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
     <TextView
-        android:name="TextView"
+        android:text="TextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:name="Blababla\nblebleble"
+        tools:text="Blababla\nblebleble"
         android:id="@+id/message_viewholder_message"
         android:textAppearance="@style/TextAppearance.AppCompat.Body1" />
 </LinearLayout>

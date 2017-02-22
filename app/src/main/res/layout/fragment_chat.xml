@@ -58,7 +58,7 @@
                         android:layout_height="48dp"
                         android:layout_weight="0.7"
                         android:background="@color/colorlightGray"
-                        tools:name="Typed name"/>
+                        tools:text="Typed name"/>
 
                     <Button
                         android:text="Send"
