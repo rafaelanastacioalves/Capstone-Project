@@ -84,6 +84,7 @@ public class ChatActivityFragment extends Fragment {
             Log.i(LOG_TAG, "setRefreshScreen true");
             setRefreshScreen(true);
         }
+        setRefreshScreen(false);
 
 
 
