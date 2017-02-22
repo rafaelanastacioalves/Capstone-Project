@@ -3,6 +3,7 @@ package com.speko.android;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -58,6 +59,9 @@ public class ChatActivityFragment extends Fragment {
     @BindView(R.id.chat_send_button)
     Button chatSendButton;
 
+    @BindView(R.id.progress_bar)
+    ContentLoadingProgressBar progressBar;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -77,11 +81,21 @@ public class ChatActivityFragment extends Fragment {
 
         if(chatId != null){
             setupFirebaseChat(chatId);
+            Log.i(LOG_TAG, "setRefreshScreen true");
+            setRefreshScreen(true);
         }
 
 
 
         return v;
+    }
+
+    private void setRefreshScreen(boolean active) {
+        if(active){
+            progressBar.show();
+        }else {
+            progressBar.hide();
+        }
     }
 
     private void setupFirebaseChat(String chatId) {
@@ -185,6 +199,7 @@ public class ChatActivityFragment extends Fragment {
                         Log.i(LOG_TAG, "onChildAdded");
                         Message m = dataSnapshot.getValue(Message.class);
                         chatListAdapter.add(m);
+                        setRefreshScreen(false);
                     }
 
                     @Override
