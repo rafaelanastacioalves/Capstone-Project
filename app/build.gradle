@@ -16,7 +16,7 @@ repositories {
 }
 
 def Properties signProps = new Properties()
-def propFile = new File('keys/sign.properties')
+def propFile = new File("$name/keys/sign.properties")
 signProps.load(new InputStreamReader(new FileInputStream(propFile), "UTF-8"))
 
 android {
@@ -24,7 +24,7 @@ android {
         release {
             keyAlias 'release'
             keyPassword signProps['KEY_PASSWORD_RELEASE']
-            storeFile file("$rootDir/keys/release.jks")
+            storeFile file("$rootDir/$name/keys/release.jks")
             storePassword signProps['STORE_PASSWORD_RELEASE']
         }
     }

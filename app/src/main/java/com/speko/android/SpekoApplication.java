@@ -7,7 +7,7 @@ import com.google.firebase.database.Logger;
  * Created by rafaelalves on 04/02/17.
  */
 
-public class Application extends android.app.Application {
+public class SpekoApplication extends android.app.Application {
 
     @Override
     public void onCreate() {

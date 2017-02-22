@@ -38,10 +38,7 @@ public class Utility {
     };
 
 
-    public void Utility(Context c){
 
-
-    }
 
     public static @Nullable User getUser(Context context){
         //TODO should verify if it' null. In case positive should try to retrieve from DB.

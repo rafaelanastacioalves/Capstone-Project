@@ -26,12 +26,10 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.UserVi
     private final String LOG_TAG = getClass().getSimpleName();
     private final Context mContext;
     private List<Message> mMessageList;
-    private FriendsAdapterOnClickHandler mClickHanlder;
 
     public ChatListAdapter(Context context, FriendsAdapterOnClickHandler dh){
         this(context);
         Log.i(LOG_TAG, "Constructor");
-        mClickHanlder = dh;
 
 
 

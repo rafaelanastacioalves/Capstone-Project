@@ -157,7 +157,7 @@ public class ChatActivityFragment extends Fragment {
     }
 
     @OnClick(R.id.chat_send_button)
-    public void SendMessage(View v){
+    public void sendMessage(View v){
 
         if(chatId == null && chatListAdapter.getItemCount() < 1) {
             OnCompleteListener onCompleteListener = new OnCompleteListener() {

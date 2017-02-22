@@ -34,9 +34,7 @@ public class ConversationsFragment extends Fragment implements LoaderManager.Loa
     RecyclerView conversationsList;
 
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+
 
 
     public ConversationsFragment() {
@@ -63,15 +61,14 @@ public class ConversationsFragment extends Fragment implements LoaderManager.Loa
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(USER_ID);
         }
     }
 
     @Override
     public void onStart() {
+        super.onStart();
         Log.i(LOG_TAG,"Initloader");
         getLoaderManager().initLoader(CONVERSATIONS_LOADER, null, this);
-        super.onStart();
     }
 
     @Override

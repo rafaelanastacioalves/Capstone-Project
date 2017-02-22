@@ -19,7 +19,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.speko.android.sync.SpekoSyncAdapter;
 
 import butterknife.BindView;
@@ -53,7 +52,6 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
     private FirebaseUser authUser;
     private FriendsListAdapter mAdapter;
     private ChildEventListener userListListener;
-    private Query mUserQueryByEmail;
 
 
     static final int COL_USER_ID = 0;
@@ -146,10 +144,7 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
 
     @Override
     public void onPause() {
-        if (mUserQueryByEmail != null){
-            mUserQueryByEmail.removeEventListener(userListListener);
-            mUserQueryByEmail = null;
-        }
+
         super.onPause();
     }
     @OnClick(R.id.sync_button)

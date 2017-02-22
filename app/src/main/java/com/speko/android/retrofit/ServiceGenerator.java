@@ -19,7 +19,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ServiceGenerator {
 
     public static final String API_BASE_URL = "https://speko-debug.firebaseio.com/";
-    public static HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+    public static final HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
 
     private static OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
 

@@ -122,7 +122,6 @@ public class LoginActivity extends AppCompatActivity implements FillNewUserDataF
                         if (!dataSnapshot.exists() ){
 
 
-                            FirebaseUser authUser = auth.getCurrentUser();
                             Log.d(LOG_TAG, "There is no user. Should create in database");
 
                             Fragment newUserFragment = new FillNewUserDataFragment();
