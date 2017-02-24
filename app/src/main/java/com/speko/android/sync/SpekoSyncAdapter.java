@@ -13,6 +13,7 @@ import android.content.SyncResult;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -158,7 +159,11 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
 
     private void persistFriends(User[] userFriends) {
 
-
+        // verification to solve a crash when getCurrent user returns null
+        if(mFirebaseAuth.getCurrentUser() == null){
+            mFirebaseAuth.signOut();
+            return;
+        }
         int count = 0;
         for (User user :
                 userFriends) {
@@ -226,7 +231,11 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
 
     }
 
-    private void persistUser(User user) {
+    private void persistUser(@NonNull User user) {
+        if(user == null ){
+            Log.w(LOG_TAG, "method with null User variable!");
+            return ;
+        }
         ContentValues userCV = new ContentValues();
         userCV.put(FIREBASE_ID, user.getId());
         userCV.put(UserColumns.NAME, user.getName());
@@ -256,7 +265,9 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
         try {
             Log.i("SpekoSyncAdapter", "getUser: \n");
             user = call.execute().body();
-            Log.i("SpekoSyncAdapter", "Deu certo!: \n" + user.toString());
+            if (user != null){
+                Log.i("SpekoSyncAdapter", "Deu certo!: \n" + user.toString());
+            }
 
             return user;
         } catch (IOException e) {
