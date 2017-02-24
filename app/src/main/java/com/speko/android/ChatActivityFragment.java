@@ -65,7 +65,7 @@ public class ChatActivityFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
+        Log.d(LOG_TAG, "OnCreateView");
         View v = inflater.inflate(R.layout.fragment_chat, container, false);
 
         ButterKnife.bind(this,v);
@@ -80,11 +80,16 @@ public class ChatActivityFragment extends Fragment {
         chatRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         if(chatId != null){
-            setupFirebaseChat(chatId);
             Log.i(LOG_TAG, "setRefreshScreen true");
             setRefreshScreen(true);
+            setupFirebaseChat(chatId);
+
+        }else{
+            Log.i(LOG_TAG, "setRefreshScreen false");
+            setRefreshScreen(false);
         }
-        setRefreshScreen(false);
+
+
 
 
 
@@ -200,6 +205,8 @@ public class ChatActivityFragment extends Fragment {
                         Log.i(LOG_TAG, "onChildAdded");
                         Message m = dataSnapshot.getValue(Message.class);
                         chatListAdapter.add(m);
+
+                        Log.i(LOG_TAG, "setRefreshScreen false");
                         setRefreshScreen(false);
                     }
 
