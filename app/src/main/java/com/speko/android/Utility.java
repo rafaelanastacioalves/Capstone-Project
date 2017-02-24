@@ -146,7 +146,7 @@ public class Utility {
             chatIdWithOtherUser = c.getString(
                     c.getColumnIndex(ChatMembersColumns.FIREBASE_CHAT_ID));
         }
-
+        c.close();
         return chatIdWithOtherUser;
     }
 
