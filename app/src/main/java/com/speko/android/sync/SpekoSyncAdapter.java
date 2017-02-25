@@ -248,6 +248,7 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
         userCV.put(UserColumns.AGE, user.getAge());
         userCV.put(UserColumns.FLUENT_LANGUAGE, user.getFluentLanguage());
         userCV.put(UserColumns.LEARNING_LANGUAGE, user.getLearningLanguage());
+        userCV.put(UserColumns.USER_DESCRIPTION, user.getUserDescription());
         userCV.put(UserColumns.LEARNING_CODE, user.getLearningCode());
 
         // deleting any row first

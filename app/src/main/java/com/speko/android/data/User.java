@@ -15,6 +15,7 @@ public class User {
     private String fluentLanguage;
     private String learningLanguage;
     private String learningCode;
+    private String userDescription;
     private HashMap<String,Chat> chats;
 
     public User(){
@@ -99,5 +100,13 @@ public class User {
 
     public void setChats(HashMap<String, Chat> chats) {
         this.chats = chats;
+    }
+
+    public String getUserDescription() {
+        return userDescription;
+    }
+
+    public void setUserDescription(String userDescription) {
+        this.userDescription = userDescription;
     }
 }

@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.AppCompatButton;
+import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatSpinner;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -54,7 +55,9 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
 
     @BindView(R.id.fragment_button_profile_change)
     AppCompatButton signupButton;
-    private View view;
+
+    @BindView(R.id.signup_user_description)
+    AppCompatEditText userDescription;
 
 
     public ProfileFragment() {
@@ -92,7 +95,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        view = inflater.inflate(R.layout.fragment_profile, container, false);
+        View view = inflater.inflate(R.layout.fragment_profile, container, false);
         ButterKnife.bind(this,view);
 
         SpekoSyncAdapter.syncImmediatly(getContext());
@@ -109,6 +112,8 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
         user.setAge(ageEditText.getText().toString());
         user.setFluentLanguage(spinner_fluent_language.getSelectedItem().toString());
         user.setLearningLanguage(spinner_learning_language.getSelectedItem().toString());
+        user.setUserDescription(userDescription.getText().toString());
+
 
 
         user.setLearningCode(user.getFluentLanguage()
@@ -149,6 +154,8 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
         );
 
         ageEditText.setText(Utility.getUser(getContext()).getAge());
+
+        userDescription.setHint(Utility.getUser(getContext()).getUserDescription());
         Log.i(LOG_TAG,"Age: " + Utility.getUser(getContext()).getAge());
 
 

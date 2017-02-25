@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatButton;
+import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatSpinner;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,6 +37,9 @@ public class FillNewUserDataFragment extends Fragment {
 
     @BindView(R.id.signup_button)
     AppCompatButton signupButton;
+
+    @BindView(R.id.signup_user_description)
+    AppCompatEditText userDescription;
 
 
     private OnFragmentInteractionListener mListener;
@@ -95,6 +99,7 @@ public class FillNewUserDataFragment extends Fragment {
         user.setAge(age.getText().toString());
         user.setFluentLanguage(spinner_fluent_language.getSelectedItem().toString());
         user.setLearningLanguage(spinner_language_of_interest.getSelectedItem().toString());
+        user.setUserDescription(userDescription.getText().toString());
 
 
 

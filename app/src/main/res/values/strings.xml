@@ -33,6 +33,7 @@
     <string name="title_activity_chat">ChatActivity</string>
 
     <string name="log_out">Log Out</string>
+    <string name="signup_description">Describe yourself =)</string>
 
 
 </resources>

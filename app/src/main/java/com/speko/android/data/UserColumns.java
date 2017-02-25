@@ -39,6 +39,9 @@ public interface UserColumns {
     @DataType(TEXT) @NotNull
     String LEARNING_CODE = "learning_code";
 
+    @DataType(TEXT) @NotNull
+    String USER_DESCRIPTION = "user_description";
+
 
 
 }

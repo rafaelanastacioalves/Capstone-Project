@@ -76,6 +76,7 @@ public class Utility {
             user.setName(c.getString(c.getColumnIndex(UserColumns.NAME)));
             user.setEmail(c.getString(c.getColumnIndex(UserColumns.EMAIL)));
             user.setAge(c.getString(c.getColumnIndex(UserColumns.AGE)));
+            user.setUserDescription(c.getString(c.getColumnIndex(UserColumns.USER_DESCRIPTION)));
 
         }
 
