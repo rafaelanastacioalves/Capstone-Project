@@ -166,6 +166,7 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
 
         // verification to solve a crash when getCurrent user returns null
         if(mFirebaseAuth.getCurrentUser() == null){
+            Log.w(LOG_TAG, "User Signed Out!");
             mFirebaseAuth.signOut();
             return;
         }
@@ -181,6 +182,7 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
             userCV.put(UserColumns.FLUENT_LANGUAGE, user.getFluentLanguage());
             userCV.put(UserColumns.LEARNING_CODE, user.getLearningCode());
             userCV.put(UserColumns.LEARNING_LANGUAGE, user.getLearningLanguage());
+            userCV.put(UserColumns.USER_DESCRIPTION, user.getUserDescription());
             userCV.put(UserColumns.FRIEND_OF, mFirebaseAuth.getCurrentUser().getUid());
 
             try {
@@ -267,6 +269,7 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
                 idToken)
         );
         if(mFirebaseAuth.getCurrentUser().getUid() == null){
+            Log.w(LOG_TAG, "method with null User variable!");
             return null;
         }
         Call<User> call = client.getUser(mFirebaseAuth.getCurrentUser().getUid(), idToken);
