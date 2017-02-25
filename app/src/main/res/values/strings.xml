@@ -38,6 +38,10 @@
 
     <string name="log_out">Log Out</string>
     <string name="signup_description">Describe yourself =)</string>
+    <string name="button_profile_upload_picture">Upload Picture</string>
+
+    <!-- Firebase refs-->
+    <string name="user_pictures" translatable="false">user_pitctures</string>
 
 
 </resources>

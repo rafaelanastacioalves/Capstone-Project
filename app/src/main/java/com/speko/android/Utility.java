@@ -1,8 +1,11 @@
 package com.speko.android;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.util.Log;
@@ -30,6 +33,10 @@ public class Utility {
     private static User mUser;
     private static FirebaseDatabase firebaseDatabase;
     private static FirebaseUser authUser;
+
+
+    public static final int RC_PHOTO_PICKER = 3;
+
 
     private static final String[] USER_COLUMNS = {
             UserColumns.FIREBASE_ID,
@@ -211,5 +218,19 @@ public class Utility {
                 .child("chats")
                 .updateChildren((Map) chatHashMap);
         return chatId;
+    }
+
+    public static void call_to_upload_picture(Activity activity) {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("image/jpeg");
+        intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
+        activity.startActivityForResult(Intent.createChooser(intent, "Complete action using"), Utility.RC_PHOTO_PICKER);
+    }
+
+    public static void call_to_upload_picture(Fragment activity) {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("image/jpeg");
+        intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
+        activity.startActivityForResult(Intent.createChooser(intent, "Complete action using"), Utility.RC_PHOTO_PICKER);
     }
 }

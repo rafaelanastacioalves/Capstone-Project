@@ -57,6 +57,20 @@
 
 
     <android.support.v7.widget.AppCompatButton
+        android:id="@+id/signup_upload_picture"
+        android:text="@string/button_profile_upload_picture"
+        app:layout_gravity="center_horizontal"
+        app:layout_columnSpan="2"
+        />
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/signup_imageview_profile_picture"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/button_profile_upload_picture"
+        app:layout_gravity="center_horizontal"
+        app:layout_columnSpan="2"
+        />
+    <android.support.v7.widget.AppCompatButton
         android:id="@+id/fragment_button_profile_change"
         android:text="@string/button_profile_confirmation_change"
         app:layout_gravity="center_horizontal"

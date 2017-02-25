@@ -1,21 +1,32 @@
 package com.speko.android;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
+import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatSpinner;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.speko.android.data.User;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static android.app.Activity.RESULT_OK;
+import static com.speko.android.Utility.RC_PHOTO_PICKER;
 
 
 /**
@@ -41,8 +52,12 @@ public class FillNewUserDataFragment extends Fragment {
     @BindView(R.id.signup_user_description)
     AppCompatEditText userDescription;
 
+    @BindView(R.id.signup_imageview_profile_picture)
+    AppCompatImageView imageView;
+
 
     private OnFragmentInteractionListener mListener;
+    private Uri downloadUrl;
 
     public FillNewUserDataFragment() {
         // Required empty public constructor
@@ -105,5 +120,35 @@ public class FillNewUserDataFragment extends Fragment {
 
 
         mListener.onFragmentInteraction(user);
+    }
+
+    @OnClick(R.id.signup_upload_picture)
+    public void uploadPicture(View v){
+        Utility.call_to_upload_picture(getActivity());
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RC_PHOTO_PICKER && resultCode == RESULT_OK) {
+            Uri selectedImageUri = data.getData();
+
+            // Get a reference to store file at user_pictures/<UID>/<FILENAME>
+            StorageReference photoRef = FirebaseStorage.getInstance().getReference()
+                    .child(getString(R.string.user_pictures))
+                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                    .child(selectedImageUri.getLastPathSegment());
+
+            // Upload file to Firebase Storage
+            photoRef.putFile(selectedImageUri)
+                    .addOnSuccessListener(getActivity(), new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            // When the image has successfully uploaded, we get its download URL
+                            downloadUrl = taskSnapshot.getDownloadUrl();
+
+
+                        }
+                    });
+        }
     }
 }

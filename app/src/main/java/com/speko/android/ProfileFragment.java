@@ -1,12 +1,15 @@
 package com.speko.android;
 
+import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
+import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatSpinner;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,12 +19,20 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.speko.android.data.User;
 import com.speko.android.sync.SpekoSyncAdapter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static android.app.Activity.RESULT_OK;
+import static com.speko.android.Utility.RC_PHOTO_PICKER;
+import static com.speko.android.Utility.getUser;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -58,6 +69,10 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
 
     @BindView(R.id.signup_user_description)
     AppCompatEditText userDescription;
+
+    @BindView(R.id.signup_imageview_profile_picture)
+    AppCompatImageView profilePicture;
+    private Uri downloadUrl;
 
 
     public ProfileFragment() {
@@ -137,6 +152,43 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
 
         Toast.makeText(getActivity(), "ProfileUpdated!", Toast.LENGTH_SHORT).show();
 
+
+    }
+
+    @OnClick(R.id.signup_upload_picture)
+    public void uploadPicture(View v){
+       Utility.call_to_upload_picture(this);
+
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.i(LOG_TAG,"onActivityResult");
+        if (requestCode == RC_PHOTO_PICKER && resultCode == RESULT_OK) {
+            Log.i(LOG_TAG, "Result OK from profile pick");
+            Uri selectedImageUri = data.getData();
+
+            // Get a reference to store file at user_pictures/<UID>/<FILENAME>
+            StorageReference photoRef = FirebaseStorage.getInstance().getReference()
+                    .child(getString(R.string.user_pictures))
+                    .child(getUser(getActivity()).getId())
+                    .child(selectedImageUri.getLastPathSegment());
+
+            // Upload file to Firebase Storage
+            photoRef.putFile(selectedImageUri)
+                    .addOnSuccessListener(getActivity(), new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            Log.i(LOG_TAG, "Result OK from Firebase persistance");
+
+                            // When the image has successfully uploaded, we get its download URL
+                            downloadUrl = taskSnapshot.getDownloadUrl();
+
+
+                        }
+                    });
+        }
 
     }
 
