@@ -3,11 +3,13 @@
     <string-array name="options_entries_languades">
         <item>@string/language_entry_pt_br</item>
         <item>@string/language_entry_en_us</item>
+        <item>@string/language_entry_es</item>
     </string-array>
 
     <string-array name="options_values_languages">
         <item>@string/language_value_pt_br</item>
         <item>@string/language_value_en_us</item>
+        <item>@string/language_value_es</item>
     </string-array>
 
 </resources>

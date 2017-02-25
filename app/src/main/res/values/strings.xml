@@ -13,10 +13,14 @@
     <!-- Languages entries for user selection-->
     <string name="language_entry_pt_br">PT-BR</string>
     <string name="language_entry_en_us">EN-US</string>
+    <string name="language_entry_es">ES</string>
+
 
     <!-- Languages values for use by the system. Not translatable-->
     <string name="language_value_pt_br" translatable="false">PT-BR</string>
     <string name="language_value_en_us" translatable="false">EN-US</string>
+    <string name="language_value_es">ES</string>
+
 
     <!-- Button for test syncinc -->
     <string name="sync_button">Sync Button</string>
