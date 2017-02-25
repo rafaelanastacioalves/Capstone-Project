@@ -79,6 +79,11 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
 
         if (userToken != null) {
             User user = getUser(userToken);
+
+            //in case of user null - logout - just stop
+            if(user == null){
+                return ;
+            }
             persistUser(user);
             persistChatListFrom(user);
 
@@ -260,6 +265,9 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
                 "Bearer",
                 idToken)
         );
+        if(mFirebaseAuth.getCurrentUser().getUid() == null){
+            return null;
+        }
         Call<User> call = client.getUser(mFirebaseAuth.getCurrentUser().getUid(), idToken);
 
         try {
