@@ -90,6 +90,13 @@ dependencies {
     annotationProcessor 'net.simonvt.schematic:schematic-compiler:0.6.7'
 
     compile 'com.android.support:appcompat-v7:25.1.0'
+
+    // picasso
+    compile 'com.squareup.picasso:picasso:2.5.2'
+
+    //round image view
+    compile 'de.hdodenhof:circleimageview:2.1.0'
+
 }
 
 apply plugin: 'com.google.gms.google-services'

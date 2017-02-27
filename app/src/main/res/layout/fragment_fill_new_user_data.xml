@@ -59,13 +59,14 @@
         app:layout_columnSpan="2"
         app:layout_gravity="center_horizontal" />
 
-    <android.support.v7.widget.AppCompatImageView
+    <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/signup_imageview_profile_picture"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:src="@drawable/ic_placeholder_profile_photo"
         android:text="@string/button_profile_upload_picture"
-        app:layout_columnSpan="2"
-        app:layout_gravity="center_horizontal" />
+        app:layout_gravity="center_horizontal"
+        app:layout_columnSpan="2"/>
 
     <android.support.v7.widget.AppCompatButton
         android:id="@+id/signup_button"

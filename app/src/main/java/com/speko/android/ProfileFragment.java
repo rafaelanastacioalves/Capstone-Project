@@ -9,7 +9,6 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
-import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatSpinner;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,10 +24,12 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.speko.android.data.User;
 import com.speko.android.sync.SpekoSyncAdapter;
+import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.app.Activity.RESULT_OK;
 import static com.speko.android.Utility.RC_PHOTO_PICKER;
@@ -71,7 +72,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
     AppCompatEditText userDescription;
 
     @BindView(R.id.signup_imageview_profile_picture)
-    AppCompatImageView profilePicture;
+    CircleImageView profilePicture;
     private Uri downloadUrl;
 
 
@@ -184,12 +185,20 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
 
                             // When the image has successfully uploaded, we get its download URL
                             downloadUrl = taskSnapshot.getDownloadUrl();
+                            showPhoto(downloadUrl);
 
 
                         }
                     });
         }
 
+    }
+
+    private void showPhoto(Uri downloadUrl) {
+        Picasso.with(getContext()).load(downloadUrl)
+                .placeholder(R.drawable.ic_placeholder_profile_photo)
+                .resize(profilePicture.getWidth(),profilePicture.getHeight())
+                .centerCrop().into(profilePicture);
     }
 
     private void setView() {

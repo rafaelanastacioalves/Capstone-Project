@@ -7,8 +7,8 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
-import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatSpinner;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,10 +20,12 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.speko.android.data.User;
+import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.app.Activity.RESULT_OK;
 import static com.speko.android.Utility.RC_PHOTO_PICKER;
@@ -37,6 +39,7 @@ import static com.speko.android.Utility.RC_PHOTO_PICKER;
  */
 public class FillNewUserDataFragment extends Fragment {
 
+    private final String LOG_TAG = getClass().getSimpleName();
     @BindView(R.id.signup_textview_input_age)
     TextView age;
 
@@ -53,7 +56,7 @@ public class FillNewUserDataFragment extends Fragment {
     AppCompatEditText userDescription;
 
     @BindView(R.id.signup_imageview_profile_picture)
-    AppCompatImageView imageView;
+    CircleImageView imageView;
 
 
     private OnFragmentInteractionListener mListener;
@@ -119,12 +122,13 @@ public class FillNewUserDataFragment extends Fragment {
 
 
 
+
         mListener.onFragmentInteraction(user);
     }
 
     @OnClick(R.id.signup_upload_picture)
     public void uploadPicture(View v){
-        Utility.call_to_upload_picture(getActivity());
+        Utility.call_to_upload_picture(this);
     }
 
     @Override
@@ -143,12 +147,21 @@ public class FillNewUserDataFragment extends Fragment {
             photoRef.putFile(selectedImageUri)
                     .addOnSuccessListener(getActivity(), new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                            Log.i(LOG_TAG, "Result OK from Firebase persistance");
+
                             // When the image has successfully uploaded, we get its download URL
                             downloadUrl = taskSnapshot.getDownloadUrl();
+                            showPhoto(downloadUrl);
 
 
                         }
                     });
         }
     }
+
+    private void showPhoto(Uri downloadUrl) {
+        Picasso.with(getContext()).load(downloadUrl)
+                .placeholder(R.drawable.ic_placeholder_profile_photo)
+                .resize(imageView.getWidth(),imageView.getHeight())
+                .centerCrop().into(imageView);    }
 }
