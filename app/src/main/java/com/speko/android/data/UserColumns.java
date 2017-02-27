@@ -42,6 +42,9 @@ public interface UserColumns {
     @DataType(TEXT) @NotNull
     String USER_DESCRIPTION = "user_description";
 
+    @DataType(TEXT)
+    String USER_PHOTO_URL = "user_photo_url";
+
 
 
 }

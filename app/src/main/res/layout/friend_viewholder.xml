@@ -1,17 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:layout_width="match_parent"
     android:id="@+id/friend_viewholder"
     android:layout_height="wrap_content">
-    <TextView android:layout_height="wrap_content"
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/friend_profile_picture"
+        android:layout_width="@dimen/friends_profile_picture"
+        android:layout_height="@dimen/friends_profile_picture" />
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:id="@+id/friend_viewholder_username"
-        tools:text="Fulano de Tal"/>
-    <TextView
-        tools:text="fulaninho_de_tal@gmail.com"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/friend_viewholder_useremail"/>
+        android:layout_height="wrap_content">
+        <TextView android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:id="@+id/friend_viewholder_username"
+            tools:text="Fulano de Tal"/>
+        <TextView
+            tools:text="fulaninho_de_tal@gmail.com"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/friend_viewholder_useremail"/>
+    </LinearLayout>
+
+
 </LinearLayout>

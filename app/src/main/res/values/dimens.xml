@@ -5,4 +5,7 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="appbar_elevation">4dp</dimen>
     <dimen name="toolbar_height">56dp</dimen>
+    <dimen name="friends_profile_picture">50dp</dimen>
+    <dimen name="chat_profile_picture">50dp</dimen>
+    <dimen name="friend_profile_image">50dp</dimen>
 </resources>

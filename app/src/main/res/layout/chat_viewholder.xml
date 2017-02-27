@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/chat_friend_profile_picture"
+        android:layout_width="@dimen/chat_profile_picture"
+        android:layout_height="@dimen/chat_profile_picture" />
     <TextView android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:id="@+id/chat_friend_viewholder_username"

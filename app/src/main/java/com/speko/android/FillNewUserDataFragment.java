@@ -118,7 +118,9 @@ public class FillNewUserDataFragment extends Fragment {
         user.setFluentLanguage(spinner_fluent_language.getSelectedItem().toString());
         user.setLearningLanguage(spinner_language_of_interest.getSelectedItem().toString());
         user.setUserDescription(userDescription.getText().toString());
-
+        if (downloadUrl != null){
+            user.setProfilePicture(downloadUrl.toString());
+        }
 
 
 

@@ -185,7 +185,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
 
                             // When the image has successfully uploaded, we get its download URL
                             downloadUrl = taskSnapshot.getDownloadUrl();
-                            showPhoto(downloadUrl);
+                            showPhoto(downloadUrl.toString());
 
 
                         }
@@ -194,8 +194,8 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
 
     }
 
-    private void showPhoto(Uri downloadUrl) {
-        Picasso.with(getContext()).load(downloadUrl)
+    private void showPhoto(String downloadUrl) {
+        Picasso.with(getContext()).load(downloadUrl.toString())
                 .placeholder(R.drawable.ic_placeholder_profile_photo)
                 .resize(profilePicture.getWidth(),profilePicture.getHeight())
                 .centerCrop().into(profilePicture);
@@ -228,6 +228,11 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
 
         userDescription.setHint(Utility.getUser(getContext()).getUserDescription());
         Log.i(LOG_TAG,"Age: " + Utility.getUser(getContext()).getAge());
+
+        if(Utility.getUser(getActivity()).getProfilePicture() != null){
+
+            showPhoto(Utility.getUser(getActivity()).getProfilePicture());
+        }
 
 
     }

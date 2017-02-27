@@ -169,7 +169,7 @@ public class ChatActivityFragment extends Fragment {
                 @Override
                 public void onComplete(@NonNull Task task) {
                     Log.i("onComplete", "Room creation completed!");
-                    SpekoSyncAdapter.syncImmediatly(getActivity());
+                    SpekoSyncAdapter.syncImmediatly(getContext());
                 }
             };
             String chatId = Utility.createRoomForUsers(getActivity(),friendId, Utility.getUser(getActivity()).getId(), onCompleteListener);

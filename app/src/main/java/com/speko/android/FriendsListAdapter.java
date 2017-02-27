@@ -11,9 +11,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.speko.android.data.UserColumns;
+import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by rafaelalves on 21/01/17.
@@ -71,6 +73,11 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
             holder.friendViewHolder.setClickable(viewItensClickable);
 
         }
+
+        Picasso.with(mContext).load(mCursor.getString(
+                mCursor.getColumnIndex(UserColumns.USER_PHOTO_URL)
+        )).placeholder(R.drawable.ic_placeholder_profile_photo)
+                .into(holder.friendProfilePicture) ;
     }
 
 
@@ -100,6 +107,7 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
         @BindView(R.id.friend_viewholder_username) TextView mNameTextView;
         @BindView(R.id.friend_viewholder_useremail) TextView mUserEmailTextView;
         @BindView(R.id.friend_viewholder) LinearLayout friendViewHolder;
+        @BindView(R.id.friend_profile_picture) CircleImageView friendProfilePicture;
 
 
         public UserViewHolder(View itemView) {

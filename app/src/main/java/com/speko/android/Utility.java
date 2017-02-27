@@ -84,6 +84,7 @@ public class Utility {
             user.setEmail(c.getString(c.getColumnIndex(UserColumns.EMAIL)));
             user.setAge(c.getString(c.getColumnIndex(UserColumns.AGE)));
             user.setUserDescription(c.getString(c.getColumnIndex(UserColumns.USER_DESCRIPTION)));
+            user.setProfilePicture(c.getString(c.getColumnIndex(UserColumns.USER_PHOTO_URL))); ;
 
         }
 

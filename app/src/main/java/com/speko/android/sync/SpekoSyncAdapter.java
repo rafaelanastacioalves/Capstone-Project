@@ -132,6 +132,7 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
                     "name: " + other_user.getName());
                     chatCV.put(ChatMembersColumns.OTHER_MEMBER_ID, other_user.getId());
                     chatCV.put(ChatMembersColumns.OTHER_MEMBER_NAME, other_user.getName());
+                    chatCV.put(ChatMembersColumns.OTHER_USER_PHOTO_URL, other_user.getName());
 
                 }
             }
@@ -182,7 +183,8 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
             userCV.put(UserColumns.FLUENT_LANGUAGE, user.getFluentLanguage());
             userCV.put(UserColumns.LEARNING_CODE, user.getLearningCode());
             userCV.put(UserColumns.LEARNING_LANGUAGE, user.getLearningLanguage());
-            userCV.put(UserColumns.USER_DESCRIPTION, user.getUserDescription());
+            userCV.put(UserColumns.LEARNING_LANGUAGE, user.getLearningLanguage());
+            userCV.put(UserColumns.USER_PHOTO_URL, user.getUserDescription());
             userCV.put(UserColumns.FRIEND_OF, mFirebaseAuth.getCurrentUser().getUid());
 
             try {
@@ -252,6 +254,7 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
         userCV.put(UserColumns.LEARNING_LANGUAGE, user.getLearningLanguage());
         userCV.put(UserColumns.USER_DESCRIPTION, user.getUserDescription());
         userCV.put(UserColumns.LEARNING_CODE, user.getLearningCode());
+        userCV.put(UserColumns.USER_PHOTO_URL, user.getProfilePicture());
 
         // deleting any row first
         getContext().getContentResolver().delete(USER_URI,

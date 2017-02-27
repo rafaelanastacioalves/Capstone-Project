@@ -1,6 +1,7 @@
 package com.speko.android.data;
 
 import net.simonvt.schematic.annotation.DataType;
+import net.simonvt.schematic.annotation.IfNotExists;
 import net.simonvt.schematic.annotation.PrimaryKey;
 import net.simonvt.schematic.annotation.Unique;
 
@@ -21,6 +22,6 @@ public interface ChatMembersColumns {
     @DataType(TEXT)
     String OTHER_MEMBER_NAME = "other_member_name";
 
-
-
+    @DataType(TEXT) @IfNotExists
+    String OTHER_USER_PHOTO_URL = "other_user_photo_url";
 }

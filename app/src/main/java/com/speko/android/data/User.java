@@ -17,6 +17,7 @@ public class User {
     private String learningCode;
     private String userDescription;
     private HashMap<String,Chat> chats;
+    private String profilePicture;
 
     public User(){
     }
@@ -108,5 +109,13 @@ public class User {
 
     public void setUserDescription(String userDescription) {
         this.userDescription = userDescription;
+    }
+
+    public String getProfilePicture() {
+        return profilePicture;
+    }
+
+    public void setProfilePicture(String profilePicture) {
+        this.profilePicture = profilePicture;
     }
 }
