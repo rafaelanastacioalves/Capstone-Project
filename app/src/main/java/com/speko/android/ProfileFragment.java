@@ -73,7 +73,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
 
     @BindView(R.id.signup_imageview_profile_picture)
     CircleImageView profilePicture;
-    private Uri downloadUrl;
+    private Uri downloadUrl = null;
 
 
     public ProfileFragment() {

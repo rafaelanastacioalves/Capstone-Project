@@ -39,10 +39,10 @@ public interface UserColumns {
     @DataType(TEXT) @NotNull
     String LEARNING_CODE = "learning_code";
 
-    @DataType(TEXT) @NotNull
+    @DataType(TEXT) @IfNotExists
     String USER_DESCRIPTION = "user_description";
 
-    @DataType(TEXT)
+    @DataType(TEXT) @IfNotExists
     String USER_PHOTO_URL = "user_photo_url";
 
 

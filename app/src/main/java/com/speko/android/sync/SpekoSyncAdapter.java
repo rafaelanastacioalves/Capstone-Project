@@ -183,8 +183,8 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
             userCV.put(UserColumns.FLUENT_LANGUAGE, user.getFluentLanguage());
             userCV.put(UserColumns.LEARNING_CODE, user.getLearningCode());
             userCV.put(UserColumns.LEARNING_LANGUAGE, user.getLearningLanguage());
-            userCV.put(UserColumns.LEARNING_LANGUAGE, user.getLearningLanguage());
-            userCV.put(UserColumns.USER_PHOTO_URL, user.getUserDescription());
+            userCV.put(UserColumns.USER_PHOTO_URL, user.getProfilePicture());
+            Log.i(LOG_TAG,"Profile URL: " + user.getProfilePicture());
             userCV.put(UserColumns.FRIEND_OF, mFirebaseAuth.getCurrentUser().getUid());
 
             try {
@@ -200,11 +200,17 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
                 Log.d(LOG_TAG, "Values: " + user.getId() + " "
                         + user.getName() + " "
                         + user.getEmail());
-                int rows = getContext().getContentResolver().update(USER_URI, userCV,
-                        UserColumns.FIREBASE_ID + " = ?", new String[]{user.getId()});
-                if (rows > 0) {
-                    Log.i(LOG_TAG, "updated successfuly. Count: " + (count + 1));
+                try {
+                    int rows = getContext().getContentResolver().update(USER_URI, userCV,
+                            UserColumns.FIREBASE_ID + " = ?", new String[]{user.getId()});
+                    if (rows > 0) {
+                        Log.i(LOG_TAG, "updated successfuly. Count: " + (count + 1));
+                    }
+
+                }catch (Exception error){
+                    Log.e(LOG_TAG, "Deu ruim o updated!" + error.getMessage());
                 }
+
             }
 
         }
