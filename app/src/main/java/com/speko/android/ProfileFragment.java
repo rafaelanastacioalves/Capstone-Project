@@ -140,6 +140,11 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
             user.setUserDescription(userDescription.getText().toString());
         }
 
+        if (downloadUrl != null){
+            user.setProfilePicture(downloadUrl.toString());
+
+        }
+
 
 
         user.setLearningCode(user.getFluentLanguage()
