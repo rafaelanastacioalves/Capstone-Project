@@ -132,7 +132,8 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
                     "name: " + other_user.getName());
                     chatCV.put(ChatMembersColumns.OTHER_MEMBER_ID, other_user.getId());
                     chatCV.put(ChatMembersColumns.OTHER_MEMBER_NAME, other_user.getName());
-                    chatCV.put(ChatMembersColumns.OTHER_USER_PHOTO_URL, other_user.getName());
+                    String profilePictureUrl = getProfilePictureForUserId(other_user.getId(), userToken);
+                    chatCV.put(ChatMembersColumns.OTHER_USER_PHOTO_URL, profilePictureUrl);
 
                 }
             }
@@ -159,6 +160,35 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
         }
 
 
+
+    }
+
+    private String getProfilePictureForUserId(String id, String userToken) {
+        FirebaseClient client = ServiceGenerator.createService(FirebaseClient.class, new AccessToken(
+                "Bearer",
+                userToken)
+        );
+
+        if(mFirebaseAuth.getCurrentUser().getUid() == null){
+            Log.w(LOG_TAG, "method with null User variable!");
+            return null;
+        }
+        Call<String> call = client.getUserPictureUrl(id, userToken);
+
+        try {
+            Log.i("SpekoSyncAdapter", "getUser: \n");
+            String userPictureUrl = call.execute().body();
+            if (userPictureUrl != null){
+                Log.i("SpekoSyncAdapter", "Deu certo!: \n" + user.toString());
+            }
+
+            return userPictureUrl;
+        } catch (IOException e) {
+            Log.e("SpekoSyncAdapter", "Deu ruim: \n" + e.getMessage());
+            // handle errors
+        }
+
+        return null;
 
     }
 

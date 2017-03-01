@@ -41,4 +41,10 @@ public interface FirebaseClient {
             @Query("auth") String token,
             @Query("orderBy") String orderByKey,
             @Query("equalTo") Boolean equalToKey);
+
+    @GET("/users/{userId}/profilePicture.json")
+    Call<String> getUserPictureUrl(
+            @Path("userId") String userId,
+            @Query("auth") String auth
+    );
 }
