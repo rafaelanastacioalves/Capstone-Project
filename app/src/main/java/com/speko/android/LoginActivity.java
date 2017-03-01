@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
@@ -21,6 +22,8 @@ import com.speko.android.data.User;
 
 import java.util.Arrays;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import io.fabric.sdk.android.Fabric;
 
 public class LoginActivity extends AppCompatActivity implements FillNewUserDataFragment.OnFragmentInteractionListener {
@@ -30,6 +33,9 @@ public class LoginActivity extends AppCompatActivity implements FillNewUserDataF
     private FirebaseAuth auth;
     private FirebaseDatabase firebaseDatabase;
     private ValueEventListener userEventListener;
+
+    @BindView(R.id.progress_bar)
+    ContentLoadingProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +47,9 @@ public class LoginActivity extends AppCompatActivity implements FillNewUserDataF
         Log.d(LOG_TAG,"onCreate");
 
         firebaseDatabase = FirebaseDatabase.getInstance();
+        ButterKnife.bind(this);
+        Log.i(LOG_TAG, "Setting Loading true");
+        setLoading(true);
 
         auth = FirebaseAuth.getInstance();
         if (auth.getCurrentUser() != null) {
@@ -50,7 +59,16 @@ public class LoginActivity extends AppCompatActivity implements FillNewUserDataF
 
         } else {
             // not signed in
+
             callFirebaseLogin();
+        }
+    }
+
+    private void setLoading(boolean active) {
+        if(active){
+            progressBar.show();
+        }else {
+            progressBar.hide();
         }
     }
 
@@ -58,6 +76,7 @@ public class LoginActivity extends AppCompatActivity implements FillNewUserDataF
         startActivityForResult(
                 AuthUI.getInstance()
                         .createSignInIntentBuilder()
+                        .setLogo(R.drawable.ic_speko_drawable)
                         .setIsSmartLockEnabled(!BuildConfig.DEBUG)
                         .setProviders(Arrays.asList(
                                 new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build(),
@@ -121,6 +140,9 @@ public class LoginActivity extends AppCompatActivity implements FillNewUserDataF
                         Log.d(LOG_TAG, "Snapshot: " + dataSnapshot.toString());
                         if (!dataSnapshot.exists() ){
 
+                            Log.i(LOG_TAG, "Setting Loading false");
+                            setLoading(false);
+
 
                             Log.d(LOG_TAG, "There is no user. Should create in database");
 
@@ -133,6 +155,9 @@ public class LoginActivity extends AppCompatActivity implements FillNewUserDataF
 
                         }else{
                             // user exists
+
+                            Log.i(LOG_TAG, "Setting Loading false");
+                            setLoading(false);
 
                             Log.d(LOG_TAG, "There is the user!: " + dataSnapshot + "\n" +
                                     "should go to main activity");
@@ -163,6 +188,7 @@ public class LoginActivity extends AppCompatActivity implements FillNewUserDataF
         if(userEventListener != null){
             firebaseDatabase.getReference().child("users").removeEventListener(userEventListener);
         }
+        setLoading(true);
         super.onPause();
     }
 
