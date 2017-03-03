@@ -5,15 +5,23 @@
     android:layout_width="match_parent"
     android:id="@+id/friend_viewholder"
     android:paddingRight="16dp"
-    android:layout_height="@dimen/material_list_item_height">
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:layout_gravity="center"
-        android:layout_marginLeft="@dimen/circle_image_view_deafult_margin"
-        android:layout_marginRight="@dimen/circle_image_view_deafult_margin"
-        android:id="@+id/friend_profile_picture"
-        android:layout_width="@dimen/friends_profile_picture"
-        android:layout_height="@dimen/friends_profile_picture"
-        />
+    android:layout_height="@dimen/material_list_item_height"
+    android:background="@drawable/rounded_corners_primary_dark">
+    <FrameLayout
+        android:layout_width="72dp"
+        android:background="@drawable/rounded_corners_white"
+        android:layout_height="72dp">
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:layout_gravity="center"
+            android:layout_marginLeft="@dimen/circle_image_view_deafult_margin"
+            android:layout_marginRight="@dimen/circle_image_view_deafult_margin"
+            android:id="@+id/friend_profile_picture"
+            android:layout_width="@dimen/friends_profile_picture"
+            android:layout_height="@dimen/friends_profile_picture"
+            />
+
+    </FrameLayout>
+
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
@@ -22,12 +30,14 @@
         <TextView
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
+            android:textColor="@color/colorWhite"
             android:id="@+id/friend_viewholder_username"
             tools:text="Fulano de Tal"/>
         <TextView
             tools:text="fulaninho_de_tal@gmail.com"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:textColor="@color/colorWhite"
             android:id="@+id/friend_viewholder_useremail"/>
     </LinearLayout>
 
