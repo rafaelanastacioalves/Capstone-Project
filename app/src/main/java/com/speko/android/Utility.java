@@ -10,16 +10,23 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.util.Log;
 
+import com.github.bassaer.chatmessageview.models.Message;
+import com.github.bassaer.chatmessageview.utils.TimeUtils;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 import com.speko.android.data.Chat;
 import com.speko.android.data.ChatMembersColumns;
+import com.speko.android.data.MessageLocal;
 import com.speko.android.data.User;
 import com.speko.android.data.UserColumns;
 import com.speko.android.data.UsersProvider;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,8 +50,7 @@ public class Utility {
             UserColumns.NAME,
             UserColumns.EMAIL
     };
-
-
+    public static final String DATE_TIME_FORMAT = "yyyy/MM/dd HH:mm:ss Z";
 
 
     public static @Nullable User getUser(Context context){
@@ -234,4 +240,88 @@ public class Utility {
         intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
         activity.startActivityForResult(Intent.createChooser(intent, "Complete action using"), Utility.RC_PHOTO_PICKER);
     }
+
+    public static User getOtherUserWithId(Context context, String friendId) {
+        Cursor c = context.getContentResolver().query(UsersProvider.Users.USER_URI
+                , null, UserColumns.FIREBASE_ID + " = ? ", new String[]{friendId}, null);
+        User user = new User();
+        if(c.moveToFirst()){
+            user.setLearningLanguage(c.getString(c.getColumnIndex(UserColumns.LEARNING_LANGUAGE)));
+            user.setLearningCode(c.getString(c.getColumnIndex(UserColumns.LEARNING_CODE)));
+            user.setFluentLanguage(c.getString(c.getColumnIndex(UserColumns.FLUENT_LANGUAGE)));
+            user.setId(c.getString(c.getColumnIndex(UserColumns.FIREBASE_ID)));
+            user.setName(c.getString(c.getColumnIndex(UserColumns.NAME)));
+            user.setEmail(c.getString(c.getColumnIndex(UserColumns.EMAIL)));
+            user.setAge(c.getString(c.getColumnIndex(UserColumns.AGE)));
+            user.setUserDescription(c.getString(c.getColumnIndex(UserColumns.USER_DESCRIPTION)));
+            user.setProfilePicture(c.getString(c.getColumnIndex(UserColumns.USER_PHOTO_URL))); ;
+
+        }
+
+        c.close();
+        return user;
+    }
+
+    public static MessageLocal parseToFirebaseModel(Message m) {
+        MessageLocal parsedMessage = new MessageLocal();
+            parsedMessage.setName(m.getUser().getName());
+            parsedMessage.setDateCell(m.isDateCell());
+            parsedMessage.setmCreatedAt(fromCalendarToString(m.getCreatedAt(),DATE_TIME_FORMAT));
+            parsedMessage.setmHideIcon(m.isIconHided());
+            parsedMessage.setmStatus(m.getStatus());
+            parsedMessage.setmUsernameVisibility(m.getUsernameVisibility());
+            parsedMessage.setRightMessage(m.isRightMessage());
+            parsedMessage.setmIconVisibility(m.getIconVisibility());
+            parsedMessage.setmMessageText(m.getMessageText());
+        return parsedMessage;
+
+    }
+
+
+    // TODO this class should have all the intelligence and variables to convert these classes
+    // should take  part of the information from the ChatFragment
+    public static Message parseFromFirebaseModel(MessageLocal m) {
+
+
+        Calendar calendarInstance = Calendar.getInstance();
+
+        try {
+            calendarInstance.setTime(
+                    parseDate(m.getmCreatedAt(), DATE_TIME_FORMAT)
+            );
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        int parsedId;
+
+        // if the message user Firebase ID is different from the app user Firebase ID
+        if (m.getId() != getFirebaseAuthUser().getUid()){
+            parsedId = ChatActivityFragment.HIM_CHATMESSAGE_ID;
+        }else {
+            // if they'e equal
+            parsedId = ChatActivityFragment.ME_CHATMESSAGE_ID;
+        }
+        com.github.bassaer.chatmessageview.models.User user =
+                new com.github.bassaer.chatmessageview.models.User(parsedId, m.getName(),null);
+        Message parsedMessage = new Message.Builder()
+                .setUser(user)
+                .setRightMessage(m.isRightMessage())
+                .setMessageStatusType(m.getmStatus())
+                .setMessageText(m.getmMessageText())
+                .setCreatedAt(calendarInstance)
+                .build();
+        return parsedMessage;
+    }
+
+    public static Date parseDate(String date, String format) throws ParseException
+    {
+        SimpleDateFormat formatter = new SimpleDateFormat(format);
+        return formatter.parse(date);
+    }
+
+    public static String fromCalendarToString(Calendar calendar, String format){
+        return TimeUtils.calendarToString(calendar, format);
+
+    }
+
 }

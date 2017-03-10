@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.speko.android.data.Message;
+import com.speko.android.data.MessageLocal;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +25,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.UserVi
 
     private final String LOG_TAG = getClass().getSimpleName();
     private final Context mContext;
-    private List<Message> mMessageList;
+    private List<MessageLocal> mMessageList;
 
     public ChatListAdapter(Context context, FriendsAdapterOnClickHandler dh){
         this(context);
@@ -49,28 +49,28 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.UserVi
         return new UserViewHolder(view);
     }
 
-    public void swapCursor(List<Message> c){
+    public void swapCursor(List<MessageLocal> c){
         this.mMessageList = c;
         notifyDataSetChanged();
     }
 
     @Override
     public void onBindViewHolder(UserViewHolder holder, int position) {
-          Message mMessage = mMessageList.get(position);
+          MessageLocal mMessage = mMessageList.get(position);
 
         Log.i(LOG_TAG, "onBindViewHolder");
 
         //TODO modify cursor and name variables
-        String senderUserName = mMessage.getName();
-
-        Log.i(LOG_TAG, "Name: " + senderUserName);
-        String mMessageText = mMessage.getText();
-        Log.i(LOG_TAG, "Text: " + mMessageText);
-
-
-
-        holder.mSenderUsername.setText(senderUserName);
-        holder.mMessage.setText(mMessageText);
+//        String senderUserName = mMessage.getName();
+//
+//        Log.i(LOG_TAG, "Name: " + senderUserName);
+//        String mMessageText = mMessage.getText();
+//        Log.i(LOG_TAG, "Text: " + mMessageText);
+//
+//
+//
+//        holder.mSenderUsername.setText(senderUserName);
+//        holder.mMessage.setText(mMessageText);
     }
 
 
@@ -85,7 +85,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.UserVi
         }
     }
 
-    public void add(Message m) {
+    public void add(MessageLocal m) {
         mMessageList.add(m);
         notifyDataSetChanged();
     }

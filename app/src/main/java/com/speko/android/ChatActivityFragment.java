@@ -1,20 +1,22 @@
 package com.speko.android;
 
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
 
+import com.github.bassaer.chatmessageview.models.Message;
+import com.github.bassaer.chatmessageview.views.ChatView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.ChildEventListener;
@@ -22,13 +24,19 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.speko.android.data.Message;
+import com.speko.android.data.MessageLocal;
 import com.speko.android.data.User;
+import com.speko.android.sync.MyMessageStatusFormatter;
 import com.speko.android.sync.SpekoSyncAdapter;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Random;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -39,25 +47,33 @@ public class ChatActivityFragment extends Fragment {
     private final String LOG_TAG = getClass().getSimpleName();
     private DatabaseReference mFirebaseDatabaseReference;
     private ChildEventListener mFirebaseListener;
-    private ChatListAdapter chatListAdapter;
 
     public static final String CHAT_ID = "CHAT_ID";
     public static final String FRIEND_ID = "FRIEND_ID";
 
+
+    public static final int ME_CHATMESSAGE_ID = 0;
+    public static final int HIM_CHATMESSAGE_ID = 1;
+
     private String chatId;
     private String friendId;
+
+    private ArrayList<Message> mMessageList;
+
+    // this ID is necessary because of Firebase and of the library for chat message models
+    private HashMap<Integer,String> mIdConvertion;
+
+
+    private com.github.bassaer.chatmessageview.models.User[] mUsers = new com.github.bassaer.chatmessageview.models.User[2];
+    public static final int ME_CHATMESSAGE_INDEX  = 0;
+    public static final int HIM_CHATMESSAGE_INDEX = 1;
 
     public ChatActivityFragment() {
     }
 
-    @BindView(R.id.chat_recycler_view)
-    RecyclerView chatRecyclerView;
 
-    @BindView(R.id.chat_text_input)
-    EditText chatTextInput;
-
-    @BindView(R.id.chat_send_button)
-    Button chatSendButton;
+    @BindView(R.id.chat_view)
+    ChatView mChatView;
 
     @BindView(R.id.progress_bar)
     ContentLoadingProgressBar progressBar;
@@ -68,32 +84,184 @@ public class ChatActivityFragment extends Fragment {
         Log.d(LOG_TAG, "OnCreateView");
         View v = inflater.inflate(R.layout.fragment_chat, container, false);
 
-        ButterKnife.bind(this,v);
+        ButterKnife.bind(this, v);
 
         Bundle arguments = getArguments();
         chatId = arguments.getString(ChatActivityFragment.CHAT_ID);
         friendId = arguments.getString(ChatActivityFragment.FRIEND_ID);
 
 
+        initUsers();
 
 
-        chatRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+//        chatRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        if(chatId != null){
+        if (chatId != null) {
             Log.i(LOG_TAG, "setRefreshScreen true");
             setRefreshScreen(true);
             setupFirebaseChat(chatId);
 
-        }else{
+        } else {
             Log.i(LOG_TAG, "setRefreshScreen false");
             setRefreshScreen(false);
         }
 
 
+        setChatUI();
+
+        //Click Send Button
+        mChatView.setOnClickSendButtonListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+
+                if(chatId == null && mMessageList==null) {
+                    OnCompleteListener onCompleteListener = new OnCompleteListener() {
+                        @Override
+                        public void onComplete(@NonNull Task task) {
+                            Log.i("onComplete", "Room creation completed!");
+                            SpekoSyncAdapter.syncImmediatly(getContext());
+                        }
+                    };
+                    String chatId = Utility.createRoomForUsers(getActivity(),friendId, Utility.getUser(getActivity()).getId(), onCompleteListener);
+                    setupFirebaseChat(chatId);
+
+                }
+
+
+
+                //new message
+                Message message = new Message.Builder()
+                        .setUser(mUsers[ME_CHATMESSAGE_INDEX])
+                        .setRightMessage(true)
+                        .setMessageText(mChatView.getInputText())
+                        .hideIcon(true)
+                        .setMessageStatusType(com.github.bassaer.chatmessageview.models.Message.MESSAGE_STATUS_ICON)
+                        .build();
+                if (mUsers[ME_CHATMESSAGE_INDEX].getIcon() == null) {
+                    Log.d(getClass().getName(),
+                            mUsers[ME_CHATMESSAGE_INDEX].getName() + "'s icon is null ");
+                }
+                //Set random status(Delivering, delivered, seen or fail)
+                int messageStatus = new Random().nextInt(4);
+                message.setStatus(messageStatus);
+
+                //Reset edit text
+                mChatView.setInputText("");
+
+
+
+
+
+
+                addMessageToFirebase(message);
+
+
+            }
+
+        });
+
 
 
 
         return v;
+    }
+
+    private void setChatUI() {
+        //Set UI parameters if you need
+        mChatView.setRightBubbleColor(ContextCompat.getColor(getActivity(), R.color.blue500));
+        mChatView.setLeftBubbleColor(ContextCompat.getColor(getActivity(), R.color.gray300));
+        mChatView.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.blueGray200));
+        mChatView.setSendButtonColor(ContextCompat.getColor(getActivity(), R.color.lightBlue500));
+        mChatView.setSendIcon(R.drawable.ic_action_send);
+        mChatView.setRightMessageTextColor(Color.WHITE);
+        mChatView.setLeftMessageTextColor(Color.BLACK);
+        mChatView.setUsernameTextColor(ContextCompat.getColor(getActivity(), R.color.blueGray500));
+        mChatView.setSendTimeTextColor(ContextCompat.getColor(getActivity(), R.color.blueGray500));
+        mChatView.setDateSeparatorColor(ContextCompat.getColor(getActivity(), R.color.blueGray500));
+        mChatView.setInputTextHint("new message...");
+        mChatView.setMessageMarginTop(5);
+        mChatView.setMessageMarginBottom(5);
+    }
+
+
+    private void initUsers() {
+        //TODO Decide if photos are cached or make this method async
+
+        Log.i(LOG_TAG, "Init Users");
+        User user = Utility.getUser(getActivity());
+
+        User otherUser = Utility.getOtherUserWithId(getActivity(), friendId);
+        //User icon
+            Picasso.with(getActivity()).load(user.getProfilePicture()).into(new Target() {
+                @Override
+                public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+
+                    User user = Utility.getUser(getActivity());
+                    Log.i(LOG_TAG, "setting Icon for user:" + user.getName());
+                    Bitmap myIcon = null;
+                    myIcon = bitmap;
+                    final com.github.bassaer.chatmessageview.models.User me =
+                            new com.github.bassaer.chatmessageview.models.User(
+                                    ME_CHATMESSAGE_ID,
+                                    user.getName(), myIcon);
+                    if(mIdConvertion == null){
+                        mIdConvertion = new HashMap<Integer, String>();
+                    }
+                    mIdConvertion.put(ME_CHATMESSAGE_ID, user.getId());
+                    mUsers[ME_CHATMESSAGE_INDEX] = (me);
+
+                }
+
+                @Override
+                public void onBitmapFailed(Drawable errorDrawable) {
+
+                }
+
+                @Override
+                public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+                }
+            });
+
+
+        int yourId = 1;
+        Picasso.with(getActivity()).load(otherUser.getProfilePicture()).into(new Target() {
+                @Override
+                public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+
+                    User otherUser = Utility.getOtherUserWithId(getActivity(), friendId);
+
+                    Bitmap otherUserIcon = bitmap;
+                    Log.i(LOG_TAG, "setting Icon for user:" + otherUser.getName());
+                    final com.github.bassaer.chatmessageview.models.User otherChatUser =
+                            new com.github.bassaer.chatmessageview.models.User(
+                                    HIM_CHATMESSAGE_ID,
+                                    otherUser.getName(), otherUserIcon);
+
+                    if(mIdConvertion == null){
+                        mIdConvertion = new HashMap<Integer, String>();
+                    }
+                    mIdConvertion.put(HIM_CHATMESSAGE_ID, otherUser.getId());
+                    mUsers[HIM_CHATMESSAGE_INDEX] = otherChatUser;
+
+                }
+
+                @Override
+                public void onBitmapFailed(Drawable errorDrawable) {
+
+                }
+
+                @Override
+                public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+                }
+            });
+
+
+
+
+
     }
 
     private void setRefreshScreen(boolean active) {
@@ -113,7 +281,7 @@ public class ChatActivityFragment extends Fragment {
 
         // if it is null, chatId is not set and we need to set it properly and attach call
         // the following method again
-        if (mFirebaseDatabaseReference != null){
+        if (mFirebaseDatabaseReference != null) {
             attachDatabaseReadListener();
 
         }
@@ -125,7 +293,6 @@ public class ChatActivityFragment extends Fragment {
         detachDatabaseReadListener();
 
 
-
     }
 
     @Override
@@ -133,24 +300,17 @@ public class ChatActivityFragment extends Fragment {
         super.onResume();
 
         AppCompatActivity activity = (AppCompatActivity) getActivity();
-        Toolbar toolbar = (Toolbar)activity.findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) activity.findViewById(R.id.toolbar);
         activity.setSupportActionBar(toolbar);
         activity.getSupportActionBar().setDisplayShowTitleEnabled(true);
         activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
-        setupChatListAdapter();
 
 
     }
 
-    private void setupChatListAdapter() {
-        if(chatListAdapter == null){
-            chatListAdapter = new ChatListAdapter(getActivity());
-            chatRecyclerView.setAdapter(chatListAdapter);
 
-        }
-    }
 
     private void detachDatabaseReadListener() {
         if (mFirebaseListener != null) {
@@ -161,10 +321,15 @@ public class ChatActivityFragment extends Fragment {
 
     }
 
-    @OnClick(R.id.chat_send_button)
-    public void sendMessage(View v){
 
-        if(chatId == null && chatListAdapter.getItemCount() < 1) {
+    private void addMessageToFirebase(Message m) {
+        MessageLocal firebaseMessage = Utility.parseToFirebaseModel(m);
+        mFirebaseDatabaseReference.push().setValue(firebaseMessage);
+    }
+
+    public void sendMessage(){
+
+        if(chatId == null && mMessageList.size() < 1) {
             OnCompleteListener onCompleteListener = new OnCompleteListener() {
                 @Override
                 public void onComplete(@NonNull Task task) {
@@ -174,24 +339,9 @@ public class ChatActivityFragment extends Fragment {
             };
             String chatId = Utility.createRoomForUsers(getActivity(),friendId, Utility.getUser(getActivity()).getId(), onCompleteListener);
             setupFirebaseChat(chatId);
-            setupChatListAdapter();
         }
 
-        User user = Utility.getUser(getActivity());
-        Message newMessage = new Message();
-        newMessage.setText(String.valueOf(chatTextInput.getText()));
-        newMessage.setName(user.getName());
-        newMessage.setSenderId(user.getId());
 
-
-
-        addMessageToFirebase(newMessage);
-
-        chatTextInput.setText("");
-    }
-
-    private void addMessageToFirebase(Message m) {
-        mFirebaseDatabaseReference.push().setValue(m);
     }
 
 
@@ -199,37 +349,70 @@ public class ChatActivityFragment extends Fragment {
 
 
         if (mFirebaseListener == null) {
-                mFirebaseListener = new ChildEventListener() {
-                    @Override
-                    public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                        Log.i(LOG_TAG, "onChildAdded");
-                        Message m = dataSnapshot.getValue(Message.class);
-                        chatListAdapter.add(m);
-
-                        Log.i(LOG_TAG, "setRefreshScreen false");
+            mFirebaseListener = new ChildEventListener() {
+                @Override
+                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+//                        Log.i(LOG_TAG, "onChildAdded");
+//                        Message m = dataSnapshot.getValue(Message.class);
+//                        chatListAdapter.add(m);
+//
+//                        Log.i(LOG_TAG, "setRefreshScreen false");
                         setRefreshScreen(false);
+
+                    MessageLocal messageFromFirebase = dataSnapshot.getValue(MessageLocal.class);
+                    Message message = Utility.parseFromFirebaseModel(messageFromFirebase);
+                    for (com.github.bassaer.chatmessageview.models.User user : mUsers) {
+                        if (
+                                mIdConvertion.get(message.getUser().getId()) ==
+                                mIdConvertion.get(user.getId())
+                                ) {
+                                    Log.i(LOG_TAG, "setting the icon from  onChildAdded callback");
+                                    message.getUser().setIcon(user.getIcon());
+                        }
                     }
 
-                    @Override
-                    public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                    message.setMessageStatusType(Message.MESSAGE_STATUS_ICON_RIGHT_ONLY);
+                    message.setStatusIconFormatter(new MyMessageStatusFormatter(getActivity()));
+                    message.setStatusTextFormatter(new MyMessageStatusFormatter(getActivity()));
+                    if (!message.isDateCell()) {
+                        if (message.isRightMessage()) {
+                            message.hideIcon(true);
+                            Log.i(LOG_TAG, "setting Right Message");
+                            mChatView.send(message);
+                        } else {
+                            Log.i(LOG_TAG, "setting Left Message");
+
+                            mChatView.receive(message);
+                        }
+
 
                     }
 
-                    @Override
-                    public void onChildRemoved(DataSnapshot dataSnapshot) {
 
-                    }
+                }
 
-                    @Override
-                    public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+                @Override
+                public void onChildChanged(DataSnapshot dataSnapshot, String s) {
 
-                    }
+                }
 
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
+                @Override
+                public void onChildRemoved(DataSnapshot dataSnapshot) {
 
-                    }
-            };
+                }
+
+                @Override
+                public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            }
+
+            ;
             mFirebaseDatabaseReference.addChildEventListener(mFirebaseListener);
         }
     }
