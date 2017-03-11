@@ -74,8 +74,10 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
 
         }
 
-        Picasso.with(mContext).load(mCursor.getString(
-                mCursor.getColumnIndex(UserColumns.USER_PHOTO_URL)
+        Picasso picasso = Picasso.with(mContext);
+        picasso.setIndicatorsEnabled(BuildConfig.DEBUG);
+        picasso.load(mCursor.getString(
+            mCursor.getColumnIndex(UserColumns.USER_PHOTO_URL)
         )).placeholder(R.drawable.ic_placeholder_profile_photo)
                 .into(holder.friendProfilePicture) ;
     }

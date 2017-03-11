@@ -61,6 +61,7 @@ public class FillNewUserDataFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
     private Uri downloadUrl;
+    private String defaultUrl = "https://unsplash.it/200/200" ;
 
     public FillNewUserDataFragment() {
         // Required empty public constructor
@@ -120,6 +121,8 @@ public class FillNewUserDataFragment extends Fragment {
         user.setUserDescription(userDescription.getText().toString());
         if (downloadUrl != null){
             user.setProfilePicture(downloadUrl.toString());
+        }else{
+            user.setProfilePicture(defaultUrl);
         }
 
 

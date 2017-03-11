@@ -1,5 +1,6 @@
 package com.speko.android;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -14,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
 import com.github.bassaer.chatmessageview.models.Message;
 import com.github.bassaer.chatmessageview.views.ChatView;
@@ -67,6 +69,9 @@ public class ChatActivityFragment extends Fragment {
     private com.github.bassaer.chatmessageview.models.User[] mUsers = new com.github.bassaer.chatmessageview.models.User[2];
     public static final int ME_CHATMESSAGE_INDEX  = 0;
     public static final int HIM_CHATMESSAGE_INDEX = 1;
+    private final int totalImagesToBeLoaded = 2;
+    private int imagesLoaded;
+    private EditText mInputEditText;
 
     public ChatActivityFragment() {
     }
@@ -79,19 +84,27 @@ public class ChatActivityFragment extends Fragment {
     ContentLoadingProgressBar progressBar;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        Log.d(LOG_TAG, "OnCreateView");
-        View v = inflater.inflate(R.layout.fragment_chat, container, false);
-
-        ButterKnife.bind(this, v);
+    public void onAttach(Context context) {
 
         Bundle arguments = getArguments();
         chatId = arguments.getString(ChatActivityFragment.CHAT_ID);
         friendId = arguments.getString(ChatActivityFragment.FRIEND_ID);
 
-
+        imagesLoaded = 0;
         initUsers();
+        super.onAttach(context);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        Log.d(LOG_TAG, "OnCreateView");
+        View v = inflater.inflate(R.layout.fragment_chat, container, false);
+        mInputEditText = (EditText) v.findViewById(com.github.bassaer.chatmessageview.R.id.message_edit_text);
+
+        ButterKnife.bind(this, v);
+
+
 
 
 //        chatRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -99,12 +112,19 @@ public class ChatActivityFragment extends Fragment {
         if (chatId != null) {
             Log.i(LOG_TAG, "setRefreshScreen true");
             setRefreshScreen(true);
-            setupFirebaseChat(chatId);
+            // disabling input as we know that the room exists and the previous messages are
+            // still being loaded
+            Log.i(LOG_TAG,"disabling input");
+            mInputEditText.setFocusable(false);
 
         } else {
             Log.i(LOG_TAG, "setRefreshScreen false");
             setRefreshScreen(false);
+            // we allow typing as this is the first message
+            Log.i(LOG_TAG,"enabling text input");
+            mInputEditText.setFocusableInTouchMode(true);
         }
+
 
 
         setChatUI();
@@ -123,7 +143,7 @@ public class ChatActivityFragment extends Fragment {
                             SpekoSyncAdapter.syncImmediatly(getContext());
                         }
                     };
-                    String chatId = Utility.createRoomForUsers(getActivity(),friendId, Utility.getUser(getActivity()).getId(), onCompleteListener);
+                    chatId = Utility.createRoomForUsers(getActivity(),friendId, Utility.getUser(getActivity()).getId(), onCompleteListener);
                     setupFirebaseChat(chatId);
 
                 }
@@ -167,6 +187,8 @@ public class ChatActivityFragment extends Fragment {
         return v;
     }
 
+
+
     private void setChatUI() {
         //Set UI parameters if you need
         mChatView.setRightBubbleColor(ContextCompat.getColor(getActivity(), R.color.blue500));
@@ -182,6 +204,7 @@ public class ChatActivityFragment extends Fragment {
         mChatView.setInputTextHint("new message...");
         mChatView.setMessageMarginTop(5);
         mChatView.setMessageMarginBottom(5);
+
     }
 
 
@@ -193,79 +216,95 @@ public class ChatActivityFragment extends Fragment {
 
         User otherUser = Utility.getOtherUserWithId(getActivity(), friendId);
         //User icon
-            Picasso.with(getActivity()).load(user.getProfilePicture()).into(new Target() {
-                @Override
-                public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+        Picasso.with(getActivity())
+                .load(user.getProfilePicture())
+                .into(new Target() {
+                    @Override
+                    public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
 
-                    User user = Utility.getUser(getActivity());
-                    Log.i(LOG_TAG, "setting Icon for user:" + user.getName());
-                    Bitmap myIcon = null;
-                    myIcon = bitmap;
-                    final com.github.bassaer.chatmessageview.models.User me =
-                            new com.github.bassaer.chatmessageview.models.User(
-                                    ME_CHATMESSAGE_ID,
-                                    user.getName(), myIcon);
-                    if(mIdConvertion == null){
-                        mIdConvertion = new HashMap<Integer, String>();
+                        User user = Utility.getUser(getActivity());
+                        Log.i(LOG_TAG, "setting Icon for user:" + user.getName());
+                        Bitmap myIcon = null;
+                        myIcon = bitmap;
+                        final com.github.bassaer.chatmessageview.models.User me =
+                                new com.github.bassaer.chatmessageview.models.User(
+                                        ME_CHATMESSAGE_ID,
+                                        user.getName(), myIcon);
+                        if (mIdConvertion == null) {
+                            mIdConvertion = new HashMap<Integer, String>();
+                        }
+                        mIdConvertion.put(ME_CHATMESSAGE_ID, user.getId());
+                        mUsers[ME_CHATMESSAGE_INDEX] = (me);
+
+                        imagesLoaded++;
+                        if (imagesLoaded == totalImagesToBeLoaded) {
+                            if(chatId!= null) {
+                                setupFirebaseChat(chatId);
+
+                            }
+
+                        }
+
                     }
-                    mIdConvertion.put(ME_CHATMESSAGE_ID, user.getId());
-                    mUsers[ME_CHATMESSAGE_INDEX] = (me);
 
-                }
+                    @Override
+                    public void onBitmapFailed(Drawable errorDrawable) {
 
-                @Override
-                public void onBitmapFailed(Drawable errorDrawable) {
+                    }
 
-                }
+                    @Override
+                    public void onPrepareLoad(Drawable placeHolderDrawable) {
 
-                @Override
-                public void onPrepareLoad(Drawable placeHolderDrawable) {
-
-                }
-            });
+                    }
+                });
 
 
         int yourId = 1;
         Picasso.with(getActivity()).load(otherUser.getProfilePicture()).into(new Target() {
-                @Override
-                public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+            @Override
+            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
 
-                    User otherUser = Utility.getOtherUserWithId(getActivity(), friendId);
+                User otherUser = Utility.getOtherUserWithId(getActivity(), friendId);
 
-                    Bitmap otherUserIcon = bitmap;
-                    Log.i(LOG_TAG, "setting Icon for user:" + otherUser.getName());
-                    final com.github.bassaer.chatmessageview.models.User otherChatUser =
-                            new com.github.bassaer.chatmessageview.models.User(
-                                    HIM_CHATMESSAGE_ID,
-                                    otherUser.getName(), otherUserIcon);
+                Bitmap otherUserIcon = bitmap;
+                Log.i(LOG_TAG, "setting Icon for user:" + otherUser.getName());
+                final com.github.bassaer.chatmessageview.models.User otherChatUser =
+                        new com.github.bassaer.chatmessageview.models.User(
+                                HIM_CHATMESSAGE_ID,
+                                otherUser.getName(), otherUserIcon);
 
-                    if(mIdConvertion == null){
-                        mIdConvertion = new HashMap<Integer, String>();
+                if (mIdConvertion == null) {
+                    mIdConvertion = new HashMap<Integer, String>();
+                }
+                mIdConvertion.put(HIM_CHATMESSAGE_ID, otherUser.getId());
+                mUsers[HIM_CHATMESSAGE_INDEX] = otherChatUser;
+                imagesLoaded++;
+                if (imagesLoaded == totalImagesToBeLoaded) {
+                    if(chatId!= null){
+                        setupFirebaseChat(chatId);
+
                     }
-                    mIdConvertion.put(HIM_CHATMESSAGE_ID, otherUser.getId());
-                    mUsers[HIM_CHATMESSAGE_INDEX] = otherChatUser;
+
 
                 }
+            }
 
-                @Override
-                public void onBitmapFailed(Drawable errorDrawable) {
+            @Override
+            public void onBitmapFailed(Drawable errorDrawable) {
 
-                }
+            }
 
-                @Override
-                public void onPrepareLoad(Drawable placeHolderDrawable) {
+            @Override
+            public void onPrepareLoad(Drawable placeHolderDrawable) {
 
-                }
-            });
-
-
-
+            }
+        });
 
 
     }
 
     private void setRefreshScreen(boolean active) {
-        if(active){
+        if (active) {
             progressBar.show();
         }else {
             progressBar.hide();
@@ -358,6 +397,8 @@ public class ChatActivityFragment extends Fragment {
 //
 //                        Log.i(LOG_TAG, "setRefreshScreen false");
                         setRefreshScreen(false);
+                    Log.i(LOG_TAG,"enabling input");
+                    mInputEditText.setFocusableInTouchMode(true);
 
                     MessageLocal messageFromFirebase = dataSnapshot.getValue(MessageLocal.class);
                     Message message = Utility.parseFromFirebaseModel(messageFromFirebase);
@@ -383,6 +424,7 @@ public class ChatActivityFragment extends Fragment {
                             Log.i(LOG_TAG, "setting Left Message");
 
                             mChatView.receive(message);
+
                         }
 
 
