@@ -23,7 +23,8 @@
         android:theme="@style/AppTheme.AppBarOverlay"
         android:layout_gravity="start"
         android:layout_height="56dp"
-
+        app:itemIconTint="@drawable/nav_item_color_state"
+        app:itemTextColor="@drawable/nav_item_color_state"
         app:itemBackground="@color/authui_colorPrimary"
         app:menu="@menu/bottom_navigation_main"
 
