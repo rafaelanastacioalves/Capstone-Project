@@ -18,7 +18,7 @@ public class MessageLocal {
      **/
 
 
-    private String id;
+    private String mFirebaseId;
     /**
      * Sender information
      */
@@ -137,11 +137,11 @@ public class MessageLocal {
         this.mStatus = mStatus;
     }
 
-    public String getId() {
-        return id;
+    public String getmFirebaseId() {
+        return mFirebaseId;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setmFirebaseId(String mFirebaseId) {
+        this.mFirebaseId = mFirebaseId;
     }
 }

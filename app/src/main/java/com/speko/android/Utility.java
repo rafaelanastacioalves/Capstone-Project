@@ -263,8 +263,23 @@ public class Utility {
     }
 
     public static MessageLocal parseToFirebaseModel(Message m) {
+        String firebaseID;
+
+        //converting ID by comparing the ids used locally by the library
+        if (m.getUser().getId() == ChatActivityFragment.ME_CHATMESSAGE_ID){
+            // if ID used locally is about "me"
+            firebaseID = ChatActivityFragment.mIdConvertion.get(
+                    ChatActivityFragment.ME_CHATMESSAGE_ID
+            );
+        }else{
+            // if ID used locally is about the other user ("him")
+            firebaseID = ChatActivityFragment.mIdConvertion.get(
+                    ChatActivityFragment.HIM_CHATMESSAGE_ID
+            );
+        }
         MessageLocal parsedMessage = new MessageLocal();
             parsedMessage.setName(m.getUser().getName());
+            parsedMessage.setmFirebaseId(firebaseID);
             parsedMessage.setDateCell(m.isDateCell());
             parsedMessage.setmCreatedAt(fromCalendarToString(m.getCreatedAt(),DATE_TIME_FORMAT));
             parsedMessage.setmHideIcon(m.isIconHided());
@@ -280,34 +295,40 @@ public class Utility {
 
     // TODO this class should have all the intelligence and variables to convert these classes
     // should take  part of the information from the ChatFragment
-    public static Message parseFromFirebaseModel(MessageLocal m) {
+    public static Message parseFromFirebaseModel(MessageLocal firebaseModel) {
 
 
         Calendar calendarInstance = Calendar.getInstance();
 
         try {
             calendarInstance.setTime(
-                    parseDate(m.getmCreatedAt(), DATE_TIME_FORMAT)
+                    parseDate(firebaseModel.getmCreatedAt(), DATE_TIME_FORMAT)
             );
         } catch (ParseException e) {
             e.printStackTrace();
         }
         int parsedId;
+        boolean isRighMessage;
 
-        // if the message user Firebase ID is different from the app user Firebase ID
-        if (m.getId() != getFirebaseAuthUser().getUid()){
+        if (!firebaseModel.getmFirebaseId().equals(getFirebaseAuthUser().getUid())){
+            // if the message user Firebase ID is different from the app user Firebase ID
             parsedId = ChatActivityFragment.HIM_CHATMESSAGE_ID;
+            isRighMessage = false;
+            Log.i("Utility", "parseFromFirebaseModel: Its a message from HIM");
         }else {
             // if they'e equal
             parsedId = ChatActivityFragment.ME_CHATMESSAGE_ID;
+            isRighMessage = true;
+            Log.i("Utility", "parseFromFirebaseModel: Its a message from ME");
+
         }
         com.github.bassaer.chatmessageview.models.User user =
-                new com.github.bassaer.chatmessageview.models.User(parsedId, m.getName(),null);
+                new com.github.bassaer.chatmessageview.models.User(parsedId, firebaseModel.getName(),null);
         Message parsedMessage = new Message.Builder()
                 .setUser(user)
-                .setRightMessage(m.isRightMessage())
-                .setMessageStatusType(m.getmStatus())
-                .setMessageText(m.getmMessageText())
+                .setRightMessage(isRighMessage)
+                .setMessageStatusType(firebaseModel.getmStatus())
+                .setMessageText(firebaseModel.getmMessageText())
                 .setCreatedAt(calendarInstance)
                 .build();
         return parsedMessage;

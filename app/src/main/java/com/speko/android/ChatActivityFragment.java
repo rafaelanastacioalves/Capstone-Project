@@ -63,7 +63,7 @@ public class ChatActivityFragment extends Fragment {
     private ArrayList<Message> mMessageList;
 
     // this ID is necessary because of Firebase and of the library for chat message models
-    private HashMap<Integer,String> mIdConvertion;
+    public static HashMap<Integer,String> mIdConvertion;
 
 
     private com.github.bassaer.chatmessageview.models.User[] mUsers = new com.github.bassaer.chatmessageview.models.User[2];
