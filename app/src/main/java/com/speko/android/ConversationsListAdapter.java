@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.speko.android.data.ChatMembersColumns;
+import com.speko.android.data.User;
 import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
@@ -37,7 +38,7 @@ public class ConversationsListAdapter extends RecyclerView.Adapter<Conversations
     @Override
     public UserChatViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Log.i(LOG_TAG, "OnCreateViewHolder");
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.chat_viewholder,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.conversation_viewholder,parent,false);
         return new UserChatViewHolder(view);
     }
 
@@ -65,6 +66,16 @@ public class ConversationsListAdapter extends RecyclerView.Adapter<Conversations
                             mCursor.getColumnIndex(ChatMembersColumns.OTHER_USER_PHOTO_URL)
                     )).placeholder(R.drawable.ic_placeholder_profile_photo)
                     .into(holder.mProfilePicture);
+            String id = mCursor.getString(
+                    mCursor.getColumnIndex(ChatMembersColumns.OTHER_MEMBER_ID)
+            );
+
+            User otherUser = Utility.getOtherUserWithId(mContext, id );
+            String fluentLanguage = otherUser.getFluentLanguage();
+
+                    holder.conversationProfileFluentLanguagePicture.setImageResource(
+                    Utility.getDrawableUriForLanguage(fluentLanguage,mContext)
+            );
         }
     }
 
@@ -87,8 +98,10 @@ public class ConversationsListAdapter extends RecyclerView.Adapter<Conversations
 
     public class UserChatViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        @BindView(R.id.chat_friend_profile_picture) CircleImageView mProfilePicture;
-        @BindView(R.id.chat_friend_viewholder_username) TextView mNameTextView;
+        @BindView(R.id.conversation_friend_profile_picture) CircleImageView mProfilePicture;
+        @BindView(R.id.conversation_friend_viewholder_username) TextView mNameTextView;
+        @BindView(R.id.conversation_friend_fluent_language_profile_picture) CircleImageView
+                conversationProfileFluentLanguagePicture;
 
 
 

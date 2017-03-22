@@ -76,7 +76,7 @@ public class LoginActivity extends AppCompatActivity implements FillNewUserDataF
         startActivityForResult(
                 AuthUI.getInstance()
                         .createSignInIntentBuilder()
-                        .setLogo(R.drawable.ic_speko_drawable)
+                        .setLogo(R.drawable.ic_speko_complete_drawable)
                         .setIsSmartLockEnabled(!BuildConfig.DEBUG)
                         .setProviders(Arrays.asList(
                                 new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build(),

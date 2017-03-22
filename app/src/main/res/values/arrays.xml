@@ -9,7 +9,7 @@
     <string-array name="options_values_languages">
         <item>@string/language_value_pt_br</item>
         <item>@string/language_value_en_us</item>
-        <item>@string/language_value_es</item>
+        <item>@string/language_value_sp</item>
     </string-array>
 
 </resources>

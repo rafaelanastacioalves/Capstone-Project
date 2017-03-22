@@ -24,4 +24,5 @@ public interface ChatMembersColumns {
 
     @DataType(TEXT) @IfNotExists
     String OTHER_USER_PHOTO_URL = "other_user_photo_url";
+
 }

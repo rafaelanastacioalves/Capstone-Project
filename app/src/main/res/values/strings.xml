@@ -19,7 +19,7 @@
     <!-- Languages values for use by the system. Not translatable-->
     <string name="language_value_pt_br" translatable="false">PT-BR</string>
     <string name="language_value_en_us" translatable="false">EN-US</string>
-    <string name="language_value_es">ES</string>
+    <string name="language_value_sp">SP</string>
 
 
     <!-- Button for test syncinc -->
@@ -42,6 +42,8 @@
 
     <!-- Firebase refs-->
     <string name="user_pictures" translatable="false">user_pitctures</string>
+    <string name="languages_must_be_different_error">Fluent Language and Language of Interest MUST be different</string>
+    <string name="age_not_acceptable_error">Please put an acceptable age.</string>
 
 
 </resources>

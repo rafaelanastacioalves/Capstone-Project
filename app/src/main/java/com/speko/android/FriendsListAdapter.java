@@ -7,7 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.speko.android.data.UserColumns;
@@ -80,6 +80,13 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
             mCursor.getColumnIndex(UserColumns.USER_PHOTO_URL)
         )).placeholder(R.drawable.ic_placeholder_profile_photo)
                 .into(holder.friendProfilePicture) ;
+
+        String fluentLanguage = mCursor.getString(
+                mCursor.getColumnIndex(UserColumns.FLUENT_LANGUAGE)
+        );
+        holder.friendProfileFluentLanguagePicture.setImageResource(
+                Utility.getDrawableUriForLanguage(fluentLanguage,mContext)
+        );
     }
 
 
@@ -108,8 +115,10 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
 
         @BindView(R.id.friend_viewholder_username) TextView mNameTextView;
         @BindView(R.id.friend_viewholder_useremail) TextView mUserEmailTextView;
-        @BindView(R.id.friend_viewholder) LinearLayout friendViewHolder;
+        @BindView(R.id.friend_viewholder) RelativeLayout friendViewHolder;
         @BindView(R.id.friend_profile_picture) CircleImageView friendProfilePicture;
+        @BindView(R.id.friend_profile_fluent_language_picture)
+        CircleImageView friendProfileFluentLanguagePicture;
 
 
         public UserViewHolder(View itemView) {

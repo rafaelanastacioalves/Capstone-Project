@@ -7,9 +7,11 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatSpinner;
+import android.support.v7.widget.GridLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -75,6 +77,13 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
     CircleImageView profilePicture;
     private Uri downloadUrl = null;
 
+    @BindView(R.id.progress_bar)
+    ContentLoadingProgressBar progressBar;
+
+    @BindView(R.id.profile_grid_layout)
+    GridLayout gridLayout;
+
+
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -105,6 +114,9 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        Log.i(LOG_TAG,"Initloader");
+        getLoaderManager().initLoader(USER_LOADER, null, this);
     }
 
     @Override
@@ -113,8 +125,8 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
         ButterKnife.bind(this,view);
-
-        SpekoSyncAdapter.syncImmediatly(getContext());
+        setRefreshScreen(true);
+//        SpekoSyncAdapter.syncImmediatly(getContext());
 
 
 
@@ -123,6 +135,26 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
 
     @OnClick(R.id.fragment_button_profile_change)
     public void changeProfile(View v){
+        // if fluent language and language of interest are equal
+        if(spinner_fluent_language.getSelectedItem().toString()
+                .equals(
+                        spinner_learning_language.getSelectedItem().toString()
+                )){
+            Toast.makeText(getContext(),
+                    R.string.languages_must_be_different_error,
+                    Toast.LENGTH_LONG)
+                    .show();
+            return;
+        }
+
+        String ageString = ageEditText.getText().toString();
+
+        if (!Utility.isValidAge(ageString)){
+            Toast.makeText(getContext(), R.string.age_not_acceptable_error, Toast.LENGTH_LONG)
+                    .show();
+            return;
+        }
+
 
         User user = Utility.getUser(getContext());
         user.setAge(ageEditText.getText().toString());
@@ -229,7 +261,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
                 )
         );
 
-        ageEditText.setText(Utility.getUser(getContext()).getAge());
+        ageEditText.setHint(Utility.getUser(getContext()).getAge());
 
         userDescription.setHint(Utility.getUser(getContext()).getUserDescription());
         Log.i(LOG_TAG,"Age: " + Utility.getUser(getContext()).getAge());
@@ -242,10 +274,10 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
 
     }
 
+
     @Override
     public void onStart() {
-        Log.i(LOG_TAG,"Initloader");
-        getLoaderManager().initLoader(USER_LOADER, null, this);
+
         super.onStart();
     }
 
@@ -260,8 +292,28 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
         if (loader.getId() == USER_LOADER){
             Log.i(LOG_TAG,"onLoaderFinished");
             setView();
+            setRefreshScreen(false);
 
         }
+
+    }
+
+    private void setRefreshScreen(Boolean active) {
+        //TODO Implement
+        Log.i(LOG_TAG, "setRefresh: " + active.toString());
+        if (active) {
+            gridLayout.setVisibility(View.INVISIBLE);
+            progressBar.show();
+            //if sync active, disable list clicking
+
+
+        } else {
+            progressBar.hide();
+            gridLayout.setVisibility(View.VISIBLE);
+            //if sync NOT active, enable list clicking
+
+        }
+
 
     }
 

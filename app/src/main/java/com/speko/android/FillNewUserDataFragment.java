@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -114,22 +115,44 @@ public class FillNewUserDataFragment extends Fragment {
 
     @OnClick(R.id.signup_button)
     public void signup(View view){
+        //if fluent language and language of interest are different
+        if (spinner_fluent_language.getSelectedItem().toString()
+                .equals(
+                        spinner_language_of_interest.getSelectedItem().toString()
+                )) {
+            Toast.makeText(getContext(),
+                    R.string.languages_must_be_different_error,
+                    Toast.LENGTH_LONG)
+                    .show();
+            return;
+
+        }
+
+        String ageString = age.getText().toString();
+
+        if (!Utility.isValidAge(ageString)){
+            Toast.makeText(getContext(), R.string.age_not_acceptable_error, Toast.LENGTH_LONG)
+            .show();
+            return;
+        }
+
+
+
         User user = new User();
         user.setAge(age.getText().toString());
         user.setFluentLanguage(spinner_fluent_language.getSelectedItem().toString());
         user.setLearningLanguage(spinner_language_of_interest.getSelectedItem().toString());
         user.setUserDescription(userDescription.getText().toString());
-        if (downloadUrl != null){
+        if (downloadUrl != null) {
             user.setProfilePicture(downloadUrl.toString());
-        }else{
+        } else {
             user.setProfilePicture(defaultUrl);
         }
 
-
-
-
         mListener.onFragmentInteraction(user);
+
     }
+
 
     @OnClick(R.id.signup_upload_picture)
     public void uploadPicture(View v){

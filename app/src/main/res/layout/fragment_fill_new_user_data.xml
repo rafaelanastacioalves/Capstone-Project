@@ -13,6 +13,8 @@
     <android.support.design.widget.TextInputEditText
         android:id="@+id/signup_textview_input_age"
         android:layout_width="0dp"
+        android:inputType="number"
+        android:maxLength="3"
         app:layout_columnWeight="1"
 
         />

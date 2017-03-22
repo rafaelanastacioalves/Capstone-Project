@@ -26,8 +26,10 @@ import com.speko.android.data.UsersProvider;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.Map;
 
 /**
@@ -40,6 +42,16 @@ public class Utility {
     private static User mUser;
     private static FirebaseDatabase firebaseDatabase;
     private static FirebaseUser authUser;
+
+    private static final Map<String, String> fluentLanguageToIconNameHash;
+    static {
+        Hashtable<String,String> tmp =
+                new Hashtable<String, String>();
+        tmp.put("PT-BR","ic_pt_br");
+        tmp.put("EN-US","ic_en_us");
+        tmp.put("ES","ic_sp");
+        fluentLanguageToIconNameHash = Collections.unmodifiableMap(tmp);
+    }
 
 
     public static final int RC_PHOTO_PICKER = 3;
@@ -345,4 +357,28 @@ public class Utility {
 
     }
 
+    public static int getDrawableUriForLanguage(String fluentLanguage, Context mContext) {
+        Log.i("getDrawableUriFor...", "the fluent language is: " + fluentLanguage);
+        String uri = "@drawable/" + fluentLanguageToIconNameHash.get(fluentLanguage);
+        int imageResource = mContext.getResources().getIdentifier(
+                uri, null, mContext.getPackageName()
+        );
+
+        Log.i("getDrawableUriFor...", "the image URI is: " + uri);
+
+        return imageResource;
+    }
+
+    public static boolean isValidAge(String ageString) {
+        Log.i("isValidAge", "Age put is: " + ageString );
+        if (ageString !=null && !ageString.equals("") ){
+            int ageNumber  = Integer.valueOf(ageString);
+            if (ageNumber < 1 ){
+                Log.i("isValidAge", "Returning false" );
+                return false;
+            }
+        }
+        Log.i("isValidAge", "Returning true" );
+        return true;
+    }
 }
