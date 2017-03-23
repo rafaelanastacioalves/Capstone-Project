@@ -381,4 +381,11 @@ public class Utility {
         Log.i("isValidAge", "Returning true" );
         return true;
     }
+
+    public static void deleteEverything(Context context){
+        context.getContentResolver().delete(UsersProvider.Users.USER_URI,null,null);
+        context.getContentResolver().delete(UsersProvider.Users
+                .usersFriendsFrom(getUser(context).getId()),null,null);
+        context.getContentResolver().delete(UsersProvider.ChatMembers.CHAT_URI,null,null);
+    }
 }

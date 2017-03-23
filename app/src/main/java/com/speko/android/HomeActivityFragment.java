@@ -157,6 +157,8 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
 
     @OnClick(R.id.log_out)
     public void logOut(View v){
+
+        Utility.deleteEverything(getContext());
         FirebaseAuth.getInstance().signOut();
     }
 
