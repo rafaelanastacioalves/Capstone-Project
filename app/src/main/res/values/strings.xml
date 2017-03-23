@@ -36,8 +36,13 @@
     <string name="friends_that_can_help_you">Friends that can help you:</string>
     <string name="title_activity_chat">ChatActivity</string>
 
+
+
+    <!-- Fill form texts-->
+    <string name="age_label_text_field">Age</string>
+
     <string name="log_out">Log Out</string>
-    <string name="signup_description">Describe yourself =)</string>
+    <string name="signup_description_label">Describe yourself =)</string>
     <string name="button_profile_upload_picture">Upload Picture</string>
 
     <!-- Firebase refs-->

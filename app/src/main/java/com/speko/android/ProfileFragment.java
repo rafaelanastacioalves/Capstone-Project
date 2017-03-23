@@ -191,6 +191,8 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
         Toast.makeText(getActivity(), "ProfileUpdated!", Toast.LENGTH_SHORT).show();
 
 
+
+
     }
 
     @OnClick(R.id.signup_upload_picture)
@@ -261,9 +263,35 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
                 )
         );
 
-        ageEditText.setHint(Utility.getUser(getContext()).getAge());
 
-        userDescription.setHint(Utility.getUser(getContext()).getUserDescription());
+        ageEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                EditText editText = (EditText) v;
+                if(hasFocus){
+                    editText.setHint(Utility.getUser(getContext()).getAge());
+
+                }else{
+                    editText.setHint("");
+
+                }
+            }
+        });
+
+        userDescription.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                EditText editText = (EditText) v;
+                if(hasFocus){
+                    editText.setHint(Utility.getUser(getContext()).getUserDescription());
+
+                }else{
+                    editText.setHint("");
+
+                }
+            }
+        });
+
         Log.i(LOG_TAG,"Age: " + Utility.getUser(getContext()).getAge());
 
         if(Utility.getUser(getActivity()).getProfilePicture() != null){
@@ -295,6 +323,9 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
             setRefreshScreen(false);
 
         }
+
+        //we destroy the loader, as there is no need for updating the view
+        getLoaderManager().destroyLoader(USER_LOADER);
 
     }
 

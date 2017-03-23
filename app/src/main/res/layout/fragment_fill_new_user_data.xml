@@ -28,6 +28,7 @@
         android:id="@+id/signup_spinner_input_age_fluent_language"
         android:layout_width="0dp"
         android:entries="@array/options_entries_languades"
+        style="@style/Base.Widget.AppCompat.Spinner.Underlined"
         app:layout_columnWeight="1"
         tools:listheader="option" />
 
@@ -45,7 +46,7 @@
 
     <android.support.v7.widget.AppCompatTextView
         android:layout_width="0dp"
-        android:text="@string/signup_description"
+        android:text="@string/signup_description_label"
         app:layout_columnWeight="1" />
 
 
