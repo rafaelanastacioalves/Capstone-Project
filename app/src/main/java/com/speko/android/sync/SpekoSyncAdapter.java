@@ -7,6 +7,7 @@ import android.content.ContentProviderClient;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SyncInfo;
 import android.content.SyncRequest;
 import android.content.SyncResult;
@@ -49,11 +50,16 @@ import static com.speko.android.sync.SpekoAuthenticator.ACCOUNT;
 public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
     private static final int SYNC_INTERVAL = 1000; //every minute
     private static final int FLEX_TIME = 1000; // every minute
+    private static final String LOG = "SpekoSyncAdapter";
     private static FirebaseDatabase mFirebaseDatabase;
     private static FirebaseAuth mFirebaseAuth;
     private static final String LOG_TAG = "SpekoSyncAdapter";
     private static String userToken;
     private static User user;
+
+
+    public  static final String ACTION_DATA_UPDATED =
+            "com.speko.android.ACTION_DATA_UPDATED";
 
 
     public SpekoSyncAdapter(Context context, boolean autoInitialize) {
@@ -108,7 +114,17 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
             Log.w(LOG_TAG, "userToken not setted!");
         }
 
+        updateWidgets();
 
+    }
+
+    private void updateWidgets() {
+        Log.i(LOG,"updateWidgets");
+
+        Context context = getContext();
+        Intent dataUpdatedIntent = new Intent(ACTION_DATA_UPDATED)
+                .setPackage(context.getPackageName());
+        context.sendBroadcast(dataUpdatedIntent);
     }
 
     private void persistChatListFrom(User user) {

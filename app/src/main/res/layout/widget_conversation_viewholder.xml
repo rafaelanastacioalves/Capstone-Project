@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/conversation_viewholder"
+    android:id="@+id/widget_conversation_viewholder"
     android:layout_width="match_parent"
     android:background="@drawable/rounded_corners_primary_dark"
     android:layout_height="@dimen/material_list_item_height">
@@ -11,7 +11,7 @@
         android:layout_alignParentLeft="true"
         android:background="@drawable/rounded_corners_white">
 
-        <de.hdodenhof.circleimageview.CircleImageView
+        <ImageView
             android:id="@+id/conversation_friend_profile_picture"
             android:layout_gravity="center"
             android:background="@drawable/rounded_corners_white"
@@ -42,7 +42,7 @@
         android:layout_height="72dp"
         android:background="@drawable/rounded_corners_white">
 
-        <de.hdodenhof.circleimageview.CircleImageView
+        <ImageView
             android:id="@+id/conversation_friend_fluent_language_profile_picture"
             tools:src="@drawable/ic_user"
             android:layout_gravity="center"

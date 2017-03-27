@@ -49,6 +49,9 @@
     <string name="user_pictures" translatable="false">user_pitctures</string>
     <string name="languages_must_be_different_error">Fluent Language and Language of Interest MUST be different</string>
     <string name="age_not_acceptable_error">Please put an acceptable age.</string>
+    <string name="string_widget_conversations">User Conversations</string>
+    <string name="empty_conversations_list">No Conversations Available</string>
+    <string name="photo">photo</string>
 
 
 </resources>

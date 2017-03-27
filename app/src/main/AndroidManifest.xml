@@ -66,6 +66,7 @@
                 android:resource="@xml/authenticator" />
         </service>
 
+
         <provider
             android:name=".data.generated.UsersProvider"
             android:authorities="com.speko.android.data"
@@ -80,6 +81,27 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.speko.android.HomeActivity" />
         </activity>
+
+        <receiver android:name=".widget.ConversationsWidgetProvider"
+            android:enabled="@bool/widget_detail_enabled"
+            android:label="@string/string_widget_conversations">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+                <action android:name="com.speko.android.ACTION_DATA_UPDATED"/>
+            </intent-filter>
+
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_info_conversations"
+
+                />
+        </receiver>
+
+        <service
+            android:name=".widget.ConversationsWidgetRemoteViewService"
+            android:enabled="@bool/widget_detail_enabled"
+            android:exported="false"
+            android:permission="android.permission.BIND_REMOTEVIEWS" />
     </application>
 
 </manifest>
