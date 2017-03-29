@@ -3,16 +3,21 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+
     tools:context="com.speko.android.ConversationsFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:layout_marginLeft="@dimen/fragment_horizontal_margin"
+        android:layout_marginRight="@dimen/fragment_horizontal_margin"
+        android:layout_height="@dimen/textview_default_height"
         android:text="@string/conversations_fragment" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/conversations_list"
+        tools:listitem="@layout/conversation_viewholder"
         android:layout_width="match_parent"
         android:layout_height="match_parent"></android.support.v7.widget.RecyclerView>
 

@@ -1,6 +1,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    >
 
     <ScrollView
         android:layout_width="match_parent"
@@ -12,6 +13,8 @@
             android:id="@+id/profile_grid_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:paddingLeft="@dimen/fragment_horizontal_margin"
+            android:paddingRight="@dimen/fragment_horizontal_margin"
             app:columnCount="2">
 
             <de.hdodenhof.circleimageview.CircleImageView
@@ -124,6 +127,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:paddingLeft="@dimen/fragment_horizontal_margin"
+        android:paddingRight="@dimen/fragment_horizontal_margin"
         android:visibility="visible" />
 
 </FrameLayout>

@@ -30,7 +30,7 @@
     <string name="menu_settings">Settings</string>
     <string name="menu_profile">Profile</string>
     <string name="menu_conversations">Conversations</string>
-    <string name="conversations_fragment">Your list of recent conversation</string>
+    <string name="conversations_fragment">Your list of recent conversations</string>
     <string name="language_of_interest">Language of Interest</string>
     <string name="button_profile_confirmation_change">Change</string>
     <string name="friends_that_can_help_you">Friends that can help you:</string>

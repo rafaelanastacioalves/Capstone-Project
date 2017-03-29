@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+
     tools:context="com.speko.android.HomeActivity"
     android:orientation="vertical">
 
@@ -11,6 +12,8 @@
 
 
     <FrameLayout
+
+
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -18,9 +21,10 @@
         />
 
     <android.support.design.widget.BottomNavigationView
+        app:elevation="@dimen/bottom_navigation_view_elevation"
         android:id="@+id/bottom_view_layout_home_activity"
         android:layout_width="match_parent"
-        android:theme="@style/AppTheme.AppBarOverlay"
+        app:theme="@style/AppTheme.AppBarOverlay"
         android:layout_gravity="start"
         android:layout_height="56dp"
         app:itemIconTint="@drawable/nav_item_color_state"
