@@ -157,15 +157,19 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
 
 
         User user = Utility.getUser(getContext());
-        user.setAge(ageEditText.getText().toString());
+        if (ageEditText.getText() == null || ageEditText.getText().toString().isEmpty()) {
+            Log.i(LOG_TAG, "Text is null or empty, so we set nothing");
+        }else {
+            Log.i(LOG_TAG, "Text is NOT null or empty, setting from text: " +
+                    ageEditText.getText().toString());
+            user.setAge(ageEditText.getText().toString());
+
+        }
         user.setFluentLanguage(spinner_fluent_language.getSelectedItem().toString());
         user.setLearningLanguage(spinner_learning_language.getSelectedItem().toString());
 
         if (userDescription.getText() == null || userDescription.getText().toString().isEmpty() ) {
-            Log.i(LOG_TAG, "Text is null or empty, setting from hint: " +
-                    userDescription.getHint().toString());
-            user.setUserDescription(userDescription.getHint().toString());
-
+            Log.i(LOG_TAG, "Text is null or empty, so we set nothing ");
         }else{
             Log.i(LOG_TAG, "Text is NOT null or empty, setting from text: " +
                     userDescription.getText().toString());
