@@ -121,8 +121,12 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
         super.onResume();
         Log.i(LOG_TAG, "onResume");
         if (SpekoSyncAdapter.isSyncActive(getContext())){
+            Log.i(LOG_TAG, "Sync is active");
             setRefreshScreen(true);
+        }else{
+            Log.i(LOG_TAG, "Sync is NOT active");
         }
+
     }
 
     @Override
@@ -178,7 +182,9 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
         Log.i(LOG_TAG, "onLoaderFinished with total data: " + data.getCount());
         mAdapter.swapCursor(data);
 
-        setRefreshScreen(false);
+        if(!SpekoSyncAdapter.isSyncActive(getActivity())){
+            setRefreshScreen(false);
+        }
 
     }
 
