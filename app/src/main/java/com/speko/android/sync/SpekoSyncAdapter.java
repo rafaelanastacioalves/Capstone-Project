@@ -20,11 +20,13 @@ import android.util.Log;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 import com.speko.android.R;
+import com.speko.android.Utility;
 import com.speko.android.data.Chat;
 import com.speko.android.data.ChatMembersColumns;
 import com.speko.android.data.User;
 import com.speko.android.data.UserColumns;
 import com.speko.android.data.UserContract;
+import com.speko.android.data.UsersProvider;
 import com.speko.android.retrofit.AccessToken;
 import com.speko.android.retrofit.FirebaseClient;
 import com.speko.android.retrofit.ServiceGenerator;
@@ -217,49 +219,33 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
             mFirebaseAuth.signOut();
             return;
         }
-        int count = 0;
-        for (User user :
-                userFriends) {
+        User mainUser = Utility.getUser(getContext());
+        ContentValues[] cvArray = new ContentValues[userFriends.length];
+
+        for (int count = 0; count< userFriends.length; count ++) {
+            User userFriend = userFriends[count];
             ContentValues userCV = new ContentValues();
-            Log.i(LOG_TAG, "Inserting user friend with id: " + user.getId());
-            userCV.put(UserColumns.FIREBASE_ID, user.getId());
-            userCV.put(UserColumns.NAME, user.getName());
-            userCV.put(UserColumns.AGE, user.getAge());
-            userCV.put(UserColumns.EMAIL, user.getEmail());
-            userCV.put(UserColumns.FLUENT_LANGUAGE, user.getFluentLanguage());
-            userCV.put(UserColumns.LEARNING_CODE, user.getLearningCode());
-            userCV.put(UserColumns.LEARNING_LANGUAGE, user.getLearningLanguage());
-            userCV.put(UserColumns.USER_PHOTO_URL, user.getProfilePicture());
-            Log.i(LOG_TAG,"Profile URL: " + user.getProfilePicture());
+            Log.i(LOG_TAG, "Persist User Friends: Inserting user friend with id: " + userFriend.getId());
+            userCV.put(UserColumns.FIREBASE_ID, userFriend.getId());
+            userCV.put(UserColumns.NAME, userFriend.getName());
+            userCV.put(UserColumns.AGE, userFriend.getAge());
+            userCV.put(UserColumns.EMAIL, userFriend.getEmail());
+            userCV.put(UserColumns.FLUENT_LANGUAGE, userFriend.getFluentLanguage());
+            userCV.put(UserColumns.LEARNING_CODE, userFriend.getLearningCode());
+            userCV.put(UserColumns.LEARNING_LANGUAGE, userFriend.getLearningLanguage());
+            userCV.put(UserColumns.USER_PHOTO_URL, userFriend.getProfilePicture());
+            Log.i(LOG_TAG,"Profile URL: " + userFriend.getProfilePicture());
             userCV.put(UserColumns.FRIEND_OF, mFirebaseAuth.getCurrentUser().getUid());
+            cvArray[count] = userCV;
 
-            try {
-
-                Log.d(LOG_TAG, "trying to insert a row...");
-                //noinspection UnusedAssignment
-                Uri rowNumber = getContext().getContentResolver().insert(USER_URI, userCV);
-                Log.d(LOG_TAG, "inserted ok! Count: " + (count + 1));
-
-            } catch (Exception e) {
-                Log.e(LOG_TAG, "Insert not possible:" + e.getCause());
-                Log.d(LOG_TAG, "Trying to update");
-                Log.d(LOG_TAG, "Values: " + user.getId() + " "
-                        + user.getName() + " "
-                        + user.getEmail());
-                try {
-                    int rows = getContext().getContentResolver().update(USER_URI, userCV,
-                            UserColumns.FIREBASE_ID + " = ?", new String[]{user.getId()});
-                    if (rows > 0) {
-                        Log.i(LOG_TAG, "updated successfuly. Count: " + (count + 1));
-                    }
-
-                }catch (Exception error){
-                    Log.e(LOG_TAG, "Deu ruim o updated!" + error.getMessage());
-                }
-
-            }
 
         }
+
+        getContext().getContentResolver().delete(UsersProvider.Users.USER_URI,
+                UserColumns.FRIEND_OF + " = ?"
+                , new String[]{mainUser.getId()});
+
+        getContext().getContentResolver().bulkInsert(UsersProvider.Users.USER_URI, cvArray);
 
     }
 
