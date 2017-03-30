@@ -450,4 +450,11 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
 
     }
 
+    public static void setSyncStatus(Context c, @LocationStatus int syncStatus) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c);
+        SharedPreferences.Editor spe = sp.edit();
+        spe.putInt("sync-status", syncStatus);
+        spe.commit();
+    }
+
 }
