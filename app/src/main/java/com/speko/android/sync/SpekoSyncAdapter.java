@@ -8,12 +8,15 @@ import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.SyncInfo;
 import android.content.SyncRequest;
 import android.content.SyncResult;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -32,10 +35,12 @@ import com.speko.android.retrofit.FirebaseClient;
 import com.speko.android.retrofit.ServiceGenerator;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.HashMap;
 
 import retrofit2.Call;
+import retrofit2.Response;
 
 import static android.content.Context.ACCOUNT_SERVICE;
 import static com.speko.android.data.UserColumns.FIREBASE_ID;
@@ -60,7 +65,7 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
     private static User user;
 
 
-    public  static final String ACTION_DATA_UPDATED =
+    public static final String ACTION_DATA_UPDATED =
             "com.speko.android.ACTION_DATA_UPDATED";
 
 
@@ -76,6 +81,18 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
 
     }
 
+    @Retention(RetentionPolicy.SOURCE)
+    @IntDef({SYNC_STATUS_OK, SYNC_STATUS_SERVER_DOWN, SYNC_STATUS_INVALID, SYNC_STATUS_SERVER_INVALID,
+            SYNC_STATUS_UNKNOWN})
+    public @interface LocationStatus {
+    }
+
+    public static final int SYNC_STATUS_OK = 0;
+    public static final int SYNC_STATUS_SERVER_DOWN = 1;
+    public static final int SYNC_STATUS_SERVER_INVALID = 2;
+    public static final int SYNC_STATUS_UNKNOWN = 3;
+    public static final int SYNC_STATUS_INVALID = 4;
+
     public static void setUserToken(String userToken) {
         SpekoSyncAdapter.userToken = userToken;
     }
@@ -86,42 +103,43 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
 
 
         if (userToken != null) {
-            User user = getUser(userToken);
-
-            //in case of user null - logout - just stop
-            if(user == null){
-                return ;
-            }
-            persistUser(user);
-            persistChatListFrom(user);
-
-            HashMap<String, User> userFriends = null;
+            User user = null;
             try {
-                userFriends = getFriends(userToken);
-            } catch (UnsupportedEncodingException e) {
+                user = getUser(userToken);
+                //in case of user null - logout - just stop
+                if (user == null) {
+                    return;
+                }
+
+                getOtherUsersPhotofrom(user);
+
+                HashMap<String, User> userFriends = null;
+                    userFriends = getFriends(userToken);
+
+                if (userFriends != null) {
+                    // persisting everything in database
+                    persistUser(user);
+                    persistChatListFrom(user);
+                    persistFriends(userFriends.values().toArray(new User[userFriends.size()]));
+                    Log.i("SpekoSyncAdapter", "Deu certo!: \n" + user.toString());
+
+                }
+
+
+            } catch (IOException e) {
                 e.printStackTrace();
+                setSyncStatus(getContext(), SYNC_STATUS_SERVER_DOWN);
             }
-            if (userFriends != null) {
-                persistFriends(userFriends.values().toArray(new User[userFriends.size()]));
-                Log.i("SpekoSyncAdapter", "Deu certo!: \n" + user.toString());
-
-            }
-
-
-
-
-
-
-        } else {
+        }else {
             Log.w(LOG_TAG, "userToken not setted!");
         }
 
-        updateWidgets();
+            updateWidgets();
 
-    }
+        }
 
     private void updateWidgets() {
-        Log.i(LOG,"updateWidgets");
+        Log.i(LOG, "updateWidgets");
 
         Context context = getContext();
         Intent dataUpdatedIntent = new Intent(ACTION_DATA_UPDATED)
@@ -129,10 +147,36 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
         context.sendBroadcast(dataUpdatedIntent);
     }
 
+    /**
+     * Other users chat members pictures need another call for each one, as we don't work with
+     * relational database in firebase.
+     **/
+    private void getOtherUsersPhotofrom(User user) throws IOException {
+        HashMap<String, Chat> chats = user.getChats();
+        for (String chatKey : chats.keySet()) {
+            HashMap<String, User> membersHashMap = chats.get(chatKey).getMembers();
+            for (String otherUserId : membersHashMap.keySet()) {
+                if (!otherUserId.equals(user.getId())) {
+                    String profilePictureUrl = getProfilePictureForUserId(otherUserId, userToken);
+                    User otherUser = membersHashMap.get(otherUserId);
+
+                    // updating members hashmap with updated User java object
+                    otherUser.setProfilePicture(profilePictureUrl);
+                    membersHashMap.put(otherUserId, otherUser);
+                }
+            }
+
+            // updating chat hashmap with updated chat java object
+            Chat chat = chats.get(chatKey);
+            chat.setMembers(membersHashMap);
+            chats.put(chatKey, chat);
+        }
+    }
+
     private void persistChatListFrom(User user) {
-        Log.i(LOG_TAG,"persistChatListFrom");
+        Log.i(LOG_TAG, "persistChatListFrom");
         int count = 0;
-        if(user.getChats() == null){
+        if (user.getChats() == null) {
             return;
         }
         Chat[] chastList = user.getChats().values().toArray(new Chat[user.getChats().size()]);
@@ -143,14 +187,16 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
             User[] chatMembersList = chat.getMembers().values().toArray(
                     new User[chat.getMembers().values().size()]
             );
-            for (User other_user : chatMembersList){
-                if (!other_user.getId().equals(user.getId())){
+            for (User other_user : chatMembersList) {
+                if (!other_user.getId().equals(user.getId())) {
                     Log.i(LOG_TAG, "other user to be setted: \n" +
-                    "id: " + other_user.getId() +
-                    "name: " + other_user.getName());
+                            "id: " + other_user.getId() +
+                            "name: " + other_user.getName());
                     chatCV.put(ChatMembersColumns.OTHER_MEMBER_ID, other_user.getId());
                     chatCV.put(ChatMembersColumns.OTHER_MEMBER_NAME, other_user.getName());
-                    String profilePictureUrl = getProfilePictureForUserId(other_user.getId(), userToken);
+                    //TODO remove this part to a different one, where http requests are separated from database work
+                    //better put inside the object in other code part
+                    String profilePictureUrl = other_user.getProfilePicture();
                     chatCV.put(ChatMembersColumns.OTHER_USER_PHOTO_URL, profilePictureUrl);
 
                 }
@@ -178,32 +224,31 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
         }
 
 
-
     }
 
-    private String getProfilePictureForUserId(String id, String userToken) {
+    private String getProfilePictureForUserId(String id, String userToken) throws IOException {
         FirebaseClient client = ServiceGenerator.createService(FirebaseClient.class, new AccessToken(
                 "Bearer",
                 userToken)
         );
 
-        if(mFirebaseAuth.getCurrentUser().getUid() == null){
+        if (mFirebaseAuth.getCurrentUser().getUid() == null) {
             Log.w(LOG_TAG, "method with null User variable!");
             return null;
         }
         Call<String> call = client.getUserPictureUrl(id, userToken);
 
-        try {
-            Log.i("SpekoSyncAdapter", "getUser: \n");
-            String userPictureUrl = call.execute().body();
-            if (userPictureUrl != null){
+        Log.i("SpekoSyncAdapter", "getUser: \n");
+        Response<String> response = call.execute();
+        if(response.isSuccessful()) {
+            String userPictureUrl = response.body();
+            if (userPictureUrl != null) {
                 Log.i("SpekoSyncAdapter", "Deu certo!: \n" + user.toString());
-            }
 
-            return userPictureUrl;
-        } catch (IOException e) {
-            Log.e("SpekoSyncAdapter", "Deu ruim: \n" + e.getMessage());
-            // handle errors
+                return userPictureUrl;
+            }
+        }else{
+            //TODO handle API 4xx and 5xx responses
         }
 
         return null;
@@ -214,7 +259,7 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
     private void persistFriends(User[] userFriends) {
 
         // verification to solve a crash when getCurrent user returns null
-        if(mFirebaseAuth.getCurrentUser() == null){
+        if (mFirebaseAuth.getCurrentUser() == null) {
             Log.w(LOG_TAG, "User Signed Out!");
             mFirebaseAuth.signOut();
             return;
@@ -222,7 +267,7 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
         User mainUser = Utility.getUser(getContext());
         ContentValues[] cvArray = new ContentValues[userFriends.length];
 
-        for (int count = 0; count< userFriends.length; count ++) {
+        for (int count = 0; count < userFriends.length; count++) {
             User userFriend = userFriends[count];
             ContentValues userCV = new ContentValues();
             Log.i(LOG_TAG, "Persist User Friends: Inserting user friend with id: " + userFriend.getId());
@@ -234,7 +279,7 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
             userCV.put(UserColumns.LEARNING_CODE, userFriend.getLearningCode());
             userCV.put(UserColumns.LEARNING_LANGUAGE, userFriend.getLearningLanguage());
             userCV.put(UserColumns.USER_PHOTO_URL, userFriend.getProfilePicture());
-            Log.i(LOG_TAG,"Profile URL: " + userFriend.getProfilePicture());
+            Log.i(LOG_TAG, "Profile URL: " + userFriend.getProfilePicture());
             userCV.put(UserColumns.FRIEND_OF, mFirebaseAuth.getCurrentUser().getUid());
             cvArray[count] = userCV;
 
@@ -249,7 +294,7 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
 
     }
 
-    private HashMap<String, User> getFriends(String idToken) throws UnsupportedEncodingException {
+    private HashMap<String, User> getFriends(String idToken) throws IOException {
 
         // Fetch and print a list of the contributors to this library.
         FirebaseClient client = ServiceGenerator.createService(FirebaseClient.class, new AccessToken(
@@ -257,20 +302,22 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
                 idToken)
         );
 
-        String parameterValue = user.getLearningLanguage()  + "|" + user.getFluentLanguage();
+        String parameterValue = user.getLearningLanguage() + "|" + user.getFluentLanguage();
         String parameterKey = "learningCode";
-        Call<HashMap<String,User>> call = client.getUsersListWith(userToken
-                ,"\"" + parameterKey + "\""
+        Call<HashMap<String, User>> call = client.getUsersListWith(userToken
+                , "\"" + parameterKey + "\""
                 , "\"" + parameterValue + "\"");
 
-        try {
-            Log.i("SpekoSyncAdapter", "getFriends: \n");
-            HashMap<String, User> friends = call.execute().body();
+//        try {
+        Log.i("SpekoSyncAdapter", "getFriends: \n");
 
+        Response<HashMap<String,User>> response = call.execute();
+
+        if(response.isSuccessful()){
+            HashMap<String, User> friends = response.body();
             return friends;
-        } catch (IOException e) {
-            Log.e("SpekoSyncAdapter", "Deu ruim: \n" + e.getMessage());
-            // handle errors
+        }else{
+            //TODO handle API error responses
         }
 
         return null;
@@ -279,9 +326,9 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
     }
 
     private void persistUser(@NonNull User user) {
-        if(user == null ){
+        if (user == null) {
             Log.w(LOG_TAG, "method with null User variable!");
-            return ;
+            return;
         }
         ContentValues userCV = new ContentValues();
         userCV.put(FIREBASE_ID, user.getId());
@@ -303,30 +350,33 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
         getContext().getContentResolver().insert(USER_URI, userCV);
     }
 
-    private static User getUser(String idToken) {
+    private User getUser(String idToken) throws IOException {
         // Fetch and print a list of the contributors to this library.
         FirebaseClient client = ServiceGenerator.createService(FirebaseClient.class, new AccessToken(
                 "Bearer",
                 idToken)
         );
-        if(mFirebaseAuth.getCurrentUser().getUid() == null){
+        if (mFirebaseAuth.getCurrentUser().getUid() == null) {
             Log.w(LOG_TAG, "method with null User variable!");
             return null;
         }
         Call<User> call = client.getUser(mFirebaseAuth.getCurrentUser().getUid(), idToken);
 
-        try {
-            Log.i("SpekoSyncAdapter", "getUser: \n");
-            user = call.execute().body();
-            if (user != null){
+//        try {
+        Log.i("SpekoSyncAdapter", "getUser: \n");
+        Response<User> response = call.execute();
+        if (response.isSuccessful()) {
+            user = response.body();
+            if (user != null) {
                 Log.i("SpekoSyncAdapter", "Deu certo!: \n" + user.toString());
             }
-
             return user;
-        } catch (IOException e) {
-            Log.e("SpekoSyncAdapter", "Deu ruim: \n" + e.getMessage());
-            // handle errors
+
+        } else {
+            //TODO Handle API error responses
+            Log.e(LOG_TAG, "Response not successfull");
         }
+
 
         return null;
 
@@ -422,6 +472,7 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
         return false;
 
     }
+
 
     /**
      * Helper method to schedule the sync adapter periodic execution
