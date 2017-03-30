@@ -52,6 +52,7 @@
     <string name="string_widget_conversations">User Conversations</string>
     <string name="empty_conversations_list">No Conversations Available</string>
     <string name="photo">photo</string>
+    <string name="no_friend_to_show">No friend to show</string>
 
 
 </resources>
