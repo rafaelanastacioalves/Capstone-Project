@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -47,6 +49,12 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
 
     @BindView(R.id.bottom_view_layout_home_activity)
     BottomNavigationView mBottomNavigationView;
+
+    @BindView(R.id.home_activity_coordinator_layout)
+    CoordinatorLayout mCoordinatorLayout;
+
+
+
     private int mSelectedItem;
     private FirebaseDatabase firebaseDatabase;
 
@@ -62,6 +70,8 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
 
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
+
+        showSnackBar();
 
 
         // Get the content resolver for your app
@@ -122,6 +132,13 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
         }
         selectFragment(selectedItem);
 
+
+    }
+
+    private void showSnackBar() {
+        Snackbar.make(mCoordinatorLayout,
+                "SnackBar", Snackbar.LENGTH_LONG)
+                .show();
 
     }
 

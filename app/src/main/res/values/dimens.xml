@@ -24,6 +24,7 @@
     <dimen name="widget_conversation_default_width">250dp</dimen>
     <dimen name="bottom_navigation_view_elevation">8dp</dimen>
     <dimen name="textview_default_height">48dp</dimen>
+    <dimen name="default_screen_margin">16dp</dimen>
 
 
 </resources>

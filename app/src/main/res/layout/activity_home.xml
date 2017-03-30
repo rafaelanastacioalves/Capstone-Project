@@ -3,6 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    app:layout_gravity="bottom"
+    android:gravity="bottom"
     android:layout_height="match_parent"
 
     tools:context="com.speko.android.HomeActivity"
@@ -10,27 +12,30 @@
 
 
 
-
-    <FrameLayout
-
-
+    <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/home_activity_coordinator_layout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:id="@+id/home_activity_fragment_container"
-        />
+        android:layout_weight="1">
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/home_activity_fragment_container"
+            />
+    </android.support.design.widget.CoordinatorLayout>
 
-    <android.support.design.widget.BottomNavigationView
-        app:elevation="@dimen/bottom_navigation_view_elevation"
-        android:id="@+id/bottom_view_layout_home_activity"
-        android:layout_width="match_parent"
-        app:theme="@style/AppTheme.AppBarOverlay"
-        android:layout_gravity="start"
-        android:layout_height="56dp"
-        app:itemIconTint="@drawable/nav_item_color_state"
-        app:itemTextColor="@drawable/nav_item_color_state"
-        app:itemBackground="@color/authui_colorPrimary"
-        app:menu="@menu/bottom_navigation_main"
+        <android.support.design.widget.BottomNavigationView
+            app:elevation="@dimen/bottom_navigation_view_elevation"
+            android:id="@+id/bottom_view_layout_home_activity"
+            android:layout_width="match_parent"
+            app:theme="@style/AppTheme.AppBarOverlay"
+            android:layout_height="56dp"
 
-        />
+            app:itemIconTint="@drawable/nav_item_color_state"
+            app:itemTextColor="@drawable/nav_item_color_state"
+            app:itemBackground="@color/authui_colorPrimary"
+            app:menu="@menu/bottom_navigation_main"
+
+            />
+
 </LinearLayout>
