@@ -1,8 +1,11 @@
 package com.speko.android;
 
 import android.accounts.Account;
+import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -30,6 +33,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.fabric.sdk.android.Fabric;
 
+import static android.net.ConnectivityManager.CONNECTIVITY_ACTION;
+
 public class HomeActivity extends AppCompatActivity implements ProfileFragment.OnFragmentInteractionListener  {
 
     // Constants
@@ -46,17 +51,33 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
     private FirebaseAuth mFirebaseAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     private static UsersDatabase userDB;
+    private int mSelectedItem;
+    private FirebaseDatabase firebaseDatabase;
+
+
+    private BroadcastReceiver connectivityChangeReceiver = new BroadcastReceiver() {
+        private final String LOG_TAG = "BroadcastReceiver";
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.i(LOG_TAG, "Intent received in HomeActivity");
+            if (intent.getAction().equals(CONNECTIVITY_ACTION)){
+                if (!Utility.isNetworkAvailable(context)){
+                    showSnackBar(true);
+                }else{
+                    showSnackBar(false);
+                }
+            }
+        }
+    };
+
 
     @BindView(R.id.bottom_view_layout_home_activity)
     BottomNavigationView mBottomNavigationView;
 
     @BindView(R.id.home_activity_coordinator_layout)
     CoordinatorLayout mCoordinatorLayout;
+    private Snackbar connectivitySnackBar;
 
-
-
-    private int mSelectedItem;
-    private FirebaseDatabase firebaseDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,8 +92,8 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
 
-        showSnackBar();
-
+        connectivitySnackBar = Snackbar.make(mCoordinatorLayout,
+                R.string.connectivity_error, Snackbar.LENGTH_INDEFINITE);
 
         // Get the content resolver for your app
         mResolver = getContentResolver();
@@ -135,10 +156,13 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
 
     }
 
-    private void showSnackBar() {
-        Snackbar.make(mCoordinatorLayout,
-                "SnackBar", Snackbar.LENGTH_LONG)
-                .show();
+    private void showSnackBar(Boolean show) {
+        if (show){
+            connectivitySnackBar.show();
+        }else{
+            connectivitySnackBar.dismiss();
+        }
+
 
     }
 
@@ -191,7 +215,9 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
     @Override
     protected void onStart() {
         Log.i(LOG_TAG, "onStart");
-
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(CONNECTIVITY_ACTION);
+        registerReceiver(connectivityChangeReceiver, filter);
         super.onStart();
     }
 
@@ -259,6 +285,7 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
         if (mAuthStateListener != null) {
             mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
         }
+        unregisterReceiver(connectivityChangeReceiver);
 
     }
 

@@ -82,14 +82,14 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    @IntDef({SYNC_STATUS_OK, SYNC_STATUS_SERVER_DOWN, SYNC_STATUS_INVALID, SYNC_STATUS_SERVER_INVALID,
+    @IntDef({SYNC_STATUS_OK, SYNC_STATUS_SERVER_DOWN, SYNC_STATUS_INVALID, SYNC_STATUS_SERVER_ERROR,
             SYNC_STATUS_UNKNOWN})
     public @interface LocationStatus {
     }
 
     public static final int SYNC_STATUS_OK = 0;
     public static final int SYNC_STATUS_SERVER_DOWN = 1;
-    public static final int SYNC_STATUS_SERVER_INVALID = 2;
+    public static final int SYNC_STATUS_SERVER_ERROR = 2;
     public static final int SYNC_STATUS_UNKNOWN = 3;
     public static final int SYNC_STATUS_INVALID = 4;
 
@@ -99,22 +99,26 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
 
     @Override
     public void onPerformSync(Account account, Bundle bundle, String s, ContentProviderClient contentProviderClient, SyncResult syncResult) {
-        Log.d(LOG_TAG, "onPerformSync");
+        Log.i(LOG_TAG, "onPerformSync");
 
 
         if (userToken != null) {
             User user = null;
             try {
+
+                Log.i("SpekoSyncAdapter", "getUser... ");
                 user = getUser(userToken);
                 //in case of user null - logout - just stop
                 if (user == null) {
                     return;
                 }
 
+                Log.i("SpekoSyncAdapter", "getOtherUSerPhotofrom... ");
                 getOtherUsersPhotofrom(user);
 
                 HashMap<String, User> userFriends = null;
-                    userFriends = getFriends(userToken);
+                Log.i("SpekoSyncAdapter", "getFriends... ");
+                userFriends = getFriends(userToken);
 
                 if (userFriends != null) {
                     // persisting everything in database
@@ -127,16 +131,19 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
 
 
             } catch (IOException e) {
-                e.printStackTrace();
+                Log.e(LOG_TAG, e.getMessage());
                 setSyncStatus(getContext(), SYNC_STATUS_SERVER_DOWN);
+            } catch (Exception e){
+                Log.e(LOG_TAG, e.getMessage());
+                setSyncStatus(getContext(), SYNC_STATUS_UNKNOWN);
             }
-        }else {
+        } else {
             Log.w(LOG_TAG, "userToken not setted!");
         }
 
-            updateWidgets();
+        updateWidgets();
 
-        }
+    }
 
     private void updateWidgets() {
         Log.i(LOG, "updateWidgets");
@@ -153,24 +160,27 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
      **/
     private void getOtherUsersPhotofrom(User user) throws IOException {
         HashMap<String, Chat> chats = user.getChats();
-        for (String chatKey : chats.keySet()) {
-            HashMap<String, User> membersHashMap = chats.get(chatKey).getMembers();
-            for (String otherUserId : membersHashMap.keySet()) {
-                if (!otherUserId.equals(user.getId())) {
-                    String profilePictureUrl = getProfilePictureForUserId(otherUserId, userToken);
-                    User otherUser = membersHashMap.get(otherUserId);
+        if (chats != null) {
+            for (String chatKey : chats.keySet()) {
+                HashMap<String, User> membersHashMap = chats.get(chatKey).getMembers();
+                for (String otherUserId : membersHashMap.keySet()) {
+                    if (!otherUserId.equals(user.getId())) {
+                        String profilePictureUrl = getProfilePictureForUserId(otherUserId, userToken);
+                        User otherUser = membersHashMap.get(otherUserId);
 
-                    // updating members hashmap with updated User java object
-                    otherUser.setProfilePicture(profilePictureUrl);
-                    membersHashMap.put(otherUserId, otherUser);
+                        // updating members hashmap with updated User java object
+                        otherUser.setProfilePicture(profilePictureUrl);
+                        membersHashMap.put(otherUserId, otherUser);
+                    }
                 }
-            }
 
-            // updating chat hashmap with updated chat java object
-            Chat chat = chats.get(chatKey);
-            chat.setMembers(membersHashMap);
-            chats.put(chatKey, chat);
+                // updating chat hashmap with updated chat java object
+                Chat chat = chats.get(chatKey);
+                chat.setMembers(membersHashMap);
+                chats.put(chatKey, chat);
+            }
         }
+
     }
 
     private void persistChatListFrom(User user) {
@@ -240,14 +250,14 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
 
         Log.i("SpekoSyncAdapter", "getUser: \n");
         Response<String> response = call.execute();
-        if(response.isSuccessful()) {
+        if (response.isSuccessful()) {
             String userPictureUrl = response.body();
             if (userPictureUrl != null) {
                 Log.i("SpekoSyncAdapter", "Deu certo!: \n" + user.toString());
 
                 return userPictureUrl;
             }
-        }else{
+        } else {
             //TODO handle API 4xx and 5xx responses
         }
 
@@ -311,12 +321,12 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
 //        try {
         Log.i("SpekoSyncAdapter", "getFriends: \n");
 
-        Response<HashMap<String,User>> response = call.execute();
+        Response<HashMap<String, User>> response = call.execute();
 
-        if(response.isSuccessful()){
+        if (response.isSuccessful()) {
             HashMap<String, User> friends = response.body();
             return friends;
-        }else{
+        } else {
             //TODO handle API error responses
         }
 
@@ -504,7 +514,7 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
     public static void setSyncStatus(Context c, @LocationStatus int syncStatus) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c);
         SharedPreferences.Editor spe = sp.edit();
-        spe.putInt("sync-status", syncStatus);
+        spe.putInt(c.getString(R.string.shared_preference_sync_status_key), syncStatus);
         spe.commit();
     }
 

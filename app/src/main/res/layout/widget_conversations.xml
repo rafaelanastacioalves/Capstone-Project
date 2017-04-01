@@ -44,7 +44,7 @@
             android:gravity="center"
             android:fontFamily="sans-serif-condensed"
             android:textAppearance="?android:textAppearanceLarge"
-            android:text="@string/empty_conversations_list"
+            android:text="@string/no_friend_to_show"
             />
 
 

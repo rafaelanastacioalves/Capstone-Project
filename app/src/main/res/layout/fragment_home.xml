@@ -37,11 +37,30 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <!-- we don't apply padding here, as we already do in the viewholders -->
-        <android.support.v7.widget.RecyclerView
-            tools:listitem="@layout/friend_viewholder"
-            android:id="@+id/user_list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_gravity="fill"
+            android:layout_height="wrap_content">
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/recyclerview_list_empty_textview"
+                app:layout_anchorGravity="fill"
+                android:padding="@dimen/default_screen_margin"
+                android:gravity="center_horizontal"
+                android:text="@string/no_friend_to_show"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+
+            <android.support.v7.widget.RecyclerView
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                tools:listitem="@layout/friend_viewholder"
+                android:id="@+id/user_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+
+        </FrameLayout>
+
         <android.support.v4.widget.ContentLoadingProgressBar
             android:id="@+id/progress_bar"
             android:layout_gravity="center"
@@ -50,14 +69,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-        <android.support.v7.widget.AppCompatTextView
-            app:layout_anchor="@id/user_list"
-            app:layout_anchorGravity="fill"
-            android:padding="@dimen/default_screen_margin"
-            android:gravity="center_horizontal"
-            android:text="@string/no_friend_to_show"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+
 
 
 

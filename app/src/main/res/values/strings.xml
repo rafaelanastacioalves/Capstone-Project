@@ -47,12 +47,23 @@
 
     <!-- Firebase refs-->
     <string name="user_pictures" translatable="false">user_pitctures</string>
+
+
     <string name="languages_must_be_different_error">Fluent Language and Language of Interest MUST be different</string>
     <string name="age_not_acceptable_error">Please put an acceptable age.</string>
     <string name="string_widget_conversations">User Conversations</string>
-    <string name="empty_conversations_list">No Conversations Available</string>
     <string name="photo">photo</string>
-    <string name="no_friend_to_show">No friend to show</string>
+
+    <!-- Shared Preferences Status-->
+    <string name="shared_preference_sync_status_key">sync-status</string>
+
+    <!-- Error messages -->
+
+    <string name="no_friend_to_show">No friends to show</string>
+    <string name="sync_status_message_server_down">No friends to show. The server is not returning data.</string>
+    <string name="sync_status_message_server_error">No friends to show. The server is not returning valid data.</string>
+    <string name="empty_conversations_list_no_network">The network is not available to fetch data</string>
+    <string name="connectivity_error">Please verify your connectivity</string>
 
 
 </resources>

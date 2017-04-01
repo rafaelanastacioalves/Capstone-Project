@@ -1,6 +1,7 @@
 package com.speko.android;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -14,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -28,7 +30,8 @@ import butterknife.OnClick;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class HomeActivityFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class HomeActivityFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>,
+        SharedPreferences.OnSharedPreferenceChangeListener {
 
     private final String LOG_TAG = getClass().getSimpleName();
 
@@ -44,6 +47,9 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
 
     @BindView(R.id.progress_bar)
     ContentLoadingProgressBar progressBar;
+
+    @BindView(R.id.recyclerview_list_empty_textview)
+    TextView emptyListTextView;
 
 
 
@@ -181,9 +187,40 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         Log.i(LOG_TAG, "onLoaderFinished with total data: " + data.getCount());
         mAdapter.swapCursor(data);
-
+        updateEmptyView();
         if(!SpekoSyncAdapter.isSyncActive(getActivity())){
             setRefreshScreen(false);
+        }
+
+    }
+
+    private void updateEmptyView() {
+        Log.i(LOG_TAG,"updateEmptyView");
+
+        if (mAdapter.getItemCount() == 0){
+            @SpekoSyncAdapter.LocationStatus int status = Utility.getSyncStatus(getActivity());
+            String message = getString(R.string.no_friend_to_show);
+            switch (status) {
+                //TODO: preencher com as mensagens
+                case SpekoSyncAdapter.SYNC_STATUS_SERVER_DOWN:
+                    Log.i(LOG_TAG,"updateEmptyView: Sync Statys Server Down");
+                    message = getString(R.string.sync_status_message_server_down);
+                    Log.i(LOG_TAG,"updateEmptyView: Message Server Down");
+                    break;
+                case SpekoSyncAdapter.SYNC_STATUS_SERVER_ERROR:
+                    Log.i(LOG_TAG,"updateEmptyView: Server Error");
+                    message = getString(R.string.sync_status_message_server_error);
+                    break;
+                default:
+                    if (!Utility.isNetworkAvailable(getActivity())){
+                        Log.i(LOG_TAG,"updateEmptyView: No Network");
+                        message = getString(R.string.empty_conversations_list_no_network);
+                    }
+            }
+
+            if (emptyListTextView != null) {
+                emptyListTextView.setText(message);
+            }
         }
 
     }
@@ -193,6 +230,12 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
         Log.i(LOG_TAG,"onLoaderReset");
         mAdapter.swapCursor(null);
 
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if(key.equals(getString(R.string.shared_preference_sync_status_key))){
+        }
     }
 
 }

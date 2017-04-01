@@ -37,6 +37,8 @@ public class ConversationsFragment extends Fragment implements LoaderManager.Loa
 
 
 
+
+
     public ConversationsFragment() {
         // Required empty public constructor
     }
@@ -128,4 +130,8 @@ public class ConversationsFragment extends Fragment implements LoaderManager.Loa
         Log.i(LOG_TAG,"onLoaderReset");
         mAdapter.swapCursor(null);
     }
+
+
+
+
 }

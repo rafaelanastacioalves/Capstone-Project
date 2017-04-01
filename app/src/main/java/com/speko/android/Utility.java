@@ -3,7 +3,11 @@ package com.speko.android;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.CursorLoader;
@@ -22,6 +26,7 @@ import com.speko.android.data.MessageLocal;
 import com.speko.android.data.User;
 import com.speko.android.data.UserColumns;
 import com.speko.android.data.UsersProvider;
+import com.speko.android.sync.SpekoSyncAdapter;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -387,5 +392,18 @@ public class Utility {
         context.getContentResolver().delete(UsersProvider.Users
                 .usersFriendsFrom(getUser(context).getId()),null,null);
         context.getContentResolver().delete(UsersProvider.ChatMembers.CHAT_URI,null,null);
+    }
+
+    public static boolean isNetworkAvailable(Context c){
+        ConnectivityManager cm = (ConnectivityManager) c.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting();
+    }
+
+    @SuppressWarnings("ResourceType")
+    static public @SpekoSyncAdapter.LocationStatus int getSyncStatus(Context c) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c);
+        return sp.getInt(c.getString(R.string.shared_preference_sync_status_key), SpekoSyncAdapter.SYNC_STATUS_UNKNOWN);
     }
 }
