@@ -34,36 +34,25 @@ import butterknife.OnClick;
 public class HomeActivityFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>,
         SharedPreferences.OnSharedPreferenceChangeListener {
 
+    static final int COL_USER_ID = 0;
+    static final int COL_USER_NAME = 1;
+    static final int COL_EMAIL = 2;
+    private static final int FRIENDS_LOADER = 1;
     private final String LOG_TAG = getClass().getSimpleName();
-
-
     @BindView(R.id.user_list)
     RecyclerView userList;
-
     @BindView(R.id.log_out)
     Button logOut;
-
     @BindView(R.id.sync_button)
     Button sync_button;
-
     @BindView(R.id.progress_bar)
     ContentLoadingProgressBar progressBar;
-
     @BindView(R.id.recyclerview_list_empty_textview)
     TextView emptyListTextView;
-
-
-
-    private static final int FRIENDS_LOADER = 1;
     private FirebaseDatabase firebaseDatabase;
     private FirebaseUser authUser;
     private FriendsListAdapter mAdapter;
     private ChildEventListener userListListener;
-
-
-    static final int COL_USER_ID = 0;
-    static final int COL_USER_NAME = 1;
-    static final int COL_EMAIL = 2;
 
     public HomeActivityFragment() {
     }
@@ -118,7 +107,7 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
             //if sync NOT active, enable list clicking
 
             // If is connected to the internet
-            if(Utility.getIsConnectedStatus(getActivity())){
+            if (Utility.getIsConnectedStatus(getActivity())) {
                 mAdapter.setViewItensClickable(true);
             }
 
@@ -132,18 +121,7 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
         super.onResume();
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         sp.registerOnSharedPreferenceChangeListener(this);
-        Log.i(LOG_TAG, "onResume");
-        if (SpekoSyncAdapter.isSyncActive(getContext())){
-            Log.i(LOG_TAG, "Sync is active");
-            setRefreshScreen(true);
-        }else{
-            Log.i(LOG_TAG, "Sync is NOT active");
-
-            //in case we are offline
-            if(!Utility.isNetworkAvailable(getActivity())){
-                mAdapter.setViewItensClickable(false);
-            }
-        }
+        updateScreenState();
 
     }
 
@@ -156,9 +134,8 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
         firebaseDatabase = FirebaseDatabase.getInstance();
         authUser = FirebaseAuth.getInstance().getCurrentUser();
 
-        Log.i(LOG_TAG,"Initloader");
+        Log.i(LOG_TAG, "Initloader");
         getLoaderManager().initLoader(FRIENDS_LOADER, null, this);
-
 
 
         super.onStart();
@@ -170,8 +147,9 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
         sp.unregisterOnSharedPreferenceChangeListener(this);
         super.onPause();
     }
+
     @OnClick(R.id.sync_button)
-    public void sync(View v){
+    public void sync(View v) {
         SpekoSyncAdapter.syncImmediatly(getActivity());
         setRefreshScreen(true);
 //        getLoaderManager().restartLoader(FRIENDS_LOADER,null, this);
@@ -179,20 +157,16 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
 
 
     @OnClick(R.id.log_out)
-    public void logOut(View v){
+    public void logOut(View v) {
 
         Utility.deleteEverything(getContext());
         FirebaseAuth.getInstance().signOut();
     }
 
 
-
-
-
-
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        Log.i(LOG_TAG,"onCreateLoader");
+        Log.i(LOG_TAG, "onCreateLoader");
         return Utility.getUserFriendsCursorLoader(getContext());
     }
 
@@ -201,32 +175,32 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
         Log.i(LOG_TAG, "onLoaderFinished with total data: " + data.getCount());
         mAdapter.swapCursor(data);
         updateEmptyView();
-        if(!SpekoSyncAdapter.isSyncActive(getActivity())){
+        if (!SpekoSyncAdapter.isSyncActive(getActivity())) {
             setRefreshScreen(false);
         }
 
     }
 
     private void updateEmptyView() {
-        Log.i(LOG_TAG,"updateEmptyView");
+        Log.i(LOG_TAG, "updateEmptyView");
 
-        if (mAdapter.getItemCount() == 0){
+        if (mAdapter.getItemCount() == 0) {
             @SpekoSyncAdapter.LocationStatus int status = Utility.getSyncStatus(getActivity());
             String message = getString(R.string.no_friend_to_show);
             switch (status) {
                 //TODO: preencher com as mensagens
                 case SpekoSyncAdapter.SYNC_STATUS_SERVER_DOWN:
-                    Log.i(LOG_TAG,"updateEmptyView: Sync Statys Server Down");
+                    Log.i(LOG_TAG, "updateEmptyView: Sync Statys Server Down");
                     message = getString(R.string.sync_status_message_server_down);
-                    Log.i(LOG_TAG,"updateEmptyView: Message Server Down");
+                    Log.i(LOG_TAG, "updateEmptyView: Message Server Down");
                     break;
                 case SpekoSyncAdapter.SYNC_STATUS_SERVER_ERROR:
-                    Log.i(LOG_TAG,"updateEmptyView: Server Error");
+                    Log.i(LOG_TAG, "updateEmptyView: Server Error");
                     message = getString(R.string.sync_status_message_server_error);
                     break;
                 default:
-                    if (!Utility.isNetworkAvailable(getActivity())){
-                        Log.i(LOG_TAG,"updateEmptyView: No Network");
+                    if (!Utility.isNetworkAvailable(getActivity())) {
+                        Log.i(LOG_TAG, "updateEmptyView: No Network");
                         message = getString(R.string.empty_conversations_list_no_network);
                     }
             }
@@ -240,26 +214,42 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        Log.i(LOG_TAG,"onLoaderReset");
+        Log.i(LOG_TAG, "onLoaderReset");
         mAdapter.swapCursor(null);
 
+    }
+
+    public void updateScreenState() {
+        updateEmptyView();
+        if (SpekoSyncAdapter.isSyncActive(getContext())) {
+            Log.i(LOG_TAG, "Sync is active");
+            setRefreshScreen(true);
+        } else {
+            Log.i(LOG_TAG, "Sync is NOT active");
+            setRefreshScreen(false);
+
+            //in case we are offline
+            if (!Utility.isNetworkAvailable(getActivity())) {
+                //we keep not allowing click
+                mAdapter.setViewItensClickable(false);
+            }
+        }
     }
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         Log.d(LOG_TAG, "Shared Preferences changed: ");
-        if(key.equals(getString(R.string.shared_preference_sync_status_key))){
+        if (key.equals(getString(R.string.shared_preference_sync_status_key))) {
             Log.d(LOG_TAG, "Case sync-status");
-            updateEmptyView();
-            if(!Utility.isNetworkAvailable(getActivity())){
-                mAdapter.setViewItensClickable(false);
-            }
+            updateScreenState();
         }
 
-        if(key.equals(getString(R.string.shared_preference_active_connectivity_status_key))){
+        if (key.equals(getString(R.string.shared_preference_active_connectivity_status_key))) {
             Log.d(LOG_TAG, "Case connectivity");
-            mAdapter.setViewItensClickable(sharedPreferences.getBoolean(key,false));
+            updateScreenState();
+
         }
     }
+
 
 }
