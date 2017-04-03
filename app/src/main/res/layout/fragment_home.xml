@@ -60,7 +60,7 @@
 
 
         </FrameLayout>
-
+        //TODO put it inside the the other frame layout
         <android.support.v4.widget.ContentLoadingProgressBar
             android:id="@+id/progress_bar"
             android:layout_gravity="center"

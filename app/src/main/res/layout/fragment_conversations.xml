@@ -1,5 +1,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -15,11 +16,36 @@
         android:layout_height="@dimen/textview_default_height"
         android:text="@string/conversations_fragment" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/conversations_list"
-        tools:listitem="@layout/conversation_viewholder"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></android.support.v7.widget.RecyclerView>
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/recyclerview_list_empty_textview"
+            app:layout_anchorGravity="fill"
+            android:padding="@dimen/default_screen_margin"
+            android:gravity="center_horizontal"
+            android:text="@string/no_friend_to_show"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/conversations_list"
+            tools:listitem="@layout/conversation_viewholder"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"></android.support.v7.widget.RecyclerView>
+
+        //TODO put it inside the the other frame layout
+        <android.support.v4.widget.ContentLoadingProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_gravity="center"
+            style="?android:attr/progressBarStyle"
+            android:visibility="visible"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </FrameLayout>
+
 
 
 

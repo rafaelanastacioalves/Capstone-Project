@@ -36,7 +36,6 @@ public class ConversationsListAdapter extends RecyclerView.Adapter<Conversations
         Log.i(LOG_TAG, "Contructor");
         mContext = context;
         mClickHanlder = dh;
-        updateItemClicking();
 
     }
 
@@ -120,8 +119,14 @@ public class ConversationsListAdapter extends RecyclerView.Adapter<Conversations
         }
     }
 
+    public void setViewItensClickable(boolean b) {
+        this.viewItensClickable = b;
+        notifyDataSetChanged();
+    }
+
     public static interface ConversationsAdapterOnClickHandler {
         void onClick(String friendID);
+
     }
 
 

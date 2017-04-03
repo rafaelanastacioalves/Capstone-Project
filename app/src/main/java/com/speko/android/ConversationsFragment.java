@@ -2,17 +2,23 @@ package com.speko.android;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
+import com.speko.android.sync.SpekoSyncAdapter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -22,7 +28,7 @@ import butterknife.ButterKnife;
  * Use the {@link ConversationsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ConversationsFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class ConversationsFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, SharedPreferences.OnSharedPreferenceChangeListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String USER_ID = "param1";
@@ -33,11 +39,11 @@ public class ConversationsFragment extends Fragment implements LoaderManager.Loa
     @BindView(R.id.conversations_list)
     RecyclerView conversationsList;
 
+    @BindView(R.id.recyclerview_list_empty_textview)
+    TextView emptyListTextView;
 
-
-
-
-
+    @BindView(R.id.progress_bar)
+    ContentLoadingProgressBar progressBar;
 
     public ConversationsFragment() {
         // Required empty public constructor
@@ -71,6 +77,22 @@ public class ConversationsFragment extends Fragment implements LoaderManager.Loa
         super.onStart();
         Log.i(LOG_TAG,"Initloader");
         getLoaderManager().initLoader(CONVERSATIONS_LOADER, null, this);
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        sp.registerOnSharedPreferenceChangeListener(this);
+        updateScreenState();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+    }
+
+    @Override
+    public void onPause() {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        sp.unregisterOnSharedPreferenceChangeListener(this);
+        super.onPause();
     }
 
     @Override
@@ -132,6 +154,92 @@ public class ConversationsFragment extends Fragment implements LoaderManager.Loa
     }
 
 
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+
+        Log.d(LOG_TAG, "Shared Preferences changed: ");
+        if (key.equals(getString(R.string.shared_preference_sync_status_key))) {
+            Log.d(LOG_TAG, "Case sync-status");
+            updateScreenState();
+        }
+
+        if (key.equals(getString(R.string.shared_preference_active_connectivity_status_key))) {
+            Log.d(LOG_TAG, "Case connectivity");
+            updateScreenState();
+
+        }
+
+    }
+
+    private void updateScreenState() {
+
+        updateEmptyView();
+        if (SpekoSyncAdapter.isSyncActive(getContext())) {
+            Log.i(LOG_TAG, "Sync is active");
+            setRefreshScreen(true);
+        } else {
+            Log.i(LOG_TAG, "Sync is NOT active");
+            setRefreshScreen(false);
+
+            //in case we are offline
+            if (!Utility.isNetworkAvailable(getActivity())) {
+                //we keep not allowing click
+                mAdapter.setViewItensClickable(false);
+            }
+        }
+
+    }
+
+    private void setRefreshScreen(Boolean active) {
+        //TODO Implement
+        Log.i(LOG_TAG, "setRefresh: " + active.toString());
+        if (active) {
+            progressBar.show();
+            //if sync active, disable list clicking
+            mAdapter.setViewItensClickable(false);
 
 
+        } else {
+            progressBar.hide();
+            //if sync NOT active, enable list clicking
+
+            // If is connected to the internet
+            if (Utility.getIsConnectedStatus(getActivity())) {
+                mAdapter.setViewItensClickable(true);
+            }
+
+        }
+    }
+
+    private void updateEmptyView() {
+
+        Log.i(LOG_TAG, "updateEmptyView");
+
+        if (mAdapter.getItemCount() == 0) {
+            @SpekoSyncAdapter.LocationStatus int status = Utility.getSyncStatus(getActivity());
+            String message = getString(R.string.no_friend_to_show);
+            switch (status) {
+                //TODO: preencher com as mensagens
+                case SpekoSyncAdapter.SYNC_STATUS_SERVER_DOWN:
+                    Log.i(LOG_TAG, "updateEmptyView: Sync Statys Server Down");
+                    message = getString(R.string.sync_status_message_server_down);
+                    Log.i(LOG_TAG, "updateEmptyView: Message Server Down");
+                    break;
+                case SpekoSyncAdapter.SYNC_STATUS_SERVER_ERROR:
+                    Log.i(LOG_TAG, "updateEmptyView: Server Error");
+                    message = getString(R.string.sync_status_message_server_error);
+                    break;
+                default:
+                    if (!Utility.isNetworkAvailable(getActivity())) {
+                        Log.i(LOG_TAG, "updateEmptyView: No Network");
+                        message = getString(R.string.empty_conversations_list_no_network);
+                    }
+            }
+
+            if (emptyListTextView != null) {
+                emptyListTextView.setText(message);
+            }
+        }
+
+    }
 }
