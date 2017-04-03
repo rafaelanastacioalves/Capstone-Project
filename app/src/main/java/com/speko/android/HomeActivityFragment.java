@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
@@ -115,7 +116,11 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
         } else {
             progressBar.hide();
             //if sync NOT active, enable list clicking
-            mAdapter.setViewItensClickable(true);
+
+            // If is connected to the internet
+            if(Utility.getIsConnectedStatus(getActivity())){
+                mAdapter.setViewItensClickable(true);
+            }
 
         }
 
@@ -125,12 +130,19 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
     @Override
     public void onResume() {
         super.onResume();
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        sp.registerOnSharedPreferenceChangeListener(this);
         Log.i(LOG_TAG, "onResume");
         if (SpekoSyncAdapter.isSyncActive(getContext())){
             Log.i(LOG_TAG, "Sync is active");
             setRefreshScreen(true);
         }else{
             Log.i(LOG_TAG, "Sync is NOT active");
+
+            //in case we are offline
+            if(!Utility.isNetworkAvailable(getActivity())){
+                mAdapter.setViewItensClickable(false);
+            }
         }
 
     }
@@ -154,7 +166,8 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
 
     @Override
     public void onPause() {
-
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        sp.unregisterOnSharedPreferenceChangeListener(this);
         super.onPause();
     }
     @OnClick(R.id.sync_button)
@@ -234,7 +247,18 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        Log.d(LOG_TAG, "Shared Preferences changed: ");
         if(key.equals(getString(R.string.shared_preference_sync_status_key))){
+            Log.d(LOG_TAG, "Case sync-status");
+            updateEmptyView();
+            if(!Utility.isNetworkAvailable(getActivity())){
+                mAdapter.setViewItensClickable(false);
+            }
+        }
+
+        if(key.equals(getString(R.string.shared_preference_active_connectivity_status_key))){
+            Log.d(LOG_TAG, "Case connectivity");
+            mAdapter.setViewItensClickable(sharedPreferences.getBoolean(key,false));
         }
     }
 

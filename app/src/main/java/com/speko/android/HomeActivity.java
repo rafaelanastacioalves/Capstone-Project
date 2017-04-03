@@ -6,7 +6,9 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.CoordinatorLayout;
@@ -63,12 +65,25 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
             if (intent.getAction().equals(CONNECTIVITY_ACTION)){
                 if (!Utility.isNetworkAvailable(context)){
                     showSnackBar(true);
+                    setActiveConnectivityStatus(context,false);
+
                 }else{
                     showSnackBar(false);
+                    setActiveConnectivityStatus(context,true);
+
                 }
             }
         }
+
+        public void setActiveConnectivityStatus(Context c, boolean connectivityStatus) {
+            Log.i(LOG_TAG, "Set ConnectivityStatus: " + connectivityStatus);
+            SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c);
+            SharedPreferences.Editor spe = sp.edit();
+            spe.putBoolean(c.getString(R.string.shared_preference_active_connectivity_status_key), connectivityStatus);
+            spe.commit();
+        }
     };
+
 
 
     @BindView(R.id.bottom_view_layout_home_activity)
@@ -218,6 +233,7 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
         IntentFilter filter = new IntentFilter();
         filter.addAction(CONNECTIVITY_ACTION);
         registerReceiver(connectivityChangeReceiver, filter);
+
         super.onStart();
     }
 
@@ -277,6 +293,7 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
     protected void onResume() {
         super.onResume();
         mFirebaseAuth.addAuthStateListener(mAuthStateListener);
+
     }
 
     @Override

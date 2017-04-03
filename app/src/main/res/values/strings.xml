@@ -56,6 +56,8 @@
 
     <!-- Shared Preferences Status-->
     <string name="shared_preference_sync_status_key">sync-status</string>
+    <string name="shared_preference_active_connectivity_status_key">active-connectivity-status</string>
+
 
     <!-- Error messages -->
 

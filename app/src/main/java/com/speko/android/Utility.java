@@ -395,7 +395,8 @@ public class Utility {
     }
 
     public static boolean isNetworkAvailable(Context c){
-        ConnectivityManager cm = (ConnectivityManager) c.getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager cm = (ConnectivityManager) c.
+                getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
         return activeNetwork != null &&
                 activeNetwork.isConnectedOrConnecting();
@@ -404,6 +405,17 @@ public class Utility {
     @SuppressWarnings("ResourceType")
     static public @SpekoSyncAdapter.LocationStatus int getSyncStatus(Context c) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c);
-        return sp.getInt(c.getString(R.string.shared_preference_sync_status_key), SpekoSyncAdapter.SYNC_STATUS_UNKNOWN);
+        return sp.getInt(c.getString(R.string.shared_preference_sync_status_key),
+                SpekoSyncAdapter.SYNC_STATUS_UNKNOWN);
+    }
+
+    /**
+     * If active_connectivity_status is true -> is Connected = true
+     * @param c
+     * @return
+     */
+    static boolean getIsConnectedStatus(Context c){
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c);
+        return sp.getBoolean(c.getString(R.string.shared_preference_active_connectivity_status_key),false);
     }
 }

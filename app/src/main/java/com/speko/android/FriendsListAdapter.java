@@ -87,6 +87,9 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
         holder.friendProfileFluentLanguagePicture.setImageResource(
                 Utility.getDrawableUriForLanguage(fluentLanguage,mContext)
         );
+
+        Log.i(LOG_TAG, "settingEnabled friendViewHolder: " + viewItensClickable);
+        holder.friendViewHolder.setEnabled(viewItensClickable);
     }
 
 
@@ -103,6 +106,15 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
 
     public void setViewItensClickable(boolean b) {
         this.viewItensClickable = b;
+        notifyDataSetChanged();
+    }
+
+
+    private void updateItemClicking() {
+
+        // if is connected, so are clickable the items
+        viewItensClickable =  Utility.getIsConnectedStatus(mContext);
+        Log.i(LOG_TAG, "viewItemClickable: " + viewItensClickable.booleanValue());
         notifyDataSetChanged();
     }
 

@@ -1,6 +1,7 @@
 package com.speko.android;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -21,29 +22,48 @@ import de.hdodenhof.circleimageview.CircleImageView;
  * Created by rafaelalves on 21/01/17.
  */
 
-public class ConversationsListAdapter extends RecyclerView.Adapter<ConversationsListAdapter.UserChatViewHolder>  {
+public class ConversationsListAdapter extends RecyclerView.Adapter<ConversationsListAdapter.UserChatViewHolder> implements SharedPreferences.OnSharedPreferenceChangeListener {
 
 
     private final String LOG_TAG = getClass().getSimpleName();
     private final Context mContext;
     private Cursor mCursor;
     private ConversationsAdapterOnClickHandler mClickHanlder;
+    private boolean itemsClickable;
+    private boolean viewItensClickable;
 
     public ConversationsListAdapter(Context context, ConversationsAdapterOnClickHandler dh){
         Log.i(LOG_TAG, "Contructor");
         mContext = context;
         mClickHanlder = dh;
+        updateItemClicking();
+
     }
+
+    private void updateItemClicking() {
+
+        // if is connected, so are clickable the items
+        viewItensClickable =  Utility.getIsConnectedStatus(mContext);
+
+        notifyDataSetChanged();
+    }
+
 
     @Override
     public UserChatViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Log.i(LOG_TAG, "OnCreateViewHolder");
+        itemsClickable = true;
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.conversation_viewholder,parent,false);
         return new UserChatViewHolder(view);
     }
 
     public void swapCursor(Cursor c){
         this.mCursor = c;
+        notifyDataSetChanged();
+    }
+
+    public void setItemsClickable(boolean clickable){
+        itemsClickable = clickable;
         notifyDataSetChanged();
     }
 
@@ -76,6 +96,8 @@ public class ConversationsListAdapter extends RecyclerView.Adapter<Conversations
                     holder.conversationProfileFluentLanguagePicture.setImageResource(
                     Utility.getDrawableUriForLanguage(fluentLanguage,mContext)
             );
+
+            holder.conversationViewHolderContainer.setEnabled(itemsClickable);
         }
     }
 
@@ -91,6 +113,13 @@ public class ConversationsListAdapter extends RecyclerView.Adapter<Conversations
         }
     }
 
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if(key.equals(mContext.getString(R.string.shared_preference_active_connectivity_status_key))){
+            updateItemClicking();
+        }
+    }
+
     public static interface ConversationsAdapterOnClickHandler {
         void onClick(String friendID);
     }
@@ -102,6 +131,7 @@ public class ConversationsListAdapter extends RecyclerView.Adapter<Conversations
         @BindView(R.id.conversation_friend_viewholder_username) TextView mNameTextView;
         @BindView(R.id.conversation_friend_fluent_language_profile_picture) CircleImageView
                 conversationProfileFluentLanguagePicture;
+        @BindView(R.id.conversation_viewholder) View conversationViewHolderContainer;
 
 
 
