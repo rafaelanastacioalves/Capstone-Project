@@ -1,9 +1,11 @@
 package com.speko.android;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
@@ -45,7 +47,7 @@ import static com.speko.android.Utility.getUser;
  * Use the {@link ProfileFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ProfileFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class ProfileFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, SharedPreferences.OnSharedPreferenceChangeListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -131,6 +133,40 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
 
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        sp.registerOnSharedPreferenceChangeListener(this);
+        updateScreenState();
+    }
+
+    @Override
+    public void onPause() {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        sp.unregisterOnSharedPreferenceChangeListener(this);
+        super.onPause();
+    }
+
+    private void updateScreenState() {
+        if (SpekoSyncAdapter.isSyncActive(getContext())) {
+            Log.i(LOG_TAG, "Sync is active");
+            setRefreshScreen(true);
+        } else {
+            Log.i(LOG_TAG, "Sync is NOT active");
+            setRefreshScreen(false);
+        }
+
+        // if is syncing or off line
+        if (SpekoSyncAdapter.isSyncActive(getContext()) ||
+                !Utility.getIsConnectedStatus(getContext())){
+            signupButton.setClickable(false);
+        }else{
+            signupButton.setClickable(true);
+        }
+
     }
 
     @OnClick(R.id.fragment_button_profile_change)
@@ -355,6 +391,21 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
 
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        Log.d(LOG_TAG, "Shared Preferences changed: ");
+        if (key.equals(getString(R.string.shared_preference_sync_status_key))) {
+            Log.d(LOG_TAG, "Case sync-status");
+            updateScreenState();
+        }
+
+        if (key.equals(getString(R.string.shared_preference_active_connectivity_status_key))) {
+            Log.d(LOG_TAG, "Case connectivity");
+            updateScreenState();
+
+        }
     }
 
     /**

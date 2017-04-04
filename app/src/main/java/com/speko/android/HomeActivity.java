@@ -56,7 +56,7 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
     private int mSelectedItem;
     private FirebaseDatabase firebaseDatabase;
 
-
+    // TODO: Maybe refactor and put it apart because of repeated code in chat activity
     private BroadcastReceiver connectivityChangeReceiver = new BroadcastReceiver() {
         private final String LOG_TAG = "BroadcastReceiver";
         @Override
