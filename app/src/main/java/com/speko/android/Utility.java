@@ -258,6 +258,12 @@ public class Utility {
         activity.startActivityForResult(Intent.createChooser(intent, "Complete action using"), Utility.RC_PHOTO_PICKER);
     }
 
+    /**
+     * User to friends list only.
+     * @param context
+     * @param friendId
+     * @return
+     */
     public static User getOtherUserWithId(Context context, String friendId) {
         Cursor c = context.getContentResolver().query(UsersProvider.Users.USER_URI
                 , null, UserColumns.FIREBASE_ID + " = ? ", new String[]{friendId}, null);
@@ -364,7 +370,10 @@ public class Utility {
 
     public static int getDrawableUriForLanguage(String fluentLanguage, Context mContext) {
         Log.i("getDrawableUriFor...", "the fluent language is: " + fluentLanguage);
-        String uri = "@drawable/" + fluentLanguageToIconNameHash.get(fluentLanguage);
+
+        String uri = "@drawable/" + fluentLanguageToIconNameHash.
+                get(
+                fluentLanguage);
         int imageResource = mContext.getResources().getIdentifier(
                 uri, null, mContext.getPackageName()
         );

@@ -87,6 +87,7 @@
             android:label="@string/string_widget_conversations">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
                 <action android:name="com.speko.android.ACTION_DATA_UPDATED"/>
             </intent-filter>
 

@@ -166,10 +166,13 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
                 for (String otherUserId : membersHashMap.keySet()) {
                     if (!otherUserId.equals(user.getId())) {
                         String profilePictureUrl = getProfilePictureForUserId(otherUserId, userToken);
+                        String fluentLanguage = geFluentLanguageForUserId(otherUserId, userToken);
+
                         User otherUser = membersHashMap.get(otherUserId);
 
                         // updating members hashmap with updated User java object
                         otherUser.setProfilePicture(profilePictureUrl);
+                        otherUser.setFluentLanguage(fluentLanguage);
                         membersHashMap.put(otherUserId, otherUser);
                     }
                 }
@@ -180,6 +183,35 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
                 chats.put(chatKey, chat);
             }
         }
+
+    }
+
+    private String geFluentLanguageForUserId(String otherUserId, String userToken) throws IOException {
+        FirebaseClient client = ServiceGenerator.createService(FirebaseClient.class, new AccessToken(
+                "Bearer",
+                userToken)
+        );
+
+        if (mFirebaseAuth.getCurrentUser().getUid() == null) {
+            Log.w(LOG_TAG, "method with null User variable!");
+            return null;
+        }
+        Call<String> call = client.getUserFluentLanguage(otherUserId, userToken);
+
+        Log.i("SpekoSyncAdapter", "getUser: \n");
+        Response<String> response = call.execute();
+        if (response.isSuccessful()) {
+            String userPictureUrl = response.body();
+            if (userPictureUrl != null) {
+                Log.i("SpekoSyncAdapter", "Deu certo!: \n" + user.toString());
+
+                return userPictureUrl;
+            }
+        } else {
+            //TODO handle API 4xx and 5xx responses
+        }
+
+        return null;
 
     }
 
@@ -207,7 +239,9 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
                     //TODO remove this part to a different one, where http requests are separated from database work
                     //better put inside the object in other code part
                     String profilePictureUrl = other_user.getProfilePicture();
-                    chatCV.put(ChatMembersColumns.OTHER_USER_PHOTO_URL, profilePictureUrl);
+                    String fluentLanguage = other_user.getFluentLanguage();
+                    chatCV.put(ChatMembersColumns.OTHER_MEMBER_PHOTO_URL, profilePictureUrl);
+                    chatCV.put(ChatMembersColumns.OTHER_MEMBER_FLUENT_LANGUAGE, fluentLanguage);
 
                 }
             }

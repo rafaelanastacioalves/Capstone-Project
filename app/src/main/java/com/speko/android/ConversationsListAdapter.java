@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.speko.android.data.ChatMembersColumns;
-import com.speko.android.data.User;
 import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
@@ -82,15 +81,16 @@ public class ConversationsListAdapter extends RecyclerView.Adapter<Conversations
 
             Picasso.with(mContext).load(
                     mCursor.getString(
-                            mCursor.getColumnIndex(ChatMembersColumns.OTHER_USER_PHOTO_URL)
+                            mCursor.getColumnIndex(ChatMembersColumns.OTHER_MEMBER_PHOTO_URL)
                     )).placeholder(R.drawable.ic_placeholder_profile_photo)
                     .into(holder.mProfilePicture);
             String id = mCursor.getString(
                     mCursor.getColumnIndex(ChatMembersColumns.OTHER_MEMBER_ID)
             );
 
-            User otherUser = Utility.getOtherUserWithId(mContext, id );
-            String fluentLanguage = otherUser.getFluentLanguage();
+
+            String fluentLanguage = mCursor.getString(
+                    mCursor.getColumnIndex(ChatMembersColumns.OTHER_MEMBER_FLUENT_LANGUAGE));
 
                     holder.conversationProfileFluentLanguagePicture.setImageResource(
                     Utility.getDrawableUriForLanguage(fluentLanguage,mContext)

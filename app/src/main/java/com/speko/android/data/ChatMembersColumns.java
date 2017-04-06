@@ -23,6 +23,9 @@ public interface ChatMembersColumns {
     String OTHER_MEMBER_NAME = "other_member_name";
 
     @DataType(TEXT) @IfNotExists
-    String OTHER_USER_PHOTO_URL = "other_user_photo_url";
+    String OTHER_MEMBER_PHOTO_URL = "other_member_photo_url";
+
+    @DataType(TEXT) @IfNotExists
+    String OTHER_MEMBER_FLUENT_LANGUAGE = "other_member_fluent_language";
 
 }

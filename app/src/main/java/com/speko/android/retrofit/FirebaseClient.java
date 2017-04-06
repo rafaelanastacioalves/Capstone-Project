@@ -47,4 +47,11 @@ public interface FirebaseClient {
             @Path("userId") String userId,
             @Query("auth") String auth
     );
+
+    @GET("/users/{userId}/fluentLanguage.json")
+    Call<String> getUserFluentLanguage(
+            @Path("userId") String userId,
+            @Query("auth") String auth
+    );
+
 }

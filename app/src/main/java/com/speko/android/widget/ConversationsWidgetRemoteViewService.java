@@ -44,24 +44,34 @@ public class ConversationsWidgetRemoteViewService extends RemoteViewsService {
             public void onCreate() {
                 Log.i(LOG_TAG, "onCreate");
 
-
             }
 
             @Override
             public void onDataSetChanged() {
                 Log.i(LOG_TAG,"onDataSetChanged");
 
-                if (data != null) {
-                    data.close();
+                // if we are offline
+                if (!Utility.isNetworkAvailable(getApplication())) {
+
+                    if (data != null) {
+                        data.close();
+                        data = null;
+                    }
+
+                }else{
+                    if (data != null) {
+                        data.close();
+                    }
+
+                    final long identityToken = Binder.clearCallingIdentity();
+                    data = getContentResolver().query(UsersProvider.ChatMembers.CHAT_URI,
+                            null,
+                            null,
+                            null,
+                            null);
+                    Binder.restoreCallingIdentity(identityToken);
                 }
 
-                final long identityToken = Binder.clearCallingIdentity();
-                data = getContentResolver().query(UsersProvider.ChatMembers.CHAT_URI,
-                        null,
-                        null,
-                        null,
-                        null);
-                Binder.restoreCallingIdentity(identityToken);
             }
 
 
@@ -107,7 +117,7 @@ public class ConversationsWidgetRemoteViewService extends RemoteViewsService {
                 try {
                     profilePicture = Picasso.with(ConversationsWidgetRemoteViewService.this).load(
                             data.getString(
-                                    data.getColumnIndex(ChatMembersColumns.OTHER_USER_PHOTO_URL)
+                                    data.getColumnIndex(ChatMembersColumns.OTHER_MEMBER_PHOTO_URL)
                             )).placeholder(R.drawable.ic_placeholder_profile_photo)
                             .transform(new CircleTransform()).get();
                 } catch (IOException e) {
@@ -131,7 +141,8 @@ public class ConversationsWidgetRemoteViewService extends RemoteViewsService {
                         getOtherUserWithId(ConversationsWidgetRemoteViewService.this, otherUserId);
                 Binder.restoreCallingIdentity(identityToken);
 
-                String fluentLanguage = otherUser.getFluentLanguage();
+                String fluentLanguage = data.getString(
+                        data.getColumnIndex(ChatMembersColumns.OTHER_MEMBER_FLUENT_LANGUAGE));
 
                 views.setImageViewResource(R.id.conversation_friend_fluent_language_profile_picture,
                         Utility.getDrawableUriForLanguage(fluentLanguage,
