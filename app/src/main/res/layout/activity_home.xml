@@ -28,12 +28,10 @@
             app:elevation="@dimen/bottom_navigation_view_elevation"
             android:id="@+id/bottom_view_layout_home_activity"
             android:layout_width="match_parent"
-            app:theme="@style/AppTheme.AppBarOverlay"
             android:layout_height="56dp"
-
             app:itemIconTint="@drawable/nav_item_color_state"
             app:itemTextColor="@drawable/nav_item_color_state"
-            app:itemBackground="@color/authui_colorPrimary"
+            android:background="@android:color/white"
             app:menu="@menu/bottom_navigation_main"
 
             />

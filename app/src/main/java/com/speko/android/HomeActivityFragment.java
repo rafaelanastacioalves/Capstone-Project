@@ -15,7 +15,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -26,7 +25,6 @@ import com.speko.android.sync.SpekoSyncAdapter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -41,10 +39,7 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
     private final String LOG_TAG = getClass().getSimpleName();
     @BindView(R.id.user_list)
     RecyclerView userList;
-    @BindView(R.id.log_out)
-    Button logOut;
-    @BindView(R.id.sync_button)
-    Button sync_button;
+
     @BindView(R.id.progress_bar)
     ContentLoadingProgressBar progressBar;
     @BindView(R.id.recyclerview_list_empty_textview)
@@ -53,6 +48,7 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
     private FirebaseUser authUser;
     private FriendsListAdapter mAdapter;
     private ChildEventListener userListListener;
+
 
     public HomeActivityFragment() {
     }
@@ -148,20 +144,7 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
         super.onPause();
     }
 
-    @OnClick(R.id.sync_button)
-    public void sync(View v) {
-        SpekoSyncAdapter.syncImmediatly(getActivity());
-        setRefreshScreen(true);
-//        getLoaderManager().restartLoader(FRIENDS_LOADER,null, this);
-    }
 
-
-    @OnClick(R.id.log_out)
-    public void logOut(View v) {
-
-        Utility.deleteEverything(getContext());
-        FirebaseAuth.getInstance().signOut();
-    }
 
 
     @Override
@@ -250,6 +233,7 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
 
         }
     }
+
 
 
 }

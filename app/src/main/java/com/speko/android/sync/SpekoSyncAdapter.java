@@ -30,7 +30,9 @@ import com.speko.android.data.User;
 import com.speko.android.data.UserColumns;
 import com.speko.android.data.UserContract;
 import com.speko.android.data.UsersProvider;
+import com.speko.android.retrofit.APIException;
 import com.speko.android.retrofit.AccessToken;
+import com.speko.android.retrofit.ErrorUtils;
 import com.speko.android.retrofit.FirebaseClient;
 import com.speko.android.retrofit.ServiceGenerator;
 
@@ -133,6 +135,16 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
             } catch (IOException e) {
                 Log.e(LOG_TAG, e.getMessage());
                 setSyncStatus(getContext(), SYNC_STATUS_SERVER_DOWN);
+            } catch (APIException e) {
+                int responseCode = e.getAPIStatusCodeMessage();
+                if (responseCode >= 400 || responseCode < 500) {
+                    setSyncStatus(getContext(), SYNC_STATUS_SERVER_DOWN);
+
+                }
+                if (responseCode >= 500 || responseCode < 600) {
+                    setSyncStatus(getContext(), SYNC_STATUS_SERVER_ERROR);
+
+                }
             } catch (Exception e){
                 Log.e(LOG_TAG, e.getMessage());
                 setSyncStatus(getContext(), SYNC_STATUS_UNKNOWN);
@@ -158,7 +170,7 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
      * Other users chat members pictures need another call for each one, as we don't work with
      * relational database in firebase.
      **/
-    private void getOtherUsersPhotofrom(User user) throws IOException {
+    private void getOtherUsersPhotofrom(User user) throws IOException, APIException {
         HashMap<String, Chat> chats = user.getChats();
         if (chats != null) {
             for (String chatKey : chats.keySet()) {
@@ -186,7 +198,7 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
 
     }
 
-    private String geFluentLanguageForUserId(String otherUserId, String userToken) throws IOException {
+    private String geFluentLanguageForUserId(String otherUserId, String userToken) throws IOException, APIException {
         FirebaseClient client = ServiceGenerator.createService(FirebaseClient.class, new AccessToken(
                 "Bearer",
                 userToken)
@@ -208,7 +220,10 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
                 return userPictureUrl;
             }
         } else {
-            //TODO handle API 4xx and 5xx responses
+            Log.e(LOG_TAG, "Response not successfull");
+            throw new APIException(String.valueOf(
+                    ErrorUtils.parseError(response).status())
+            );
         }
 
         return null;
@@ -270,7 +285,7 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
 
     }
 
-    private String getProfilePictureForUserId(String id, String userToken) throws IOException {
+    private String getProfilePictureForUserId(String id, String userToken) throws IOException, APIException {
         FirebaseClient client = ServiceGenerator.createService(FirebaseClient.class, new AccessToken(
                 "Bearer",
                 userToken)
@@ -292,7 +307,11 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
                 return userPictureUrl;
             }
         } else {
-            //TODO handle API 4xx and 5xx responses
+            Log.e(LOG_TAG, "Response not successfull");
+            throw new APIException(
+                    String.valueOf(
+                            ErrorUtils.parseError(response).message())
+            );
         }
 
         return null;
@@ -338,7 +357,7 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
 
     }
 
-    private HashMap<String, User> getFriends(String idToken) throws IOException {
+    private HashMap<String, User> getFriends(String idToken) throws IOException, APIException {
 
         // Fetch and print a list of the contributors to this library.
         FirebaseClient client = ServiceGenerator.createService(FirebaseClient.class, new AccessToken(
@@ -361,11 +380,12 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
             HashMap<String, User> friends = response.body();
             return friends;
         } else {
-            //TODO handle API error responses
+            Log.e(LOG_TAG, "Response not successfull");
+            throw new APIException(
+                    String.valueOf(
+                            ErrorUtils.parseError(response).status())
+            );
         }
-
-        return null;
-
 
     }
 
@@ -394,11 +414,12 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
         getContext().getContentResolver().insert(USER_URI, userCV);
     }
 
-    private User getUser(String idToken) throws IOException {
+    private User getUser(String idToken) throws IOException, APIException {
         // Fetch and print a list of the contributors to this library.
-        FirebaseClient client = ServiceGenerator.createService(FirebaseClient.class, new AccessToken(
-                "Bearer",
-                idToken)
+        FirebaseClient client = ServiceGenerator.createService(FirebaseClient.class,
+                new AccessToken(
+                        "Bearer",
+                        idToken)
         );
         if (mFirebaseAuth.getCurrentUser().getUid() == null) {
             Log.w(LOG_TAG, "method with null User variable!");
@@ -419,10 +440,12 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
         } else {
             //TODO Handle API error responses
             Log.e(LOG_TAG, "Response not successfull");
+            throw new APIException(
+                    String.valueOf(
+                            ErrorUtils.parseError(response).message())
+            );
+
         }
-
-
-        return null;
 
 
     }

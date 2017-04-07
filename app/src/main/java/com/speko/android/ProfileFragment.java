@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
@@ -19,10 +20,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -47,7 +50,7 @@ import static com.speko.android.Utility.getUser;
  * Use the {@link ProfileFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ProfileFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, SharedPreferences.OnSharedPreferenceChangeListener {
+public class ProfileFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, SharedPreferences.OnSharedPreferenceChangeListener, AppBarLayout.OnOffsetChangedListener{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -55,6 +58,15 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
     private static final int USER_LOADER = 2;
     private final String LOG_TAG = getClass().getSimpleName();
 
+    private int mMaxScrollSize;
+    private int PERCENTAGE_TO_ANIMATE_AVATAR = 20;
+    private boolean mIsAvatarShown = true;
+
+
+    @BindView(R.id.log_out)
+    Button logOut;
+    @BindView(R.id.sync_button)
+    Button sync_button;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -84,6 +96,11 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
 
     @BindView(R.id.profile_grid_layout)
     GridLayout gridLayout;
+
+    @BindView(R.id.profile_appbar_layout)
+    AppBarLayout appBarLayout;
+
+
 
 
 
@@ -130,10 +147,15 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
         setRefreshScreen(true);
 //        SpekoSyncAdapter.syncImmediatly(getContext());
 
+        appBarLayout.addOnOffsetChangedListener(this);
+
+
 
 
         return view;
     }
+
+
 
     @Override
     public void onResume() {
@@ -142,6 +164,21 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
         sp.registerOnSharedPreferenceChangeListener(this);
         updateScreenState();
     }
+
+    @OnClick(R.id.sync_button)
+    public void sync(View v) {
+        SpekoSyncAdapter.syncImmediatly(getActivity());
+        setRefreshScreen(true);
+//        getLoaderManager().restartLoader(FRIENDS_LOADER,null, this);
+    }
+
+    @OnClick(R.id.log_out)
+    public void logOut(View v) {
+
+        Utility.deleteEverything(getContext());
+        FirebaseAuth.getInstance().signOut();
+    }
+
 
     @Override
     public void onPause() {
@@ -235,7 +272,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
 
     }
 
-    @OnClick(R.id.signup_upload_picture)
+    @OnClick(R.id.signup_imageview_profile_picture)
     public void uploadPicture(View v){
        Utility.call_to_upload_picture(this);
 
@@ -340,6 +377,31 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
         }
 
 
+    }
+
+    @Override
+    public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+        if (mMaxScrollSize == 0)
+            mMaxScrollSize = appBarLayout.getTotalScrollRange();
+
+        int percentage = (Math.abs(verticalOffset)) * 100 / mMaxScrollSize;
+
+        if (percentage >= PERCENTAGE_TO_ANIMATE_AVATAR && mIsAvatarShown) {
+            mIsAvatarShown = false;
+
+            profilePicture.animate()
+                    .scaleY(0).scaleX(0)
+                    .setDuration(200)
+                    .start();
+        }
+
+        if (percentage <= PERCENTAGE_TO_ANIMATE_AVATAR && !mIsAvatarShown) {
+            mIsAvatarShown = true;
+
+            profilePicture.animate()
+                    .scaleY(1).scaleX(1)
+                    .start();
+        }
     }
 
 

@@ -28,6 +28,16 @@ public class ServiceGenerator {
                     .baseUrl(API_BASE_URL)
                     .addConverterFactory(GsonConverterFactory.create());
 
+    public static Retrofit retrofit(){
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        interceptor.setLevel(HttpLoggingInterceptor.Level.HEADERS);
+        OkHttpClient client = httpClient
+                .addInterceptor(interceptor)
+                .build();
+
+        return builder.client(client).build();
+    }
+
     public static <S> S createService(Class<S> serviceClass) {
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         Retrofit retrofit = builder.client(httpClient
@@ -92,6 +102,7 @@ public class ServiceGenerator {
                 .build();
         return retrofit.create(serviceClass);
     }
+
 
 
 }
