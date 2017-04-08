@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
 
-    tools:context="com.speko.android.ConversationsFragment">
+    tools:context="com.speko.android.HomeActivity">
 
     <!-- TODO: Update blank fragment layout -->
     <TextView

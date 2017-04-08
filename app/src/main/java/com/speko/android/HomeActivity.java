@@ -302,7 +302,9 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
         if (mAuthStateListener != null) {
             mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
         }
-        unregisterReceiver(connectivityChangeReceiver);
+        if (connectivityChangeReceiver != null){
+            unregisterReceiver(connectivityChangeReceiver);
+        }
 
     }
 

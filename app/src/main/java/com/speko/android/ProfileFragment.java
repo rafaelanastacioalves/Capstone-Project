@@ -22,6 +22,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -99,6 +100,9 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
 
     @BindView(R.id.profile_appbar_layout)
     AppBarLayout appBarLayout;
+
+    @BindView(R.id.fluent_languge_imageview)
+    ImageView fluentLanguageImageView;
 
 
 
@@ -320,8 +324,8 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
     private void setView() {
 
         Log.i(LOG_TAG,"setView");
-
-        String spinnerValue = Utility.getUser(getActivity()).getFluentLanguage();
+        User user = Utility.getUser(getActivity());
+        String spinnerValue = user.getFluentLanguage();
         Log.i(LOG_TAG,"Fluent Langauge: " + spinnerValue);
 
         spinner_fluent_language.setSelection(
@@ -330,8 +334,11 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
                 )
         );
 
+        fluentLanguageImageView.setImageResource(
+                Utility.getFluentLangagueBiggerPictureUri(getActivity(), user.getFluentLanguage()));
 
-        spinnerValue = Utility.getUser(getActivity()).getLearningLanguage();
+
+        spinnerValue =user.getLearningLanguage();
         Log.i(LOG_TAG,"Learning Langauge: " + spinnerValue);
 
         spinner_learning_language.setSelection(

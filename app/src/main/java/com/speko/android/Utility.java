@@ -59,6 +59,18 @@ public class Utility {
     }
 
 
+    private static final Map<String, String> fluentLanguageBiggerPictureToIconNameHash;
+    static {
+        Hashtable<String,String> tmp =
+                new Hashtable<String, String>();
+        tmp.put("PT-BR","bigger_picture_language_pt_br");
+        tmp.put("EN-US","bigger_picture_language_en_us");
+        tmp.put("ES","bigger_picture_language_sp");
+        fluentLanguageBiggerPictureToIconNameHash = Collections.unmodifiableMap(tmp);
+    }
+
+
+
     public static final int RC_PHOTO_PICKER = 3;
 
 
@@ -426,5 +438,21 @@ public class Utility {
     static boolean getIsConnectedStatus(Context c){
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c);
         return sp.getBoolean(c.getString(R.string.shared_preference_active_connectivity_status_key),false);
+    }
+
+    public static int getFluentLangagueBiggerPictureUri(Context mContext, String fluentLanguage) {
+        Log.i("getBiggerPictureUri...", "the fluent language is: " + fluentLanguage);
+
+        String uri = "@drawable/" + fluentLanguageBiggerPictureToIconNameHash.
+                get(
+                        fluentLanguage);
+        int imageResource = mContext.getResources().getIdentifier(
+                uri, null, mContext.getPackageName()
+        );
+
+        Log.i("getDrawableUriFor...", "the image URI is: " + uri);
+
+        return imageResource;
+
     }
 }
