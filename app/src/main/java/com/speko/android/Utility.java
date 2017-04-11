@@ -95,6 +95,7 @@ public class Utility {
      * @param c
      */
     public static void setUser(User user, Context c){
+        SpekoSyncAdapter.persistUser(user, c);
         mUser = user;
         authUser = FirebaseAuth.getInstance().getCurrentUser();
         if(firebaseDatabase==null){

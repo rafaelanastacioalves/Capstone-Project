@@ -389,11 +389,46 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
 
     }
 
+    /**
+     * Persists user. For internal usage.
+     * @param user
+     */
+
     private void persistUser(@NonNull User user) {
         if (user == null) {
             Log.w(LOG_TAG, "method with null User variable!");
             return;
         }
+        ContentValues userCV = mountContentValuesFromUser(user);
+
+        // deleting any row first
+        getContext().getContentResolver().delete(USER_URI,
+                FIREBASE_ID + " = ?",
+                new String[]{user.getId()});
+
+        // insterting
+        getContext().getContentResolver().insert(USER_URI, userCV);
+    }
+
+    public static void persistUser(@NonNull User user, Context context){
+        if (user == null) {
+            Log.w(LOG_TAG, "method with null User variable!");
+            return;
+        }
+        ContentValues userCV = mountContentValuesFromUser(user);
+        // deleting any row first
+        context.getContentResolver().delete(USER_URI,
+                FIREBASE_ID + " = ?",
+                new String[]{user.getId()});
+
+        // insterting
+        context.getContentResolver().insert(USER_URI, userCV);
+
+    }
+
+
+    @NonNull
+    private static ContentValues mountContentValuesFromUser(@NonNull User user) {
         ContentValues userCV = new ContentValues();
         userCV.put(FIREBASE_ID, user.getId());
         userCV.put(UserColumns.NAME, user.getName());
@@ -404,15 +439,10 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
         userCV.put(UserColumns.USER_DESCRIPTION, user.getUserDescription());
         userCV.put(UserColumns.LEARNING_CODE, user.getLearningCode());
         userCV.put(UserColumns.USER_PHOTO_URL, user.getProfilePicture());
-
-        // deleting any row first
-        getContext().getContentResolver().delete(USER_URI,
-                FIREBASE_ID + " = ?",
-                new String[]{user.getId()});
-
-        // insterting
-        getContext().getContentResolver().insert(USER_URI, userCV);
+        return userCV;
     }
+
+
 
     private User getUser(String idToken) throws IOException, APIException {
         // Fetch and print a list of the contributors to this library.

@@ -78,8 +78,6 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
     @BindView(R.id.signup_edittext_input_age)
     EditText ageEditText;
 
-    @BindView(R.id.signup_spinner_input_age_fluent_language)
-    AppCompatSpinner spinner_fluent_language;
 
     @BindView(R.id.signup_spinner_input_age_language_of_interest)
     AppCompatSpinner spinner_learning_language;
@@ -212,16 +210,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
     @OnClick(R.id.fragment_button_profile_change)
     public void onClickChangeProfile(View v){
         // if fluent language and language of interest are equal
-        if(spinner_fluent_language.getSelectedItem().toString()
-                .equals(
-                        spinner_learning_language.getSelectedItem().toString()
-                )){
-            Toast.makeText(getContext(),
-                    R.string.languages_must_be_different_error,
-                    Toast.LENGTH_LONG)
-                    .show();
-            return;
-        }
+
 
         String ageString = ageEditText.getText().toString();
 
@@ -231,8 +220,9 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
             return;
         }
 
-
-        user = Utility.getUser(getContext());
+        if (user == null) {
+            user = Utility.getUser(getContext());
+        }
         if (ageEditText.getText() == null || ageEditText.getText().toString().isEmpty()) {
             Log.i(LOG_TAG, "Text is null or empty, so we set nothing");
         }else {
@@ -241,7 +231,6 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
             user.setAge(ageEditText.getText().toString());
 
         }
-        user.setFluentLanguage(spinner_fluent_language.getSelectedItem().toString());
         user.setLearningLanguage(spinner_learning_language.getSelectedItem().toString());
 
         if (userDescription.getText() == null || userDescription.getText().toString().isEmpty() ) {
@@ -349,11 +338,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
         String spinnerValue = user.getFluentLanguage();
         Log.i(LOG_TAG,"Fluent Langauge: " + spinnerValue);
 
-        spinner_fluent_language.setSelection(
-                ((ArrayAdapter)spinner_fluent_language.getAdapter()).getPosition(
-                        spinnerValue
-                )
-        );
+
 
         fluentLanguageImageView.setImageResource(
                 Utility.getFluentLangagueBiggerPictureUri(getActivity(), user.getFluentLanguage()));
