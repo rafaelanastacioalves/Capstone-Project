@@ -45,6 +45,9 @@ public class ConversationsFragment extends Fragment implements LoaderManager.Loa
     @BindView(R.id.progress_bar)
     ContentLoadingProgressBar progressBar;
 
+    @BindView(R.id.fragment_conversations_container)
+    View fragmentConversationsContainer;
+
     public ConversationsFragment() {
         // Required empty public constructor
     }
@@ -105,6 +108,7 @@ public class ConversationsFragment extends Fragment implements LoaderManager.Loa
         ButterKnife.bind(this,view);
 
         conversationsList.setLayoutManager(new LinearLayoutManager(getActivity()));
+        fragmentConversationsContainer.setPadding(0,Utility.getStatusBarHeight(getActivity()),0,0);
 
         mAdapter = new ConversationsListAdapter(getActivity(), new ConversationsListAdapter.ConversationsAdapterOnClickHandler() {
             @Override

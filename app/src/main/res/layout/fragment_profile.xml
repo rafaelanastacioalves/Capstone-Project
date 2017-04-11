@@ -1,191 +1,201 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/profile_appbar_layout"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        app:elevation="@dimen/appbar_elevation"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:elevation="@dimen/appbar_elevation">
 
 
-            <android.support.design.widget.CollapsingToolbarLayout
-                android:id="@+id/profile_collapsing_toolbar_layout"
-                app:layout_widthPercent="100%"
-                app:layout_scrollFlags="scroll|snap"
-                app:expandedTitleMarginStart="100dp"
-                app:expandedTitleMarginEnd="64dp"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                />
+        <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/profile_collapsing_toolbar_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            app:layout_scrollFlags="scroll|snap"
+            >
+
+            <FrameLayout
+
+                android:fitsSystemWindows="true"
+                android:layout_width="wrap_content"
+                android:layout_gravity="top"
+                android:layout_height="wrap_content"
+                app:layout_collapseMode="parallax">
+
+                <ImageView
+                    android:id="@+id/fluent_languge_imageview"
+                    android:adjustViewBounds="true"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:scaleType="fitCenter"
+                    tools:src="@drawable/bigger_picture_language_pt_br" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/gradient_image_background" />
+            </FrameLayout>
 
 
-
-
-
+        </android.support.design.widget.CollapsingToolbarLayout>
 
 
     </android.support.design.widget.AppBarLayout>
+
     <FrameLayout
         android:id="@+id/profile_anchor_layout"
-        app:layout_anchor="@id/profile_appbar_layout"
-        app:layout_anchorGravity="bottom"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/toolbar_height"/>
-
+        android:layout_height="@dimen/toolbar_height"
+        app:layout_anchor="@id/profile_appbar_layout"
+        app:layout_anchorGravity="bottom" />
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/signup_imageview_profile_picture"
-        android:layout_width="184dp"
-        android:layout_height="184dp"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
         android:layout_gravity="center_horizontal"
         android:src="@drawable/ic_user"
         app:layout_anchor="@id/profile_anchor_layout"
         android:elevation="8dp"
         app:layout_scrollFlags="scroll"
+        app:civ_border_width="2dp"
+        app:civ_border_color="#FFF"
         app:layout_anchorGravity="bottom|center_horizontal"/>
 
-        <android.support.v4.widget.NestedScrollView
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            android:id="@+id/profile_list_view"
+    <android.support.v4.widget.NestedScrollView
+        android:id="@+id/profile_list_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <android.support.v7.widget.GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/profile_grid_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <android.support.v7.widget.GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:id="@+id/profile_grid_layout"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:paddingLeft="@dimen/fragment_horizontal_margin"
-                android:paddingRight="@dimen/fragment_horizontal_margin"
-                app:columnCount="2">
-
-
-
-               
-
-
-                <android.support.design.widget.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/default_margin_form"
-                    android:hint="@string/age_label_text_field"
-                    app:layout_columnSpan="2"
-
-                    >
-
-                    <android.support.design.widget.TextInputEditText
-                        android:id="@+id/signup_edittext_input_age"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="number"
-                        android:maxLength="3" />
-
-                </android.support.design.widget.TextInputLayout>
-
-
-                <android.support.v7.widget.AppCompatTextView
-                    android:layout_width="0dp"
-                    android:layout_marginBottom="@dimen/default_margin_form"
-                    android:text="Fluent Language"
-                    app:layout_columnWeight="1" />
-
-                <android.support.v7.widget.AppCompatSpinner
-                    android:id="@+id/signup_spinner_input_age_fluent_language"
-                    android:layout_width="0dp"
-                    android:layout_marginBottom="@dimen/default_margin_form"
-                    android:entries="@array/options_entries_languades"
-                    style="@style/Widget.AppCompat.Spinner.Underlined"
-                    app:layout_columnWeight="1"
-                    />
-
-                <android.support.v7.widget.AppCompatTextView
-                    android:layout_width="0dp"
-                    android:layout_marginBottom="@dimen/default_margin_form"
-                    android:text="@string/language_of_interest"
-                    app:layout_columnWeight="1" />
-
-                <android.support.v7.widget.AppCompatSpinner
-                    android:id="@+id/signup_spinner_input_age_language_of_interest"
-                    android:layout_marginBottom="@dimen/default_margin_form"
-                    android:entries="@array/options_entries_languades"
-                    style="@style/Widget.AppCompat.Spinner.Underlined"
-                    app:layout_columnWeight="1"
-                    />
-
-
-
-                <android.support.design.widget.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/default_margin_form"
-
-                    android:hint="@string/signup_description_label"
-                    app:layout_columnSpan="2"
-
-                    >
-
-                    <android.support.design.widget.TextInputEditText
-                        android:id="@+id/signup_user_description"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/default_margin_form"
-                        android:maxLength="500"
-                        app:layout_columnWeight="1" />
-                </android.support.design.widget.TextInputLayout>
-
-
-
-                <android.support.v7.widget.AppCompatButton
-                    android:id="@+id/fragment_button_profile_change"
-                    style="@style/Widget.AppCompat.Button.Colored"
-                    android:layout_marginBottom="@dimen/default_margin_form"
-                    android:text="@string/button_profile_confirmation_change"
-                    app:layout_columnSpan="2"
-                    app:layout_gravity="center_horizontal" />
-
-
-                <Button
-                    style="@style/Widget.AppCompat.Button.Colored"
-                    android:layout_marginRight="@dimen/fragment_horizontal_margin"
-                    android:layout_marginLeft="@dimen/fragment_horizontal_margin"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:layout_columnSpan="2"
-                    android:id="@+id/sync_button"
-                    android:text="@string/sync_button"/>
-
-                <Button
-                    android:layout_width="wrap_content"
-                    style="@style/Widget.AppCompat.Button.Colored"
-                    android:layout_marginLeft="@dimen/fragment_horizontal_margin"
-                    android:layout_marginRight="@dimen/fragment_horizontal_margin"
-                    app:layout_columnSpan="2"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/log_out"
-                    android:text="@string/log_out"/>
-
-
-            </android.support.v7.widget.GridLayout>
-
-        </android.support.v4.widget.NestedScrollView>
-
-        <android.support.v4.widget.ContentLoadingProgressBar
-            android:id="@+id/progress_bar"
-            style="?android:attr/progressBarStyle"
-            app:layout_anchor="@+id/profile_list_view"
-            app:layout_anchorGravity="center"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_height="match_parent"
             android:paddingLeft="@dimen/fragment_horizontal_margin"
             android:paddingRight="@dimen/fragment_horizontal_margin"
-            android:visibility="visible" />
+            app:columnCount="2">
 
 
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/default_margin_form"
+                android:hint="@string/age_label_text_field"
+                app:layout_columnSpan="2"
 
+                >
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/signup_edittext_input_age"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:maxLength="3" />
+
+            </android.support.design.widget.TextInputLayout>
+
+
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="0dp"
+                android:layout_marginBottom="@dimen/default_margin_form"
+                android:text="Fluent Language"
+                app:layout_columnWeight="1" />
+
+            <android.support.v7.widget.AppCompatSpinner
+                android:id="@+id/signup_spinner_input_age_fluent_language"
+                style="@style/Widget.AppCompat.Spinner.Underlined"
+                android:layout_width="0dp"
+                android:layout_marginBottom="@dimen/default_margin_form"
+                android:entries="@array/options_entries_languades"
+                app:layout_columnWeight="1" />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="0dp"
+                android:layout_marginBottom="@dimen/default_margin_form"
+                android:text="@string/language_of_interest"
+                app:layout_columnWeight="1" />
+
+            <android.support.v7.widget.AppCompatSpinner
+                android:id="@+id/signup_spinner_input_age_language_of_interest"
+                style="@style/Widget.AppCompat.Spinner.Underlined"
+                android:layout_marginBottom="@dimen/default_margin_form"
+                android:entries="@array/options_entries_languades"
+                app:layout_columnWeight="1" />
+
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/default_margin_form"
+
+                android:hint="@string/signup_description_label"
+                app:layout_columnSpan="2"
+
+                >
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/signup_user_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/default_margin_form"
+                    android:maxLength="500"
+                    app:layout_columnWeight="1" />
+            </android.support.design.widget.TextInputLayout>
+
+
+            <android.support.v7.widget.AppCompatButton
+                android:id="@+id/fragment_button_profile_change"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_marginBottom="@dimen/default_margin_form"
+                android:text="@string/button_profile_confirmation_change"
+                app:layout_columnSpan="2"
+                app:layout_gravity="center_horizontal" />
+
+
+            <Button
+                android:id="@+id/sync_button"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/fragment_horizontal_margin"
+                android:layout_marginRight="@dimen/fragment_horizontal_margin"
+                android:text="@string/sync_button"
+                app:layout_columnSpan="2" />
+
+            <Button
+                android:id="@+id/log_out"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/fragment_horizontal_margin"
+                android:layout_marginRight="@dimen/fragment_horizontal_margin"
+                android:text="@string/log_out"
+                app:layout_columnSpan="2" />
+
+
+        </android.support.v7.widget.GridLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+
+    <android.support.v4.widget.ContentLoadingProgressBar
+        android:id="@+id/progress_bar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:paddingLeft="@dimen/fragment_horizontal_margin"
+        android:paddingRight="@dimen/fragment_horizontal_margin"
+        android:visibility="visible"
+        app:layout_anchor="@+id/profile_list_view"
+        app:layout_anchorGravity="center" />
 
 
 </android.support.design.widget.CoordinatorLayout>

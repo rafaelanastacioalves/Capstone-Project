@@ -151,7 +151,6 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
         setRefreshScreen(true);
 //        SpekoSyncAdapter.syncImmediatly(getContext());
 
-        appBarLayout.addOnOffsetChangedListener(this);
 
 
 
@@ -164,6 +163,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
     @Override
     public void onResume() {
         super.onResume();
+        appBarLayout.addOnOffsetChangedListener(this);
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         sp.registerOnSharedPreferenceChangeListener(this);
         updateScreenState();
@@ -388,9 +388,12 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
 
     @Override
     public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+        Log.i(LOG_TAG,"onOffSetChanged");
         if (mMaxScrollSize == 0)
             mMaxScrollSize = appBarLayout.getTotalScrollRange();
-
+        if (mMaxScrollSize == 0 ){
+            return;
+        }
         int percentage = (Math.abs(verticalOffset)) * 100 / mMaxScrollSize;
 
         if (percentage >= PERCENTAGE_TO_ANIMATE_AVATAR && mIsAvatarShown) {

@@ -44,6 +44,10 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
     ContentLoadingProgressBar progressBar;
     @BindView(R.id.recyclerview_list_empty_textview)
     TextView emptyListTextView;
+
+    @BindView(R.id.fragment_home_container)
+    View fragmentHomeContainer;
+
     private FirebaseDatabase firebaseDatabase;
     private FirebaseUser authUser;
     private FriendsListAdapter mAdapter;
@@ -60,6 +64,8 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
 
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         ButterKnife.bind(this, view);
+
+        fragmentHomeContainer.setPadding(0,Utility.getStatusBarHeight(getActivity()),0,0);
 
         userList.setLayoutManager(new LinearLayoutManager(getActivity()));
 
