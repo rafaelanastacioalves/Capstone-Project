@@ -163,7 +163,7 @@ public class ConversationsFragment extends Fragment implements LoaderManager.Loa
 
         Log.d(LOG_TAG, "Shared Preferences changed: ");
         if (key.equals(getString(R.string.shared_preference_sync_status_key))) {
-            Log.d(LOG_TAG, "Case sync-status");
+            Log.d(LOG_TAG, "Case onClickSync-status");
             updateScreenState();
         }
 
@@ -199,13 +199,13 @@ public class ConversationsFragment extends Fragment implements LoaderManager.Loa
         Log.i(LOG_TAG, "setRefresh: " + active.toString());
         if (active) {
             progressBar.show();
-            //if sync active, disable list clicking
+            //if onClickSync active, disable list clicking
             mAdapter.setViewItensClickable(false);
 
 
         } else {
             progressBar.hide();
-            //if sync NOT active, enable list clicking
+            //if onClickSync NOT active, enable list clicking
 
             // If is connected to the internet
             if (Utility.getIsConnectedStatus(getActivity())) {

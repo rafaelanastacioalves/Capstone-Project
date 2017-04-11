@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="options_entries_languades">
+
+    <!-- Entries that are show to the user. Should be translated. Should not change order! -->
+    <string-array name="options_entries_languages">
         <item>@string/language_entry_pt_br</item>
         <item>@string/language_entry_en_us</item>
         <item>@string/language_entry_es</item>
     </string-array>
 
+    <!-- Values used by the system. Not translatable. Should not change order! -->
     <string-array name="options_values_languages">
         <item>@string/language_value_pt_br</item>
         <item>@string/language_value_en_us</item>

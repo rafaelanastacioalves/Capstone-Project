@@ -54,7 +54,7 @@ public class Utility {
                 new Hashtable<String, String>();
         tmp.put("PT-BR","ic_pt_br");
         tmp.put("EN-US","ic_en_us");
-        tmp.put("ES","ic_sp");
+        tmp.put("SP","ic_sp");
         fluentLanguageToIconNameHash = Collections.unmodifiableMap(tmp);
     }
 
@@ -65,7 +65,7 @@ public class Utility {
                 new Hashtable<String, String>();
         tmp.put("PT-BR","bigger_picture_language_pt_br");
         tmp.put("EN-US","bigger_picture_language_en_us");
-        tmp.put("ES","bigger_picture_language_sp");
+        tmp.put("SP","bigger_picture_language_sp");
         fluentLanguageBiggerPictureToIconNameHash = Collections.unmodifiableMap(tmp);
     }
 

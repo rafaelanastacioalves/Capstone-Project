@@ -114,7 +114,7 @@
                 style="@style/Widget.AppCompat.Spinner.Underlined"
                 android:layout_width="0dp"
                 android:layout_marginBottom="@dimen/default_margin_form"
-                android:entries="@array/options_entries_languades"
+                android:entries="@array/options_entries_languages"
                 app:layout_columnWeight="1" />
 
             <android.support.v7.widget.AppCompatTextView
@@ -127,7 +127,7 @@
                 android:id="@+id/signup_spinner_input_age_language_of_interest"
                 style="@style/Widget.AppCompat.Spinner.Underlined"
                 android:layout_marginBottom="@dimen/default_margin_form"
-                android:entries="@array/options_entries_languades"
+                android:entries="@array/options_entries_languages"
                 app:layout_columnWeight="1" />
 
 

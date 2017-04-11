@@ -76,7 +76,7 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
                 Log.d(LOG_TAG, "onClick");
                 Log.d(LOG_TAG, "the friendID is: " + friendUserID);
 
-                //TODO should not allow click while sync adapter is updating.
+                //TODO should not allow click while onClickSync adapter is updating.
                 //TODO This framgnet should confirm if syncAdapter is updating somehow!
                 String chatId = Utility.getFirebaseRoomIdWithUserID(friendUserID, getActivity());
                 Log.i(LOG_TAG, "The chatId is: " + chatId);
@@ -100,13 +100,13 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
         Log.i(LOG_TAG, "setRefresh: " + active.toString());
         if (active) {
             progressBar.show();
-            //if sync active, disable list clicking
+            //if onClickSync active, disable list clicking
             mAdapter.setViewItensClickable(false);
 
 
         } else {
             progressBar.hide();
-            //if sync NOT active, enable list clicking
+            //if onClickSync NOT active, enable list clicking
 
             // If is connected to the internet
             if (Utility.getIsConnectedStatus(getActivity())) {
@@ -229,7 +229,7 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         Log.d(LOG_TAG, "Shared Preferences changed: ");
         if (key.equals(getString(R.string.shared_preference_sync_status_key))) {
-            Log.d(LOG_TAG, "Case sync-status");
+            Log.d(LOG_TAG, "Case onClickSync-status");
             updateScreenState();
         }
 

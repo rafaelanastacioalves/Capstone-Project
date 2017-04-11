@@ -461,7 +461,7 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
     }
 
     /**
-     * Create a new dummy account for the sync adapter
+     * Create a new dummy account for the onClickSync adapter
      *
      * @param context The application context
      */
@@ -504,7 +504,7 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
     private static void onAccountCreated(Account newAccount, Context context) {
 
         configurePeriodicSync(context, SYNC_INTERVAL, FLEX_TIME);
-        // Inform the system that this account is eligible for auto sync when the network is up
+        // Inform the system that this account is eligible for auto onClickSync when the network is up
         ContentResolver.setSyncAutomatically(newAccount, AUTHORITY, true);
 
 //        TODO Uncomment this:
@@ -542,14 +542,14 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
 
 
     /**
-     * Helper method to schedule the sync adapter periodic execution
+     * Helper method to schedule the onClickSync adapter periodic execution
      */
     private static void configurePeriodicSync(Context context, int syncInterval, int flexTime) {
         Account account = getSyncAccount(context);
         String authority = context.getString(R.string.content_authority);
         if (account != null) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                // we can enable inexact timers in our periodic sync
+                // we can enable inexact timers in our periodic onClickSync
                 SyncRequest request = new SyncRequest.Builder().
                         syncPeriodic(syncInterval, flexTime).
                         setSyncAdapter(account, authority).

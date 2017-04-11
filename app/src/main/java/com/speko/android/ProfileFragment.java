@@ -1,5 +1,6 @@
 package com.speko.android;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -11,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.ContentLoadingProgressBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.AppCompatSpinner;
@@ -60,7 +62,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
     private final String LOG_TAG = getClass().getSimpleName();
 
     private int mMaxScrollSize;
-    private int PERCENTAGE_TO_ANIMATE_AVATAR = 20;
+    private int TOTAL_SCROLLOING_PERCENTAGE_TO_ANIMATE_AVATAR = 60;
     private boolean mIsAvatarShown = true;
 
 
@@ -103,9 +105,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
 
     @BindView(R.id.fluent_languge_imageview)
     ImageView fluentLanguageImageView;
-
-
-
+    private User user;
 
 
     public ProfileFragment() {
@@ -154,7 +154,6 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
 
 
 
-
         return view;
     }
 
@@ -170,14 +169,14 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
     }
 
     @OnClick(R.id.sync_button)
-    public void sync(View v) {
+    public void onClickSync(View v) {
         SpekoSyncAdapter.syncImmediatly(getActivity());
         setRefreshScreen(true);
 //        getLoaderManager().restartLoader(FRIENDS_LOADER,null, this);
     }
 
     @OnClick(R.id.log_out)
-    public void logOut(View v) {
+    public void onClicklogOut(View v) {
 
         Utility.deleteEverything(getContext());
         FirebaseAuth.getInstance().signOut();
@@ -211,7 +210,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
     }
 
     @OnClick(R.id.fragment_button_profile_change)
-    public void changeProfile(View v){
+    public void onClickChangeProfile(View v){
         // if fluent language and language of interest are equal
         if(spinner_fluent_language.getSelectedItem().toString()
                 .equals(
@@ -233,7 +232,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
         }
 
 
-        User user = Utility.getUser(getContext());
+        user = Utility.getUser(getContext());
         if (ageEditText.getText() == null || ageEditText.getText().toString().isEmpty()) {
             Log.i(LOG_TAG, "Text is null or empty, so we set nothing");
         }else {
@@ -277,10 +276,32 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
     }
 
     @OnClick(R.id.signup_imageview_profile_picture)
-    public void uploadPicture(View v){
+    public void onClickUploadPicture(View v){
        Utility.call_to_upload_picture(this);
+    }
+
+    @OnClick(R.id.fluent_languge_imageview)
+    public void onClickChangeFluentLanguage(View v){
+
+        final String[] entriesArray  = getResources().getStringArray(R.array.options_entries_languages);
+        final String[] valuesArray  = getResources().getStringArray(R.array.options_values_languages);
 
 
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(R.string.select_fluent_language);
+        builder.setItems(entriesArray, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // the user clicked on colors[which]
+
+                String systemValue = valuesArray[which];
+                user.setFluentLanguage(systemValue);
+                fluentLanguageImageView.setImageResource(
+                        Utility.getFluentLangagueBiggerPictureUri(getActivity(), systemValue));
+
+            }
+        });
+        builder.show();
     }
 
     @Override
@@ -324,7 +345,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
     private void setView() {
 
         Log.i(LOG_TAG,"setView");
-        User user = Utility.getUser(getActivity());
+        user = Utility.getUser(getActivity());
         String spinnerValue = user.getFluentLanguage();
         Log.i(LOG_TAG,"Fluent Langauge: " + spinnerValue);
 
@@ -388,15 +409,19 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
 
     @Override
     public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-        Log.i(LOG_TAG,"onOffSetChanged");
+        Log.i(LOG_TAG,"onOffSetChanged: ");
         if (mMaxScrollSize == 0)
             mMaxScrollSize = appBarLayout.getTotalScrollRange();
         if (mMaxScrollSize == 0 ){
             return;
         }
-        int percentage = (Math.abs(verticalOffset)) * 100 / mMaxScrollSize;
 
-        if (percentage >= PERCENTAGE_TO_ANIMATE_AVATAR && mIsAvatarShown) {
+        int percentage = (Math.abs(verticalOffset)) * 100 / mMaxScrollSize;
+        Log.i(LOG_TAG,"mMaxScrollSize: " + mMaxScrollSize);
+        Log.i(LOG_TAG,"percentage of Scrolling: " + percentage);
+
+
+        if (percentage >= TOTAL_SCROLLOING_PERCENTAGE_TO_ANIMATE_AVATAR && mIsAvatarShown) {
             mIsAvatarShown = false;
 
             profilePicture.animate()
@@ -405,7 +430,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
                     .start();
         }
 
-        if (percentage <= PERCENTAGE_TO_ANIMATE_AVATAR && !mIsAvatarShown) {
+        if (percentage <= TOTAL_SCROLLOING_PERCENTAGE_TO_ANIMATE_AVATAR && !mIsAvatarShown) {
             mIsAvatarShown = true;
 
             profilePicture.animate()
@@ -447,13 +472,13 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
         if (active) {
             gridLayout.setVisibility(View.INVISIBLE);
             progressBar.show();
-            //if sync active, disable list clicking
+            //if onClickSync active, disable list clicking
 
 
         } else {
             progressBar.hide();
             gridLayout.setVisibility(View.VISIBLE);
-            //if sync NOT active, enable list clicking
+            //if onClickSync NOT active, enable list clicking
 
         }
 
@@ -469,7 +494,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         Log.d(LOG_TAG, "Shared Preferences changed: ");
         if (key.equals(getString(R.string.shared_preference_sync_status_key))) {
-            Log.d(LOG_TAG, "Case sync-status");
+            Log.d(LOG_TAG, "Case onClickSync-status");
             updateScreenState();
         }
 
