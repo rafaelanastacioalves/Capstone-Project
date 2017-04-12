@@ -23,6 +23,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -39,6 +40,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import de.hdodenhof.circleimageview.CircleImageView;
 
+import static android.R.id.list;
 import static android.app.Activity.RESULT_OK;
 import static com.speko.android.Utility.RC_PHOTO_PICKER;
 import static com.speko.android.Utility.getUser;
@@ -104,6 +106,22 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
     @BindView(R.id.profile_language_of_interest_imageview)
     ImageView profileLanguageOfInterestImageView;
 
+    @BindView(R.id.profile_fluent_language_textview)
+    TextView profileFluentLanguageTextView;
+
+    @BindView(R.id.profile_language_of_interest_textview)
+    TextView profileLanguageOfInterestTextView;
+
+    @BindView(R.id.profile_fluent_language_container)
+    View profileFluentLanguageContainer;
+
+    @BindView(R.id.profile_language_of_interest_container)
+    View profileLanguageOfInterestContainer;
+
+    @BindView(R.id.profile_list_view)
+    View profileListView;
+
+
     private User user;
 
 
@@ -147,6 +165,8 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
         ButterKnife.bind(this,view);
+
+        profileListView.setPadding(0,Utility.getStatusBarHeight(getActivity()),0,0);
         setRefreshScreen(true);
 //        SpekoSyncAdapter.syncImmediatly(getContext());
 
@@ -232,7 +252,6 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
             user.setAge(ageEditText.getText().toString());
 
         }
-        user.setLearningLanguage(user.getLearningLanguage());
 
         if (userDescription.getText() == null || userDescription.getText().toString().isEmpty() ) {
             Log.i(LOG_TAG, "Text is null or empty, so we set nothing ");
@@ -270,7 +289,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
        Utility.call_to_upload_picture(this);
     }
 
-    @OnClick(R.id.fluent_language_bigger_picture_imageview)
+    @OnClick(R.id.profile_fluent_language_container)
     public void onClickChangeFluentLanguage(View v){
 
         final String[] entriesArray  = getResources().getStringArray(R.array.options_entries_languages);
@@ -286,13 +305,39 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
 
                 String systemValue = valuesArray[which];
                 user.setFluentLanguage(systemValue);
-                fluentLanguageBiggerPictureImageView.setImageResource(
-                        Utility.getFluentLangagueBiggerPictureUri(getActivity(), systemValue));
+                setView();
+
 
             }
         });
         builder.show();
     }
+
+    @OnClick(R.id.profile_language_of_interest_container)
+    public void onClickChangeLanguageOfInterest(View v){
+
+        final String[] entriesArray  = getResources().getStringArray(R.array.options_entries_languages);
+        final String[] valuesArray  = getResources().getStringArray(R.array.options_values_languages);
+
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(R.string.select_fluent_language);
+        builder.setItems(entriesArray, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // the user clicked on colors[which]
+
+                String systemValue = valuesArray[which];
+                user.setLearningLanguage(systemValue);
+                setView();
+
+
+            }
+        });
+        builder.show();
+    }
+
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -316,7 +361,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
 
                             // When the image has successfully uploaded, we get its download URL
                             downloadUrl = taskSnapshot.getDownloadUrl();
-                            showPhoto(downloadUrl.toString());
+                            showUserPhoto(downloadUrl.toString());
 
 
                         }
@@ -325,17 +370,20 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
 
     }
 
-    private void showPhoto(String downloadUrl) {
+    private void showUserPhoto(String downloadUrl) {
         Picasso.with(getContext()).load(downloadUrl.toString())
-                .placeholder(R.drawable.ic_placeholder_profile_photo)
-                .resize(profilePicture.getWidth(),profilePicture.getHeight())
+                .placeholder(R.drawable.ic_user)
+                .resize(getResources().getDimensionPixelSize(R.dimen.profile_user_picture_dimen),
+                        getResources().getDimensionPixelSize(R.dimen.profile_user_picture_dimen))
                 .centerCrop().into(profilePicture);
     }
 
     private void setView() {
 
         Log.i(LOG_TAG,"setView");
-        user = Utility.getUser(getActivity());
+        if(user == null){
+            user = Utility.getUser(getActivity());
+        }
         String spinnerValue = user.getFluentLanguage();
         Log.i(LOG_TAG,"Fluent Langauge: " + spinnerValue);
 
@@ -356,7 +404,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
             public void onFocusChange(View v, boolean hasFocus) {
                 EditText editText = (EditText) v;
                 if(hasFocus){
-                    editText.setHint(Utility.getUser(getContext()).getAge());
+                    editText.setHint(user.getAge());
 
                 }else{
                     editText.setHint("");
@@ -370,7 +418,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
             public void onFocusChange(View v, boolean hasFocus) {
                 EditText editText = (EditText) v;
                 if(hasFocus){
-                    editText.setHint(Utility.getUser(getContext()).getUserDescription());
+                    editText.setHint(user.getUserDescription());
 
                 }else{
                     editText.setHint("");
@@ -379,19 +427,20 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
             }
         });
 
-        Log.i(LOG_TAG,"Age: " + Utility.getUser(getContext()).getAge());
+        Log.i(LOG_TAG,"Age: " + user.getAge());
 
-        if(Utility.getUser(getActivity()).getProfilePicture() != null){
+        if(user.getProfilePicture() != null){
 
-            showPhoto(Utility.getUser(getActivity()).getProfilePicture());
+            showUserPhoto(user.getProfilePicture());
         }
 
-        profileFluentLanguageImageView.setImageResource(Utility.getDrawableUriForLanguage( Utility.getUser(getActivity()).getFluentLanguage(),getActivity()));
+        profileFluentLanguageImageView.setImageResource(Utility.getDrawableUriForLanguage( user.getFluentLanguage(),getActivity()));
 
-        Log.i(LOG_TAG,"Age: " + Utility.getUser(getContext()).getLearningLanguage());
-        profileLanguageOfInterestImageView.setImageResource(Utility.getDrawableUriForLanguage( Utility.getUser(getActivity()).getLearningLanguage(),getActivity()));
+        Log.i(LOG_TAG,"Age: " + user.getLearningLanguage());
+        profileLanguageOfInterestImageView.setImageResource(Utility.getDrawableUriForLanguage( user.getLearningLanguage(),getActivity()));
 
-
+        profileFluentLanguageTextView.setText(user.getFluentLanguage());
+        profileLanguageOfInterestTextView.setText(user.getLearningLanguage());
     }
 
     @Override
