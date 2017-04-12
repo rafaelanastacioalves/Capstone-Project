@@ -15,13 +15,11 @@ import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
-import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.GridLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -78,10 +76,6 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
     @BindView(R.id.signup_edittext_input_age)
     EditText ageEditText;
 
-
-    @BindView(R.id.signup_spinner_input_age_language_of_interest)
-    AppCompatSpinner spinner_learning_language;
-
     @BindView(R.id.fragment_button_profile_change)
     AppCompatButton signupButton;
 
@@ -101,8 +95,15 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
     @BindView(R.id.profile_appbar_layout)
     AppBarLayout appBarLayout;
 
-    @BindView(R.id.fluent_languge_imageview)
-    ImageView fluentLanguageImageView;
+    @BindView(R.id.fluent_language_bigger_picture_imageview)
+    ImageView fluentLanguageBiggerPictureImageView;
+
+    @BindView(R.id.profile_fluent_language_imageview)
+    ImageView profileFluentLanguageImageView;
+
+    @BindView(R.id.profile_language_of_interest_imageview)
+    ImageView profileLanguageOfInterestImageView;
+
     private User user;
 
 
@@ -231,7 +232,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
             user.setAge(ageEditText.getText().toString());
 
         }
-        user.setLearningLanguage(spinner_learning_language.getSelectedItem().toString());
+        user.setLearningLanguage(user.getLearningLanguage());
 
         if (userDescription.getText() == null || userDescription.getText().toString().isEmpty() ) {
             Log.i(LOG_TAG, "Text is null or empty, so we set nothing ");
@@ -269,7 +270,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
        Utility.call_to_upload_picture(this);
     }
 
-    @OnClick(R.id.fluent_languge_imageview)
+    @OnClick(R.id.fluent_language_bigger_picture_imageview)
     public void onClickChangeFluentLanguage(View v){
 
         final String[] entriesArray  = getResources().getStringArray(R.array.options_entries_languages);
@@ -285,7 +286,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
 
                 String systemValue = valuesArray[which];
                 user.setFluentLanguage(systemValue);
-                fluentLanguageImageView.setImageResource(
+                fluentLanguageBiggerPictureImageView.setImageResource(
                         Utility.getFluentLangagueBiggerPictureUri(getActivity(), systemValue));
 
             }
@@ -340,18 +341,14 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
 
 
 
-        fluentLanguageImageView.setImageResource(
+        fluentLanguageBiggerPictureImageView.setImageResource(
                 Utility.getFluentLangagueBiggerPictureUri(getActivity(), user.getFluentLanguage()));
 
 
         spinnerValue =user.getLearningLanguage();
         Log.i(LOG_TAG,"Learning Langauge: " + spinnerValue);
 
-        spinner_learning_language.setSelection(
-                ((ArrayAdapter) spinner_learning_language.getAdapter()).getPosition(
-                        spinnerValue
-                )
-        );
+
 
 
         ageEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -388,6 +385,11 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
 
             showPhoto(Utility.getUser(getActivity()).getProfilePicture());
         }
+
+        profileFluentLanguageImageView.setImageResource(Utility.getDrawableUriForLanguage( Utility.getUser(getActivity()).getFluentLanguage(),getActivity()));
+
+        Log.i(LOG_TAG,"Age: " + Utility.getUser(getContext()).getLearningLanguage());
+        profileLanguageOfInterestImageView.setImageResource(Utility.getDrawableUriForLanguage( Utility.getUser(getActivity()).getLearningLanguage(),getActivity()));
 
 
     }
