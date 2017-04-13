@@ -197,6 +197,10 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
                 Log.i(LOG_TAG, "Selecting Profile");
 
                 frag = new ProfileFragment();
+                Bundle args = new Bundle();
+                args.putBoolean(ProfileFragment.BUNDLE_ARGUMENT_IS_SYNCABLE , true);
+                args.putBoolean(ProfileFragment.BUNDLE_ARGUMENT_FIRST_TIME_ENABLED, false);
+                frag.setArguments(args);
                 break;
             case R.id.action_conversations:
                 Log.i(LOG_TAG, "Selecting Conversations");

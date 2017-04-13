@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<android.support.v7.widget.GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/profile_grid_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="@dimen/fragment_horizontal_margin"
+    android:paddingRight="@dimen/fragment_horizontal_margin"
+    app:columnCount="2"
+    >
+
+
+    <FrameLayout
+        app:layout_columnWeight="1"
+        android:id="@+id/profile_fluent_language_container"
+        android:layout_width="wrap_content"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_gravity="bottom|right"
+            android:src="@drawable/ic_edit_black_16dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:orientation="vertical">
+
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="@dimen/default_margin_form"
+                android:text="Fluent Language" />
+
+            <ImageView
+                android:id="@+id/profile_fluent_language_imageview"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/ic_pt_br"
+                android:layout_gravity="center" />
+
+            <TextView
+                android:layout_marginTop="@dimen/default_margin_form"
+                tools:text="@string/language_value_pt_br"
+                android:id="@+id/profile_fluent_language_textview"
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+
+    </FrameLayout>
+
+
+    <FrameLayout
+        app:layout_columnWeight="1"
+        android:id="@+id/profile_language_of_interest_container"
+        android:layout_width="wrap_content"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_gravity="bottom|right"
+            android:src="@drawable/ic_edit_black_16dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <android.support.v7.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="@dimen/default_margin_form"
+                android:text="@string/language_of_interest"
+                android:layout_height="wrap_content" />
+
+            <ImageView
+                android:id="@+id/profile_language_of_interest_imageview"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/ic_sp"
+                android:layout_gravity="center" />
+
+            <TextView
+                android:layout_marginTop="@dimen/default_margin_form"
+                tools:text="@string/language_value_sp"
+                android:id="@+id/profile_language_of_interest_textview"
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_marginTop="@dimen/widget_margin"
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/age_label_text_field"
+        app:layout_columnSpan="2"
+
+        >
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/signup_edittext_input_age"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:maxLength="3" />
+
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/widget_margin"
+
+        android:hint="@string/signup_description_label"
+        app:layout_columnSpan="2"
+
+        >
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/signup_user_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/default_margin_form"
+            android:maxLength="500"
+            app:layout_columnWeight="1" />
+    </android.support.design.widget.TextInputLayout>
+
+
+    <ViewStub
+        android:id="@+id/profile_options_container_view_stub"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_marginBottom="@dimen/default_margin_form"
+        app:layout_columnSpan="2"
+
+        >
+
+
+    </ViewStub>
+
+
+    <Button
+        android:id="@+id/sync_button"
+        android:visibility="gone"
+        style="@style/Widget.AppCompat.Button.Colored"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/fragment_horizontal_margin"
+        android:layout_marginRight="@dimen/fragment_horizontal_margin"
+        android:text="@string/sync_button"
+        app:layout_columnSpan="2" />
+
+
+
+
+</android.support.v7.widget.GridLayout>
+
+    

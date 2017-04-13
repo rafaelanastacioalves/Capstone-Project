@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -16,12 +17,15 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.GridLayout;
+import android.support.v7.widget.ViewStubCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewStub;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,6 +42,7 @@ import com.squareup.picasso.Picasso;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.Optional;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.R.id.list;
@@ -63,9 +68,19 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
 
     private int mMaxScrollSize;
     private int TOTAL_SCROLLOING_PERCENTAGE_TO_ANIMATE_AVATAR = 60;
+
+    public static final String BUNDLE_ARGUMENT_IS_SYNCABLE = "bundle_argument_is_syncable";
+    private boolean BUNDLE_VALUE_IS_SYNCABLE = false;
+
+    public static final String BUNDLE_ARGUMENT_FIRST_TIME_ENABLED =
+            "bundle_argument_first_time_enabled";
+    private boolean BUNDLE_VALUE_FIRST_TIME_ENABLED = false;
+
+
+
     private boolean mIsAvatarShown = true;
 
-
+    @Nullable
     @BindView(R.id.log_out)
     Button logOut;
     @BindView(R.id.sync_button)
@@ -78,6 +93,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
     @BindView(R.id.signup_edittext_input_age)
     EditText ageEditText;
 
+    @Nullable
     @BindView(R.id.fragment_button_profile_change)
     AppCompatButton signupButton;
 
@@ -121,6 +137,9 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
     @BindView(R.id.profile_list_view)
     View profileListView;
 
+    @Nullable
+    @BindView(R.id.profile_options_container_view_stub)
+    ViewStub profileOptionsContainerViewStub;
 
     private User user;
 
@@ -149,10 +168,21 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Log.i(LOG_TAG, "onCreate");
+
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+
+
+            BUNDLE_VALUE_FIRST_TIME_ENABLED = getArguments().
+                    getBoolean(BUNDLE_ARGUMENT_FIRST_TIME_ENABLED,false);
+            Log.i(LOG_TAG, "BUNDLE_VALUE_FIRST_TIME_ENABLED: " + BUNDLE_VALUE_FIRST_TIME_ENABLED);
+
+            BUNDLE_VALUE_IS_SYNCABLE = getArguments().
+                    getBoolean(BUNDLE_ARGUMENT_IS_SYNCABLE,false);
+
+            Log.i(LOG_TAG, "BUNDLE_VALUE_IS_SYNCABLE: " + BUNDLE_VALUE_IS_SYNCABLE);
+
         }
 
         Log.i(LOG_TAG,"Initloader");
@@ -162,12 +192,16 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.i(LOG_TAG, "onCreateView");
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
         ButterKnife.bind(this,view);
-
         profileListView.setPadding(0,Utility.getStatusBarHeight(getActivity()),0,0);
         setRefreshScreen(true);
+        setup(view);
+        ButterKnife.bind(this,view);
+
+
 //        SpekoSyncAdapter.syncImmediatly(getContext());
 
 
@@ -176,6 +210,29 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
         return view;
     }
 
+    private void setup(View view) {
+
+        if(BUNDLE_VALUE_FIRST_TIME_ENABLED){
+            Log.i(LOG_TAG, "First Time Enabled TRUE!");
+            profileOptionsContainerViewStub.setLayoutResource(R.layout.profile_options_signup);
+            profileOptionsContainerViewStub.inflate();
+
+        }else{
+
+            Log.i(LOG_TAG, "First Time Enabled FALSE!");
+            profileOptionsContainerViewStub.setLayoutResource(R.layout.profile_options_edit);
+            profileOptionsContainerViewStub.inflate();
+            signupButton = (AppCompatButton) view.findViewById(R.id.fragment_button_profile_change);
+
+        }
+
+        if(BUNDLE_VALUE_IS_SYNCABLE){
+            Log.i(LOG_TAG, "Syncable TRUE!");
+            sync_button = (Button)  view.findViewById(R.id.sync_button);
+            sync_button.setVisibility(View.VISIBLE);
+
+        }
+    }
 
 
     @Override
@@ -194,7 +251,8 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
 //        getLoaderManager().restartLoader(FRIENDS_LOADER,null, this);
     }
 
-    @OnClick(R.id.log_out)
+
+    @OnClick(R.id.log_out) @Optional
     public void onClicklogOut(View v) {
 
         Utility.deleteEverything(getContext());
@@ -218,17 +276,20 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
             setRefreshScreen(false);
         }
 
-        // if is syncing or off line
-        if (SpekoSyncAdapter.isSyncActive(getContext()) ||
-                !Utility.getIsConnectedStatus(getContext())){
-            signupButton.setClickable(false);
-        }else{
-            signupButton.setClickable(true);
+        if(BUNDLE_VALUE_IS_SYNCABLE){
+            // if is syncing or off line
+            if (SpekoSyncAdapter.isSyncActive(getContext()) ||
+                    !Utility.getIsConnectedStatus(getContext())){
+                signupButton.setClickable(false);
+            }else{
+                signupButton.setClickable(true);
+            }
         }
+
 
     }
 
-    @OnClick(R.id.fragment_button_profile_change)
+    @OnClick(R.id.fragment_button_profile_change) @Optional
     public void onClickChangeProfile(View v){
         // if fluent language and language of interest are equal
 
@@ -388,9 +449,12 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
         Log.i(LOG_TAG,"Fluent Langauge: " + spinnerValue);
 
 
+        if(user.getFluentLanguage() != null){
+            fluentLanguageBiggerPictureImageView.setImageResource(
+                    Utility.getFluentLangagueBiggerPictureUri(getActivity(),
+                            user.getFluentLanguage()));
+        }
 
-        fluentLanguageBiggerPictureImageView.setImageResource(
-                Utility.getFluentLangagueBiggerPictureUri(getActivity(), user.getFluentLanguage()));
 
 
         spinnerValue =user.getLearningLanguage();
@@ -434,10 +498,15 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
             showUserPhoto(user.getProfilePicture());
         }
 
-        profileFluentLanguageImageView.setImageResource(Utility.getDrawableUriForLanguage( user.getFluentLanguage(),getActivity()));
+        if(user.getFluentLanguage() != null){
+            profileFluentLanguageImageView.setImageResource(Utility.getDrawableUriForLanguage( user.getFluentLanguage(),getActivity()));
+        }
 
         Log.i(LOG_TAG,"Age: " + user.getLearningLanguage());
-        profileLanguageOfInterestImageView.setImageResource(Utility.getDrawableUriForLanguage( user.getLearningLanguage(),getActivity()));
+
+        if (user.getLearningLanguage() != null){
+            profileLanguageOfInterestImageView.setImageResource(Utility.getDrawableUriForLanguage( user.getLearningLanguage(),getActivity()));
+        }
 
         profileFluentLanguageTextView.setText(user.getFluentLanguage());
         profileLanguageOfInterestTextView.setText(user.getLearningLanguage());
@@ -445,7 +514,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
 
     @Override
     public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-        Log.i(LOG_TAG,"onOffSetChanged: ");
+//        Log.i(LOG_TAG,"onOffSetChanged: ");
         if (mMaxScrollSize == 0)
             mMaxScrollSize = appBarLayout.getTotalScrollRange();
         if (mMaxScrollSize == 0 ){
@@ -453,8 +522,8 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
         }
 
         int percentage = (Math.abs(verticalOffset)) * 100 / mMaxScrollSize;
-        Log.i(LOG_TAG,"mMaxScrollSize: " + mMaxScrollSize);
-        Log.i(LOG_TAG,"percentage of Scrolling: " + percentage);
+//        Log.i(LOG_TAG,"mMaxScrollSize: " + mMaxScrollSize);
+//        Log.i(LOG_TAG,"percentage of Scrolling: " + percentage);
 
 
         if (percentage >= TOTAL_SCROLLOING_PERCENTAGE_TO_ANIMATE_AVATAR && mIsAvatarShown) {
@@ -506,14 +575,13 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
         //TODO Implement
         Log.i(LOG_TAG, "setRefresh: " + active.toString());
         if (active) {
-            gridLayout.setVisibility(View.INVISIBLE);
+
             progressBar.show();
             //if onClickSync active, disable list clicking
 
 
         } else {
             progressBar.hide();
-            gridLayout.setVisibility(View.VISIBLE);
             //if onClickSync NOT active, enable list clicking
 
         }
