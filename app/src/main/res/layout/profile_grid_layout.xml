@@ -6,7 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/profile_grid_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:paddingLeft="@dimen/fragment_horizontal_margin"
     android:paddingRight="@dimen/fragment_horizontal_margin"
     app:columnCount="2"
@@ -22,17 +22,18 @@
         <ImageView
             android:layout_gravity="bottom|right"
             android:src="@drawable/ic_edit_black_16dp"
+
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
         <LinearLayout
-            android:layout_height="wrap_content"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <android.support.v7.widget.AppCompatTextView
-                android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginBottom="@dimen/default_margin_form"
                 android:text="Fluent Language" />
@@ -41,16 +42,18 @@
                 android:id="@+id/profile_fluent_language_imageview"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:src="@drawable/ic_pt_br"
-                android:layout_gravity="center" />
+                android:layout_gravity="center"
+
+                android:background="@drawable/rounded_corners_primary_dark"
+                 />
 
             <TextView
-                android:layout_marginTop="@dimen/default_margin_form"
-                tools:text="@string/language_value_pt_br"
                 android:id="@+id/profile_fluent_language_textview"
-                android:layout_gravity="center"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/default_margin_form"
+                android:text="@string/profile_select_option_text" />
         </LinearLayout>
 
 
@@ -85,16 +88,17 @@
                 android:id="@+id/profile_language_of_interest_imageview"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:src="@drawable/ic_sp"
+                android:background="@drawable/rounded_corners_primary_dark"
                 android:layout_gravity="center" />
 
             <TextView
                 android:layout_marginTop="@dimen/default_margin_form"
-                tools:text="@string/language_value_sp"
                 android:id="@+id/profile_language_of_interest_textview"
                 android:layout_gravity="center"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:text="@string/profile_select_option_text"
+                />
 
         </LinearLayout>
 

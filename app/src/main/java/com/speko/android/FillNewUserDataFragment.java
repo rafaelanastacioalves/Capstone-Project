@@ -110,7 +110,7 @@ public class FillNewUserDataFragment extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onFragmentInteraction(User user);
+        void completeSignup(User user);
     }
 
     @OnClick(R.id.signup_button)
@@ -149,7 +149,7 @@ public class FillNewUserDataFragment extends Fragment {
             user.setProfilePicture(defaultUrl);
         }
 
-        mListener.onFragmentInteraction(user);
+        mListener.completeSignup(user);
 
     }
 

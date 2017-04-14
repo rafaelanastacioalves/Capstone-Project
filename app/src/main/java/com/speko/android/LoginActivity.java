@@ -26,7 +26,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.fabric.sdk.android.Fabric;
 
-public class LoginActivity extends AppCompatActivity implements FillNewUserDataFragment.OnFragmentInteractionListener {
+public class LoginActivity extends AppCompatActivity implements ProfileFragment.OnFragmentInteractionListener {
 
     private static final int RC_SIGN_IN = 123;
     private final String LOG_TAG = getClass().getSimpleName();
@@ -41,7 +41,6 @@ public class LoginActivity extends AppCompatActivity implements FillNewUserDataF
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
         Fabric.with(this, new Crashlytics());
         Log.d(LOG_TAG,"onCreate");
@@ -146,7 +145,13 @@ public class LoginActivity extends AppCompatActivity implements FillNewUserDataF
 
                             Log.d(LOG_TAG, "There is no user. Should create in database");
 
-                            Fragment newUserFragment = new FillNewUserDataFragment();
+                            Bundle fragmentArguments = new Bundle();
+                            fragmentArguments.putBoolean(ProfileFragment.BUNDLE_ARGUMENT_FIRST_TIME_ENABLED,true);
+                            fragmentArguments.putBoolean(ProfileFragment.BUNDLE_ARGUMENT_IS_SYNCABLE,false);
+
+
+                            Fragment newUserFragment = new ProfileFragment();
+                            newUserFragment.setArguments(fragmentArguments);
                             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
                             transaction.replace(R.id.login_fragment_container, newUserFragment);
                             transaction.commit();
@@ -193,8 +198,8 @@ public class LoginActivity extends AppCompatActivity implements FillNewUserDataF
     }
 
     @Override
-    public void onFragmentInteraction(User user) {
-        Log.i(LOG_TAG,"onFragmentInteraction");
+    public void completeSignup(User user) {
+        Log.i(LOG_TAG,"completeSignup");
         //TODO Implement interaction with Activity
 
         final FirebaseUser authUser = auth.getCurrentUser();

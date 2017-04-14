@@ -38,13 +38,15 @@
 
 
 
-    <!-- Fill form texts-->
+    <!-- Profile form texts-->
     <string name="age_label_text_field">Age</string>
 
     <string name="log_out">Log Out</string>
     <string name="signup_description_label">Describe yourself =)</string>
     <string name="button_profile_upload_picture">Upload Picture</string>
     <string name="select_fluent_language">Select your fluent language</string>
+    <string name="profile_select_option_text">Select</string>
+
 
 
     <!-- Firebase refs-->
@@ -68,6 +70,10 @@
     <string name="sync_status_message_server_error">No friends to show. The server is not returning valid data.</string>
     <string name="empty_conversations_list_no_network">The network is not available to fetch data</string>
     <string name="connectivity_error">Please verify your connectivity</string>
+    <string name="profile_register">Register</string>
+    <string name="error_must_choose_language_of_interest">You must select your language of interest.</string>
+    <string name="error_must_choose_fluent_language">You must choose a fluent language.</string>
+    <string name="select_language_of_interest">Select your language of interest</string>
 
 
 </resources>

@@ -48,25 +48,36 @@
 
     </android.support.design.widget.AppBarLayout>
 
-
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/signup_imageview_profile_picture"
-        android:layout_width="@dimen/profile_user_picture_dimen"
-        android:layout_height="@dimen/profile_user_picture_dimen"
-        android:layout_gravity="center_horizontal"
-        android:src="@drawable/ic_user"
+    <FrameLayout
+        android:id="@+id/signup_imageview_profile_picture_container"
         app:layout_anchor="@+id/profile_list_view"
-        android:elevation="8dp"
         app:layout_scrollFlags="scroll"
-        app:civ_border_width="2dp"
-        app:civ_border_color="#FFF"
-        app:layout_anchorGravity="top|center_horizontal"/>
+        android:layout_gravity="center_horizontal"
+        app:layout_anchorGravity="top|center_horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:layout_gravity="bottom|right"
+            android:src="@drawable/ic_edit_black_16dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/signup_imageview_profile_picture"
+            android:layout_width="@dimen/profile_user_picture_dimen"
+            android:layout_height="@dimen/profile_user_picture_dimen"
+            android:src="@drawable/ic_user"
+            android:elevation="8dp"
+            app:civ_border_width="2dp"
+            app:civ_border_color="#FFF"
+            />
+
+    </FrameLayout>
 
 
 
     <android.support.v4.widget.NestedScrollView
         android:layout_marginTop="@dimen/default_screen_margin"
-        android:paddingTop="@dimen/widget_margin"
+        android:paddingTop="@dimen/default_margin_form"
         android:id="@+id/profile_list_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

@@ -37,11 +37,11 @@ import butterknife.ButterKnife;
 import io.fabric.sdk.android.Fabric;
 
 import static android.net.ConnectivityManager.CONNECTIVITY_ACTION;
+import static com.speko.android.Utility.getUser;
 
-public class HomeActivity extends AppCompatActivity implements ProfileFragment.OnFragmentInteractionListener  {
+public class HomeActivity extends AppCompatActivity implements ProfileFragment.OnFragmentInteractionListener {
 
     // Constants
-
 
 
     private static final int RC_SIGN_IN = 1;
@@ -60,17 +60,18 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
     // TODO: Maybe refactor and put it apart because of repeated code in chat activity
     private BroadcastReceiver connectivityChangeReceiver = new BroadcastReceiver() {
         private final String LOG_TAG = "BroadcastReceiver";
+
         @Override
         public void onReceive(Context context, Intent intent) {
             Log.i(LOG_TAG, "Intent received in HomeActivity");
-            if (intent.getAction().equals(CONNECTIVITY_ACTION)){
-                if (!Utility.isNetworkAvailable(context)){
+            if (intent.getAction().equals(CONNECTIVITY_ACTION)) {
+                if (!Utility.isNetworkAvailable(context)) {
                     showSnackBar(true);
-                    setActiveConnectivityStatus(context,false);
+                    setActiveConnectivityStatus(context, false);
 
-                }else{
+                } else {
                     showSnackBar(false);
-                    setActiveConnectivityStatus(context,true);
+                    setActiveConnectivityStatus(context, true);
 
                 }
             }
@@ -84,7 +85,6 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
             spe.commit();
         }
     };
-
 
 
     @BindView(R.id.bottom_view_layout_home_activity)
@@ -117,9 +117,9 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
         mFirebaseAuth = FirebaseAuth.getInstance();
 
         userNotLoggedcheck();
+        userNotCreatedCheck();
 
 //        setFireBaseToken();
-
 
 
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
@@ -138,18 +138,15 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
                     setFireBaseToken();
 
 
-
                 } else {
                     Log.i(LOG_TAG, "user logged out");
 
                     // User is signed out
                     //TODO implement this
-                    Intent i = new Intent(getApplicationContext(), LoginActivity.class);
-                    startActivity(i);
+                    callLoginActivity();
                 }
             }
         };
-
 
 
         mBottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -172,10 +169,17 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
 
     }
 
+    private void callLoginActivity() {
+        Intent i = new Intent(getApplicationContext(), LoginActivity.class);
+        startActivity(i);
+        finish();
+    }
+
+
     private void showSnackBar(Boolean show) {
-        if (show){
+        if (show) {
             connectivitySnackBar.show();
-        }else{
+        } else {
             connectivitySnackBar.dismiss();
         }
 
@@ -198,13 +202,13 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
 
                 frag = new ProfileFragment();
                 Bundle args = new Bundle();
-                args.putBoolean(ProfileFragment.BUNDLE_ARGUMENT_IS_SYNCABLE , true);
+                args.putBoolean(ProfileFragment.BUNDLE_ARGUMENT_IS_SYNCABLE, true);
                 args.putBoolean(ProfileFragment.BUNDLE_ARGUMENT_FIRST_TIME_ENABLED, false);
                 frag.setArguments(args);
                 break;
             case R.id.action_conversations:
                 Log.i(LOG_TAG, "Selecting Conversations");
-                frag = ConversationsFragment.newInstance(Utility.getUser(this).getId());
+                frag = ConversationsFragment.newInstance(getUser(this).getId());
                 break;
         }
 
@@ -212,7 +216,7 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
         mSelectedItem = item.getItemId();
 
         // uncheck the other items.
-        for (int i = 0; i< mBottomNavigationView.getMenu().size(); i++) {
+        for (int i = 0; i < mBottomNavigationView.getMenu().size(); i++) {
             MenuItem menuItem = mBottomNavigationView.getMenu().getItem(i);
             menuItem.setChecked(menuItem.getItemId() == item.getItemId());
         }
@@ -220,7 +224,7 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
 
         if (frag != null) {
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace (R.id.home_activity_fragment_container, frag, frag.getTag());
+            ft.replace(R.id.home_activity_fragment_container, frag, frag.getTag());
             ft.commit();
         }
     }
@@ -235,6 +239,7 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
     @Override
     protected void onStart() {
         Log.i(LOG_TAG, "onStart");
+        userNotCreatedCheck();
         IntentFilter filter = new IntentFilter();
         filter.addAction(CONNECTIVITY_ACTION);
         registerReceiver(connectivityChangeReceiver, filter);
@@ -249,10 +254,17 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
             Log.i(LOG_TAG, "User Not Logged, calling LoginActivity");
             // User is signed in
 
-            startActivity(new Intent(this, LoginActivity.class));
-            finish();
+            callLoginActivity();
         }
 
+
+    }
+
+    private void userNotCreatedCheck() {
+        User user = Utility.getUser(this);
+        if(user == null || user.getId() == null || user.getId().isEmpty()){
+            callLoginActivity();
+        }
     }
 
     @Override
@@ -312,7 +324,7 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
         if (mAuthStateListener != null) {
             mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
         }
-        if (connectivityChangeReceiver != null){
+        if (connectivityChangeReceiver != null) {
             unregisterReceiver(connectivityChangeReceiver);
         }
 
@@ -320,7 +332,7 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
 
 
     @Override
-    public void onFragmentInteraction(User user) {
+    public void completeSignup(User user) {
 
         final FirebaseUser authUser = mFirebaseAuth.getCurrentUser();
 
@@ -332,11 +344,12 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
         user.setName(authUser.getDisplayName());
         user.setEmail(authUser.getEmail());
         user.setId(authUser.getUid());
-        Utility.setUser(user,this);
+        Utility.setUser(user, this);
 
 
         Toast.makeText(this, "ProfileUpdated!", Toast.LENGTH_SHORT).show();
 
 
     }
+
 }

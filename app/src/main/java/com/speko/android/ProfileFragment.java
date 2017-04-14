@@ -1,5 +1,6 @@
 package com.speko.android;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -17,7 +18,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
 import android.support.v7.widget.GridLayout;
-import android.support.v7.widget.ViewStubCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,7 +45,6 @@ import butterknife.OnClick;
 import butterknife.Optional;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-import static android.R.id.list;
 import static android.app.Activity.RESULT_OK;
 import static com.speko.android.Utility.RC_PHOTO_PICKER;
 import static com.speko.android.Utility.getUser;
@@ -102,6 +101,10 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
 
     @BindView(R.id.signup_imageview_profile_picture)
     CircleImageView profilePicture;
+
+    @BindView(R.id.signup_imageview_profile_picture_container)
+    FrameLayout profilePictureContainer;
+
     private Uri downloadUrl = null;
 
     @BindView(R.id.progress_bar)
@@ -142,6 +145,14 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
     ViewStub profileOptionsContainerViewStub;
 
     private User user;
+    private OnFragmentInteractionListener mListener;
+
+
+    public interface OnFragmentInteractionListener {
+        // TODO: Update argument type and name
+        void completeSignup(User user);
+    }
+
 
 
     public ProfileFragment() {
@@ -189,6 +200,17 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
         getLoaderManager().initLoader(USER_LOADER, null, this);
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof OnFragmentInteractionListener) {
+            mListener = (OnFragmentInteractionListener) context;
+        } else {
+            throw new RuntimeException(context.toString()
+                    + " must implement OnFragmentInteractionListener");
+        }
+
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -289,8 +311,32 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
 
     }
 
+    @OnClick(R.id.fragment_button_profile_register) @Optional
+    public void onClickRegisterUser(View v){
+        populateAndValidateUserObject();
+
+        mListener.completeSignup(user);
+
+    }
+
     @OnClick(R.id.fragment_button_profile_change) @Optional
     public void onClickChangeProfile(View v){
+
+        populateAndValidateUserObject();
+
+        Utility.setUser(user,getActivity());
+
+        SpekoSyncAdapter.syncImmediatly(getActivity());
+
+        Toast.makeText(getActivity(), "ProfileUpdated!", Toast.LENGTH_SHORT).show();
+
+
+
+
+    }
+
+    private void populateAndValidateUserObject(){
+
         // if fluent language and language of interest are equal
 
 
@@ -327,19 +373,20 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
 
         }
 
-
+        if(user.getLearningLanguage() == null){
+            Toast.makeText(getActivity(), getString(R.string.error_must_choose_language_of_interest),
+                    Toast.LENGTH_SHORT);
+            return;
+        }
+        if(user.getFluentLanguage() == null){
+            Toast.makeText(getActivity(), getString(R.string.error_must_choose_fluent_language),
+                    Toast.LENGTH_SHORT);
+            return;
+        }
 
         user.setLearningCode(user.getFluentLanguage()
                 + "|"
                 + user.getLearningLanguage());
-
-
-        Utility.setUser(user,getActivity());
-
-        SpekoSyncAdapter.syncImmediatly(getActivity());
-
-        Toast.makeText(getActivity(), "ProfileUpdated!", Toast.LENGTH_SHORT).show();
-
 
 
 
@@ -382,7 +429,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
 
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(R.string.select_fluent_language);
+        builder.setTitle(R.string.select_language_of_interest);
         builder.setItems(entriesArray, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -500,16 +547,20 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
 
         if(user.getFluentLanguage() != null){
             profileFluentLanguageImageView.setImageResource(Utility.getDrawableUriForLanguage( user.getFluentLanguage(),getActivity()));
+            profileFluentLanguageTextView.setText(user.getFluentLanguage());
+
         }
 
         Log.i(LOG_TAG,"Age: " + user.getLearningLanguage());
 
         if (user.getLearningLanguage() != null){
             profileLanguageOfInterestImageView.setImageResource(Utility.getDrawableUriForLanguage( user.getLearningLanguage(),getActivity()));
+            profileLanguageOfInterestTextView.setText(user.getLearningLanguage());
+
+        }else{
+
         }
 
-        profileFluentLanguageTextView.setText(user.getFluentLanguage());
-        profileLanguageOfInterestTextView.setText(user.getLearningLanguage());
     }
 
     @Override
@@ -529,7 +580,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
         if (percentage >= TOTAL_SCROLLOING_PERCENTAGE_TO_ANIMATE_AVATAR && mIsAvatarShown) {
             mIsAvatarShown = false;
 
-            profilePicture.animate()
+            profilePictureContainer.animate()
                     .scaleY(0).scaleX(0)
                     .setDuration(200)
                     .start();
@@ -538,7 +589,8 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
         if (percentage <= TOTAL_SCROLLOING_PERCENTAGE_TO_ANIMATE_AVATAR && !mIsAvatarShown) {
             mIsAvatarShown = true;
 
-            profilePicture.animate()
+            profilePictureContainer
+                    .animate()
                     .scaleY(1).scaleX(1)
                     .start();
         }
@@ -609,20 +661,6 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
         }
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(User user);
-    }
 
 
 
