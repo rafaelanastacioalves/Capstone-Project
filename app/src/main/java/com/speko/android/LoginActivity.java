@@ -209,7 +209,6 @@ public class LoginActivity extends AppCompatActivity implements ProfileFragment.
                 + user.getLearningLanguage());
 
         //adding more Provider User info
-        user.setName(authUser.getDisplayName());
         user.setEmail(authUser.getEmail());
         user.setId(authUser.getUid());
 

@@ -47,7 +47,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.app.Activity.RESULT_OK;
 import static com.speko.android.Utility.RC_PHOTO_PICKER;
-import static com.speko.android.Utility.getUser;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -91,6 +90,9 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
 
     @BindView(R.id.signup_edittext_input_age)
     EditText ageEditText;
+
+    @BindView(R.id.signup_edittext_input_name)
+    EditText nameEditText;
 
     @Nullable
     @BindView(R.id.fragment_button_profile_change)
@@ -313,29 +315,33 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
 
     @OnClick(R.id.fragment_button_profile_register) @Optional
     public void onClickRegisterUser(View v){
-        populateAndValidateUserObject();
+        if (populateAndValidateUserObjectCorrectly()){
+            mListener.completeSignup(user);
+        }
 
-        mListener.completeSignup(user);
 
     }
 
     @OnClick(R.id.fragment_button_profile_change) @Optional
     public void onClickChangeProfile(View v){
 
-        populateAndValidateUserObject();
+        if(populateAndValidateUserObjectCorrectly()){
+            Utility.setUser(user,getActivity());
 
-        Utility.setUser(user,getActivity());
+            SpekoSyncAdapter.syncImmediatly(getActivity());
 
-        SpekoSyncAdapter.syncImmediatly(getActivity());
+            Toast.makeText(getActivity(), "ProfileUpdated!", Toast.LENGTH_SHORT).show();
 
-        Toast.makeText(getActivity(), "ProfileUpdated!", Toast.LENGTH_SHORT).show();
+        }
+
 
 
 
 
     }
 
-    private void populateAndValidateUserObject(){
+    private boolean populateAndValidateUserObjectCorrectly(){
+        Log.i(LOG_TAG, "PopulateAndValidateUserObject");
 
         // if fluent language and language of interest are equal
 
@@ -345,12 +351,27 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
         if (!Utility.isValidAge(ageString)){
             Toast.makeText(getContext(), R.string.age_not_acceptable_error, Toast.LENGTH_LONG)
                     .show();
-            return;
+            return false;
         }
 
         if (user == null) {
             user = Utility.getUser(getContext());
         }
+
+        if (nameEditText.getText() == null || nameEditText.getText().toString().isEmpty()) {
+            Toast.makeText(getActivity(),"You must fill a name.", Toast.LENGTH_SHORT).show();
+            return false;
+        }else if (nameEditText.getText().length()< 3){
+            Toast.makeText(getActivity(), "The name must be at least 3 characters",
+                    Toast.LENGTH_SHORT).show();
+            return false;
+
+        }
+            user.setName(nameEditText.getText().toString());
+
+
+
+
         if (ageEditText.getText() == null || ageEditText.getText().toString().isEmpty()) {
             Log.i(LOG_TAG, "Text is null or empty, so we set nothing");
         }else {
@@ -373,15 +394,18 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
 
         }
 
-        if(user.getLearningLanguage() == null){
+        Log.i(LOG_TAG, "getLearningLanguage: " + user.getLearningLanguage() );
+        if(user.getLearningLanguage() == null || user.getLearningLanguage().isEmpty()){
             Toast.makeText(getActivity(), getString(R.string.error_must_choose_language_of_interest),
-                    Toast.LENGTH_SHORT);
-            return;
+                    Toast.LENGTH_SHORT).show();
+            return false;
         }
-        if(user.getFluentLanguage() == null){
+
+        Log.i(LOG_TAG, "getFluentLanguage: " + user.getFluentLanguage() );
+        if(user.getFluentLanguage() == null || user.getFluentLanguage().isEmpty()){
             Toast.makeText(getActivity(), getString(R.string.error_must_choose_fluent_language),
-                    Toast.LENGTH_SHORT);
-            return;
+                    Toast.LENGTH_SHORT).show();
+            return false;
         }
 
         user.setLearningCode(user.getFluentLanguage()
@@ -389,7 +413,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
                 + user.getLearningLanguage());
 
 
-
+        return true;
     }
 
     @OnClick(R.id.signup_imageview_profile_picture)
@@ -458,7 +482,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
             // Get a reference to store file at user_pictures/<UID>/<FILENAME>
             StorageReference photoRef = FirebaseStorage.getInstance().getReference()
                     .child(getString(R.string.user_pictures))
-                    .child(getUser(getActivity()).getId())
+                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                     .child(selectedImageUri.getLastPathSegment());
 
             // Upload file to Firebase Storage
@@ -496,11 +520,8 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
         Log.i(LOG_TAG,"Fluent Langauge: " + spinnerValue);
 
 
-        if(user.getFluentLanguage() != null){
-            fluentLanguageBiggerPictureImageView.setImageResource(
-                    Utility.getFluentLangagueBiggerPictureUri(getActivity(),
-                            user.getFluentLanguage()));
-        }
+
+
 
 
 
@@ -508,7 +529,11 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
         Log.i(LOG_TAG,"Learning Langauge: " + spinnerValue);
 
 
-
+        if(BUNDLE_VALUE_FIRST_TIME_ENABLED){
+            nameEditText.setText(FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
+        }else {
+            nameEditText.setText(user.getName());
+        }
 
         ageEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -540,16 +565,26 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
 
         Log.i(LOG_TAG,"Age: " + user.getAge());
 
+
+
         if(user.getProfilePicture() != null){
 
             showUserPhoto(user.getProfilePicture());
+        }else if (BUNDLE_VALUE_FIRST_TIME_ENABLED){
+            String pictureUrl = FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl().toString();
+            user.setProfilePicture(pictureUrl);
+            showUserPhoto(pictureUrl);
         }
 
         if(user.getFluentLanguage() != null){
             profileFluentLanguageImageView.setImageResource(Utility.getDrawableUriForLanguage( user.getFluentLanguage(),getActivity()));
             profileFluentLanguageTextView.setText(user.getFluentLanguage());
-
+            fluentLanguageBiggerPictureImageView.setImageResource(
+                    Utility.getFluentLangagueBiggerPictureUri(getActivity(),
+                            user.getFluentLanguage()));
         }
+
+
 
         Log.i(LOG_TAG,"Age: " + user.getLearningLanguage());
 
