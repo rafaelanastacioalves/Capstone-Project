@@ -554,9 +554,33 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
 
 
         if(BUNDLE_VALUE_FIRST_TIME_ENABLED){
-            nameEditText.setText(FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
+            nameEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    EditText editText = (EditText) v;
+                    if(hasFocus){
+                        nameEditText.setHint(FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
+
+                    }else{
+                        nameEditText.setHint("");
+
+                    }
+                }
+            });
         }else {
-            nameEditText.setText(user.getName());
+            nameEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    EditText editText = (EditText) v;
+                    if(hasFocus){
+                        nameEditText.setHint(user.getName());
+
+                    }else{
+                        nameEditText.setHint("");
+
+                    }
+                }
+            });
         }
 
         ageEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
