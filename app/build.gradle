@@ -32,10 +32,10 @@ android {
     buildToolsVersion "25.0.2"
     defaultConfig {
         applicationId "com.speko.android"
-        minSdkVersion 16
+        minSdkVersion 21
         targetSdkVersion 25
         versionCode 7
-        versionName "0.0.20"
+        versionName "0.0.33"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -60,7 +60,7 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile('com.crashlytics.sdk.android:crashlytics:2.6.6@aar') {
+    compile('com.crashlytics.sdk.android:crashlytics:2.6.7@aar') {
         transitive = true;
     }
 
@@ -78,6 +78,10 @@ dependencies {
     compile 'com.squareup.retrofit2:converter-gson:2.1.0'
     compile 'com.squareup.okhttp3:logging-interceptor:3.3.0'
     compile 'com.android.support:gridlayout-v7:25.1.0'
+
+    // percent layout
+    compile 'com.android.support:percent:25.1.0'
+
 
     testCompile 'junit:junit:4.12'
 
