@@ -25,6 +25,8 @@ public class SpekoSyncService extends Service {
 
     }
 
+
+
     @Override
     public IBinder onBind(Intent intent) {
         return sSpekoSyncAdapter.getSyncAdapterBinder();

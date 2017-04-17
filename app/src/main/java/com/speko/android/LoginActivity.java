@@ -212,7 +212,7 @@ public class LoginActivity extends AppCompatActivity implements ProfileFragment.
         user.setEmail(authUser.getEmail());
         user.setId(authUser.getUid());
 
-        Utility.setUser(user,this);
+        Utility.setUser(user,this, null);
 
         Toast.makeText(this,"Signed Up Successfully!",Toast.LENGTH_SHORT).show();
 

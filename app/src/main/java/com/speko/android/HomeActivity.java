@@ -344,7 +344,7 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
         user.setName(authUser.getDisplayName());
         user.setEmail(authUser.getEmail());
         user.setId(authUser.getUid());
-        Utility.setUser(user, this);
+        Utility.setUser(user, this, null);
 
 
         Toast.makeText(this, "ProfileUpdated!", Toast.LENGTH_SHORT).show();

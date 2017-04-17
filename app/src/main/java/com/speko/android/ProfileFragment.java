@@ -4,10 +4,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SyncAdapterType;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
@@ -30,7 +32,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -326,9 +330,15 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
     public void onClickChangeProfile(View v){
 
         if(populateAndValidateUserObjectCorrectly()){
-            Utility.setUser(user,getActivity());
+            final Context applicationContext = getActivity().getApplication();
+            OnCompleteListener onCompleteListener = new OnCompleteListener() {
+                @Override
+                public void onComplete(@NonNull Task task) {
+                    SpekoSyncAdapter.syncImmediatly(applicationContext);
+                }
+            };
+            Utility.setUser(user,getActivity(), onCompleteListener);
 
-            SpekoSyncAdapter.syncImmediatly(getActivity());
 
             Toast.makeText(getActivity(), "ProfileUpdated!", Toast.LENGTH_SHORT).show();
 
@@ -343,21 +353,30 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
     private boolean populateAndValidateUserObjectCorrectly(){
         Log.i(LOG_TAG, "PopulateAndValidateUserObject");
 
-        // if fluent language and language of interest are equal
-
-
-        String ageString = ageEditText.getText().toString();
-
-        if (!Utility.isValidAge(ageString)){
-            Toast.makeText(getContext(), R.string.age_not_acceptable_error, Toast.LENGTH_LONG)
-                    .show();
-            return false;
-        }
 
         if (user == null) {
             user = Utility.getUser(getContext());
         }
 
+        // About age...
+        String ageString = ageEditText.getText().toString();
+        if (!Utility.isValidAge(ageString)){
+            Toast.makeText(getContext(), R.string.age_not_acceptable_error, Toast.LENGTH_LONG)
+                    .show();
+            return false;
+        }
+        if (ageEditText.getText() == null || ageEditText.getText().toString().isEmpty()) {
+            Log.i(LOG_TAG, "Text is null or empty, so we set nothing");
+        }else {
+            Log.i(LOG_TAG, "Text is NOT null or empty, setting from text: " +
+                    ageEditText.getText().toString());
+            user.setAge(ageEditText.getText().toString());
+
+        }
+
+
+
+        // About name...
         if (nameEditText.getText() == null || nameEditText.getText().toString().isEmpty()) {
             Toast.makeText(getActivity(),"You must fill a name.", Toast.LENGTH_SHORT).show();
             return false;
@@ -371,16 +390,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
 
 
 
-
-        if (ageEditText.getText() == null || ageEditText.getText().toString().isEmpty()) {
-            Log.i(LOG_TAG, "Text is null or empty, so we set nothing");
-        }else {
-            Log.i(LOG_TAG, "Text is NOT null or empty, setting from text: " +
-                    ageEditText.getText().toString());
-            user.setAge(ageEditText.getText().toString());
-
-        }
-
+        // About user description
         if (userDescription.getText() == null || userDescription.getText().toString().isEmpty() ) {
             Log.i(LOG_TAG, "Text is null or empty, so we set nothing ");
         }else{
@@ -389,11 +399,14 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
             user.setUserDescription(userDescription.getText().toString());
         }
 
+        // About user picture URL
         if (downloadUrl != null){
             user.setProfilePicture(downloadUrl.toString());
 
         }
 
+
+        // About Language
         Log.i(LOG_TAG, "getLearningLanguage: " + user.getLearningLanguage() );
         if(user.getLearningLanguage() == null || user.getLearningLanguage().isEmpty()){
             Toast.makeText(getActivity(), getString(R.string.error_must_choose_language_of_interest),
@@ -406,6 +419,17 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
             Toast.makeText(getActivity(), getString(R.string.error_must_choose_fluent_language),
                     Toast.LENGTH_SHORT).show();
             return false;
+        }
+
+        //if fluent language and language of interest are different
+        if (user.getFluentLanguage().equals(user.getLearningLanguage()
+                )) {
+            Toast.makeText(getContext(),
+                    R.string.languages_must_be_different_error,
+                    Toast.LENGTH_LONG)
+                    .show();
+            return false;
+
         }
 
         user.setLearningCode(user.getFluentLanguage()

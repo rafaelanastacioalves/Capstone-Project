@@ -95,7 +95,7 @@ public class Utility {
      * @param user
      * @param c
      */
-    public static void setUser(User user, Context c){
+    public static void setUser(User user, Context c, OnCompleteListener onCompleteListener){
         SpekoSyncAdapter.persistUser(user, c);
         mUser = user;
         authUser = FirebaseAuth.getInstance().getCurrentUser();
@@ -105,12 +105,18 @@ public class Utility {
         firebaseDatabase.getReference()
                 .child(c.getString(R.string.firebase_database_node_users))
                 .child(authUser.getUid())
-                .setValue(user);
+                .setValue(user).addOnCompleteListener(onCompleteListener);
     }
 
+
+
     private static User getUserFromDB(Context context){
+        FirebaseUser fireBaseUser = getFirebaseAuthUser();
+        if(fireBaseUser == null){
+            return null;
+        }
         Cursor c = context.getContentResolver().query(UsersProvider.Users.USER_URI
-        , null, UserColumns.FIREBASE_ID + " = ? ", new String[]{getFirebaseAuthUser().getUid()}, null);
+        , null, UserColumns.FIREBASE_ID + " = ? ", new String[]{fireBaseUser.getUid()}, null);
         User user = new User();
         if(c.moveToFirst()){
             user.setLearningLanguage(c.getString(c.getColumnIndex(UserColumns.LEARNING_LANGUAGE)));
