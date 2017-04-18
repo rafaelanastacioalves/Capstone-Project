@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.SyncAdapterType;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -292,6 +291,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
     public void onPause() {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         sp.unregisterOnSharedPreferenceChangeListener(this);
+        user = null;
         super.onPause();
     }
 
@@ -359,12 +359,6 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
         }
 
         // About age...
-        String ageString = ageEditText.getText().toString();
-        if (!Utility.isValidAge(ageString)){
-            Toast.makeText(getContext(), R.string.age_not_acceptable_error, Toast.LENGTH_LONG)
-                    .show();
-            return false;
-        }
         if (ageEditText.getText() == null || ageEditText.getText().toString().isEmpty()) {
             Log.i(LOG_TAG, "Text is null or empty, so we set nothing");
         }else {
@@ -373,20 +367,44 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
             user.setAge(ageEditText.getText().toString());
 
         }
+        String ageString = ageEditText.getText().toString();
+        if (!Utility.isValidAge(ageString)){
+            Toast.makeText(getContext(), R.string.age_not_acceptable_error, Toast.LENGTH_LONG)
+                    .show();
+            return false;
+        }
 
 
 
         // About name...
+
+        // if text view is empty...
+        Log.i(LOG_TAG, "populateAndValidateUser...  name: " + nameEditText.getText());
+        Log.i(LOG_TAG, "populateAndValidateUser...  user.name: " + user.getName());
         if (nameEditText.getText() == null || nameEditText.getText().toString().isEmpty()) {
-            Toast.makeText(getActivity(),"You must fill a name.", Toast.LENGTH_SHORT).show();
-            return false;
-        }else if (nameEditText.getText().length()< 3){
+
+                // and even the value already put is empty
+                if (user.getName().isEmpty()){
+
+                    Toast.makeText(getActivity(), "You must fill a name.", Toast.LENGTH_SHORT)
+                            .show();
+                    return false;
+
+                }
+
+
+        } else if (nameEditText.getText().length() < 3) {
             Toast.makeText(getActivity(), "The name must be at least 3 characters",
                     Toast.LENGTH_SHORT).show();
             return false;
 
-        }
+        } else {
+            // if text view has some value in it and it is bigger than 3 chars...
             user.setName(nameEditText.getText().toString());
+        }
+        // at this point, if we din't set any value for name, it is because it is already set by the
+        // user before ad he din't made any changes
+
 
 
 
@@ -554,29 +572,18 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
 
 
         if(BUNDLE_VALUE_FIRST_TIME_ENABLED){
-            nameEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                @Override
-                public void onFocusChange(View v, boolean hasFocus) {
-                    EditText editText = (EditText) v;
-                    if(hasFocus){
-                        nameEditText.setHint(FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
+            nameEditText.setText(FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
 
-                    }else{
-                        nameEditText.setHint("");
-
-                    }
-                }
-            });
         }else {
             nameEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
                 public void onFocusChange(View v, boolean hasFocus) {
                     EditText editText = (EditText) v;
                     if(hasFocus){
-                        nameEditText.setHint(user.getName());
+                        editText.setHint(user.getName());
 
                     }else{
-                        nameEditText.setHint("");
+                        editText.setHint("");
 
                     }
                 }

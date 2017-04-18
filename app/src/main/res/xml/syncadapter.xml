@@ -4,5 +4,5 @@
     android:accountType="android.speko.com"
     android:userVisible="false"
     android:supportsUploading="false"
-    android:allowParallelSyncs="true"
+    android:allowParallelSyncs="false"
     android:isAlwaysSyncable="true" />

@@ -1,7 +1,9 @@
 package com.speko.android;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.ContentLoadingProgressBar;
@@ -12,13 +14,17 @@ import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ui.ResultCodes;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GetTokenResult;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.speko.android.data.User;
+import com.speko.android.sync.SpekoSyncAdapter;
 
 import java.util.Arrays;
 
@@ -129,6 +135,20 @@ public class LoginActivity extends AppCompatActivity implements ProfileFragment.
     private void newUserProcedure() {
         final FirebaseUser authUser = auth.getCurrentUser();
         String uid = authUser.getUid();
+
+        authUser.getToken(false).addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
+            @Override
+            public void onComplete(@NonNull Task<GetTokenResult> task) {
+                if (task.isSuccessful()) {
+                    final Context context = getApplicationContext();
+                    String userToken = task.getResult().getToken();
+                    Log.i(LOG_TAG, "O token Deu certo! \n");
+                    Log.i(LOG_TAG, "O ID do usuário é: \n" + auth.getCurrentUser().getUid());
+                    SpekoSyncAdapter.setUserToken(userToken);
+                    SpekoSyncAdapter.initializeSyncAdapter(context);
+                }
+            }
+        });
         Log.d(LOG_TAG,"Querying possible reference to the user in database with uid: " + uid);
 
                 userEventListener = new ValueEventListener() {
@@ -146,13 +166,16 @@ public class LoginActivity extends AppCompatActivity implements ProfileFragment.
                             Log.d(LOG_TAG, "There is no user. Should create in database");
 
                             Bundle fragmentArguments = new Bundle();
-                            fragmentArguments.putBoolean(ProfileFragment.BUNDLE_ARGUMENT_FIRST_TIME_ENABLED,true);
-                            fragmentArguments.putBoolean(ProfileFragment.BUNDLE_ARGUMENT_IS_SYNCABLE,false);
+                            fragmentArguments.putBoolean(
+                                    ProfileFragment.BUNDLE_ARGUMENT_FIRST_TIME_ENABLED,true);
+                            fragmentArguments.putBoolean(
+                                    ProfileFragment.BUNDLE_ARGUMENT_IS_SYNCABLE,false);
 
 
                             Fragment newUserFragment = new ProfileFragment();
                             newUserFragment.setArguments(fragmentArguments);
-                            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                            FragmentTransaction transaction = getSupportFragmentManager().
+                                    beginTransaction();
                             transaction.replace(R.id.login_fragment_container, newUserFragment);
                             transaction.commit();
 
@@ -164,7 +187,8 @@ public class LoginActivity extends AppCompatActivity implements ProfileFragment.
                             Log.i(LOG_TAG, "Setting Loading false");
                             setLoading(false);
 
-                            Log.d(LOG_TAG, "There is the user!: " + dataSnapshot + "\n" +
+                            SpekoSyncAdapter.syncImmediatly(getApplicationContext());
+                            Log.i(LOG_TAG, "There is the user!: " + dataSnapshot + "\n" +
                                     "should go to main activity");
                             setResult(RESULT_OK);
                             startActivity(new Intent(getApplicationContext(), HomeActivity.class));
@@ -190,6 +214,7 @@ public class LoginActivity extends AppCompatActivity implements ProfileFragment.
 
     @Override
     protected void onPause() {
+        Log.i(LOG_TAG, "onPause");
         if(userEventListener != null){
             firebaseDatabase.getReference().child("users").removeEventListener(userEventListener);
         }
@@ -212,13 +237,23 @@ public class LoginActivity extends AppCompatActivity implements ProfileFragment.
         user.setEmail(authUser.getEmail());
         user.setId(authUser.getUid());
 
-        Utility.setUser(user,this, null);
+        OnCompleteListener onCompleteListener = new OnCompleteListener() {
+            @Override
+            public void onComplete(@NonNull Task task) {
+                final Context context = getApplicationContext();
+                Toast.makeText(getBaseContext(),"Signed Up Successfully!",Toast.LENGTH_SHORT).show();
+                //we call syncImmediatly here just for redundancy. It is already called in
+                // HomeActivity.
+                SpekoSyncAdapter.syncImmediatly(context);
+                //TODO Refactor this
+                setResult(RESULT_OK);
+                startActivity(new Intent(getApplicationContext(), HomeActivity.class));
+                finish();
+            }
+        };
+        Utility.setUser(user,this, onCompleteListener);
+        setLoading(true);
 
-        Toast.makeText(this,"Signed Up Successfully!",Toast.LENGTH_SHORT).show();
 
-        //TODO Refactor this
-        setResult(RESULT_OK);
-        startActivity(new Intent(getApplicationContext(), HomeActivity.class));
-        finish();
     }
 }

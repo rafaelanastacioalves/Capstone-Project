@@ -320,6 +320,7 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
 
     @Override
     protected void onPause() {
+        Log.i(LOG_TAG, "onPause()");
         super.onPause();
         if (mAuthStateListener != null) {
             mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
