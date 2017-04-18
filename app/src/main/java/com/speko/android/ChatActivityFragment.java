@@ -83,6 +83,9 @@ public class ChatActivityFragment extends Fragment {
     @BindView(R.id.progress_bar)
     ContentLoadingProgressBar progressBar;
 
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+
     @Override
     public void onAttach(Context context) {
 
@@ -103,6 +106,7 @@ public class ChatActivityFragment extends Fragment {
         mInputEditText = (EditText) v.findViewById(com.github.bassaer.chatmessageview.R.id.message_edit_text);
 
         ButterKnife.bind(this, v);
+
 
 
 
@@ -204,6 +208,8 @@ public class ChatActivityFragment extends Fragment {
         mChatView.setInputTextHint("new message...");
         mChatView.setMessageMarginTop(5);
         mChatView.setMessageMarginBottom(5);
+
+        toolbar.setTitle(Utility.getOtherUserWithId(getActivity(),friendId).getName());
 
     }
 

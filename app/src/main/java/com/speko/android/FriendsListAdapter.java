@@ -68,7 +68,6 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
 
 
         holder.mNameTextView.setText(userName);
-        holder.mUserEmailTextView.setText(userEmail);
         if(viewItensClickable != null){
             holder.friendViewHolder.setClickable(viewItensClickable);
 
@@ -126,7 +125,6 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
     public class UserViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         @BindView(R.id.friend_viewholder_username) TextView mNameTextView;
-        @BindView(R.id.friend_viewholder_useremail) TextView mUserEmailTextView;
         @BindView(R.id.friend_viewholder) RelativeLayout friendViewHolder;
         @BindView(R.id.friend_profile_picture) CircleImageView friendProfilePicture;
         @BindView(R.id.friend_profile_fluent_language_picture)
