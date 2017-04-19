@@ -42,7 +42,7 @@
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@drawable/gradient_image_background" />
+                    android:background="@drawable/gradient_image_background_90" />
 
             </FrameLayout>
 
