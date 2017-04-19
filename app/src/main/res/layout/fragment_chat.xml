@@ -17,6 +17,7 @@
 
         <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
+            android:background="@android:color/transparent"
             android:layout_height="wrap_content">
 
             <android.support.v7.widget.Toolbar
@@ -24,7 +25,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/toolbar_height"
                 android:elevation="0dp"
-                android:background="?attr/colorPrimary"
                 app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
                 app:popupTheme="@style/AppTheme.PopupOverlay" />
 
@@ -35,6 +35,7 @@
 
 
         <FrameLayout
+            android:fitsSystemWindows="true"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             >
