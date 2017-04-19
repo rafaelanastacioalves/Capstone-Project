@@ -47,7 +47,7 @@
                 android:layout_gravity="center"
                 android:layout_height="wrap_content" />
 
-            <com.speko.android.widget.AdaptedChatView android:id="@+id/chat_view"
+            <com.github.bassaer.chatmessageview.views.ChatView android:id="@+id/chat_view"
                 android:layout_width="match_parent"
 
                 android:layout_height="match_parent"

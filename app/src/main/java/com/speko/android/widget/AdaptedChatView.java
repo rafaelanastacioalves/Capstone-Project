@@ -2,6 +2,8 @@ package com.speko.android.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.widget.EditText;
 
 import com.github.bassaer.chatmessageview.models.Message;
 import com.github.bassaer.chatmessageview.views.ChatView;
@@ -16,10 +18,14 @@ public class AdaptedChatView extends ChatView {
 
     public AdaptedChatView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        init();
+
     }
 
     public AdaptedChatView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        init();
+
     }
 
 
@@ -37,6 +43,13 @@ public class AdaptedChatView extends ChatView {
         mMessageView.setMessage(message);
         mMessageView.scrollToEnd();
 
+    }
+
+    private void init(){
+        Log.i("AdaptedChatView", "init");
+        EditText mInputText = (EditText) findViewById(R.id.message_edit_text);
+
+        mInputText.setMaxLines(3);
     }
 
 

@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 
 import com.github.bassaer.chatmessageview.models.Message;
+import com.github.bassaer.chatmessageview.views.ChatView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.ChildEventListener;
@@ -29,7 +30,6 @@ import com.speko.android.data.MessageLocal;
 import com.speko.android.data.User;
 import com.speko.android.sync.MyMessageStatusFormatter;
 import com.speko.android.sync.SpekoSyncAdapter;
-import com.speko.android.widget.AdaptedChatView;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
@@ -78,7 +78,7 @@ public class ChatActivityFragment extends Fragment {
 
 
     @BindView(R.id.chat_view)
-    AdaptedChatView mChatView;
+    ChatView mChatView;
 
     @BindView(R.id.progress_bar)
     ContentLoadingProgressBar progressBar;
