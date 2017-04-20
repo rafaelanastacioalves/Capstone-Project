@@ -90,6 +90,8 @@ public class Utility {
 
     }
 
+
+
     /**
      * Persists current into Firebase
      * @param user
@@ -102,10 +104,12 @@ public class Utility {
         if(firebaseDatabase==null){
             firebaseDatabase = FirebaseDatabase.getInstance();
         }
+
+        HashMap<String, Object> userHashMap = new HashMap<>();
+        userHashMap.put(authUser.getUid(), user);
         firebaseDatabase.getReference()
                 .child(c.getString(R.string.firebase_database_node_users))
-                .child(authUser.getUid())
-                .setValue(user).addOnCompleteListener(onCompleteListener);
+                .updateChildren(userHashMap).addOnCompleteListener(onCompleteListener);
     }
 
 
@@ -131,10 +135,17 @@ public class Utility {
 
         }
 
+        user.setChats(getUserConversationsFromDB(context, user));
         c.close();
         return user;
     }
 
+    /**
+     * Same as {@link #getOtherUserWithId(Context, String)}
+     * @param context
+     * @param id
+     * @return
+     */
     private static User getUserFriendFromDB(Context context, String id){
         Log.i("getUserFriendFromDB", "Retrieving user friend with id: " + id);
 
@@ -157,6 +168,66 @@ public class Utility {
 
         c.close();
         return user;
+    }
+
+    /**
+     *
+     * @param context
+     * @param mainUser
+     * @return Chats hashmap or null if there is none
+     */
+    private static HashMap<String, Chat> getUserConversationsFromDB(Context context, User mainUser){
+        Log.i("getUserConvFromDB", "Retrieving user friend with id: " + mainUser.getId());
+        Cursor c = context.getContentResolver().query(UsersProvider.ChatMembers.CHAT_URI
+                , null, null, null, null);
+        HashMap<String, Chat> chatsHashMap = null;
+        Chat chat;
+        if (c.moveToFirst()){
+            if (chatsHashMap == null) {
+                chatsHashMap = new HashMap<>();
+            }
+
+            do {
+                chat = new Chat();
+                HashMap<String, User> members = new HashMap<>();
+
+                User userFriend = new User(
+                        c.getString(c.getColumnIndex(ChatMembersColumns.OTHER_MEMBER_NAME)),
+                        c.getString(c.getColumnIndex(ChatMembersColumns.OTHER_MEMBER_ID)));
+
+
+                Log.i("createRoomForUSers", "Creating chat with \n" + userFriend +
+                        "\n id: " + userFriend.getId());
+
+                members.put(userFriend.getId(), userFriend );
+
+
+                Log.i("createRoomForUSers", "Creating chat with \n" + mainUser +
+                        "\n id: " + mainUser.getId());
+
+
+                members.put(mainUser.getId(), new User( mainUser.getName(),mainUser.getId()));
+
+                chat.setMembers(members);
+                if (firebaseDatabase == null) {
+                    firebaseDatabase = FirebaseDatabase.getInstance();
+                }
+                Log.i("createRoomForUSers", "Creating chat with \n" + chat.getMembers());
+                String chatId = firebaseDatabase.getReference()
+                        .child("chats")
+                        .push()
+                        .getKey();
+
+                chat.setChatId(chatId);
+                chatsHashMap.put(chat.getChatId(), chat);
+            } while (c.moveToNext());
+        }
+
+        c.close();
+
+
+
+        return chatsHashMap;
     }
 
     public static CursorLoader getUserFriendsCursorLoader(Context context){
@@ -200,10 +271,6 @@ public class Utility {
         }
         c.close();
         return chatIdWithOtherUser;
-    }
-
-    private static void createChatRoomForUsers(String id, String otherUserId) {
-
     }
 
     public static Loader getUserConversationsCursorLoader(Context context) {

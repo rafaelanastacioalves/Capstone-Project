@@ -1,5 +1,7 @@
 package com.speko.android.data;
 
+import com.google.firebase.database.Exclude;
+
 import java.util.HashMap;
 
 /**
@@ -16,6 +18,8 @@ public class User {
     private String learningLanguage;
     private String learningCode;
     private String userDescription;
+
+    @Exclude
     private HashMap<String,Chat> chats;
     private String profilePicture;
 

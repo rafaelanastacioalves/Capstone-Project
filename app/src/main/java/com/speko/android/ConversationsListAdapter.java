@@ -72,12 +72,12 @@ public class ConversationsListAdapter extends RecyclerView.Adapter<Conversations
 
 
             Log.i(LOG_TAG, "onBindViewHolder");
-            String userName = mCursor.getString(
+            String otherUserName = mCursor.getString(
                     mCursor.getColumnIndex(ChatMembersColumns.OTHER_MEMBER_NAME)
             );
 
 
-            holder.mNameTextView.setText(userName);
+            holder.mNameTextView.setText(otherUserName);
 
             Picasso.with(mContext).load(
                     mCursor.getString(
