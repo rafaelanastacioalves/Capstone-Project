@@ -38,7 +38,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.speko.android.data.User;
+import com.speko.android.data.UserComplete;
 import com.speko.android.sync.SpekoSyncAdapter;
 import com.squareup.picasso.Picasso;
 
@@ -149,13 +149,13 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
     @BindView(R.id.profile_options_container_view_stub)
     ViewStub profileOptionsContainerViewStub;
 
-    private User user;
+    private UserComplete userComplete;
     private OnFragmentInteractionListener mListener;
 
 
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void completeSignup(User user);
+        void completeSignup(UserComplete userComplete);
     }
 
 
@@ -291,7 +291,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
     public void onPause() {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         sp.unregisterOnSharedPreferenceChangeListener(this);
-        user = null;
+        userComplete = null;
         super.onPause();
     }
 
@@ -320,7 +320,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
     @OnClick(R.id.fragment_button_profile_register) @Optional
     public void onClickRegisterUser(View v){
         if (populateAndValidateUserObjectCorrectly()){
-            mListener.completeSignup(user);
+            mListener.completeSignup(userComplete);
         }
 
 
@@ -337,7 +337,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
                     SpekoSyncAdapter.syncImmediatly(applicationContext);
                 }
             };
-            Utility.setUser(user,getActivity(), onCompleteListener);
+            Utility.setUser(userComplete,getActivity(), onCompleteListener);
 
 
             Toast.makeText(getActivity(), "ProfileUpdated!", Toast.LENGTH_SHORT).show();
@@ -354,8 +354,8 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
         Log.i(LOG_TAG, "PopulateAndValidateUserObject");
 
 
-        if (user == null) {
-            user = Utility.getUser(getContext());
+        if (userComplete == null) {
+            userComplete = Utility.getUser(getContext());
         }
 
         // About age...
@@ -364,7 +364,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
         }else {
             Log.i(LOG_TAG, "Text is NOT null or empty, setting from text: " +
                     ageEditText.getText().toString());
-            user.setAge(ageEditText.getText().toString());
+            userComplete.setAge(ageEditText.getText().toString());
 
         }
         String ageString = ageEditText.getText().toString();
@@ -380,11 +380,11 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
 
         // if text view is empty...
         Log.i(LOG_TAG, "populateAndValidateUser...  name: " + nameEditText.getText());
-        Log.i(LOG_TAG, "populateAndValidateUser...  user.name: " + user.getName());
+        Log.i(LOG_TAG, "populateAndValidateUser...  user.name: " + userComplete.getName());
         if (nameEditText.getText() == null || nameEditText.getText().toString().isEmpty()) {
 
                 // and even the value already put is empty
-                if (user.getName().isEmpty()){
+                if (userComplete.getName().isEmpty()){
 
                     Toast.makeText(getActivity(), "You must fill a name.", Toast.LENGTH_SHORT)
                             .show();
@@ -400,7 +400,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
 
         } else {
             // if text view has some value in it and it is bigger than 3 chars...
-            user.setName(nameEditText.getText().toString());
+            userComplete.setName(nameEditText.getText().toString());
         }
         // at this point, if we din't set any value for name, it is because it is already set by the
         // user before ad he din't made any changes
@@ -414,33 +414,33 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
         }else{
             Log.i(LOG_TAG, "Text is NOT null or empty, setting from text: " +
                     userDescription.getText().toString());
-            user.setUserDescription(userDescription.getText().toString());
+            userComplete.setUserDescription(userDescription.getText().toString());
         }
 
         // About user picture URL
         if (downloadUrl != null){
-            user.setProfilePicture(downloadUrl.toString());
+            userComplete.setProfilePicture(downloadUrl.toString());
 
         }
 
 
         // About Language
-        Log.i(LOG_TAG, "getLearningLanguage: " + user.getLearningLanguage() );
-        if(user.getLearningLanguage() == null || user.getLearningLanguage().isEmpty()){
+        Log.i(LOG_TAG, "getLearningLanguage: " + userComplete.getLearningLanguage() );
+        if(userComplete.getLearningLanguage() == null || userComplete.getLearningLanguage().isEmpty()){
             Toast.makeText(getActivity(), getString(R.string.error_must_choose_language_of_interest),
                     Toast.LENGTH_SHORT).show();
             return false;
         }
 
-        Log.i(LOG_TAG, "getFluentLanguage: " + user.getFluentLanguage() );
-        if(user.getFluentLanguage() == null || user.getFluentLanguage().isEmpty()){
+        Log.i(LOG_TAG, "getFluentLanguage: " + userComplete.getFluentLanguage() );
+        if(userComplete.getFluentLanguage() == null || userComplete.getFluentLanguage().isEmpty()){
             Toast.makeText(getActivity(), getString(R.string.error_must_choose_fluent_language),
                     Toast.LENGTH_SHORT).show();
             return false;
         }
 
         //if fluent language and language of interest are different
-        if (user.getFluentLanguage().equals(user.getLearningLanguage()
+        if (userComplete.getFluentLanguage().equals(userComplete.getLearningLanguage()
                 )) {
             Toast.makeText(getContext(),
                     R.string.languages_must_be_different_error,
@@ -450,9 +450,9 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
 
         }
 
-        user.setLearningCode(user.getFluentLanguage()
+        userComplete.setLearningCode(userComplete.getFluentLanguage()
                 + "|"
-                + user.getLearningLanguage());
+                + userComplete.getLearningLanguage());
 
 
         return true;
@@ -478,7 +478,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
                 // the user clicked on colors[which]
 
                 String systemValue = valuesArray[which];
-                user.setFluentLanguage(systemValue);
+                userComplete.setFluentLanguage(systemValue);
                 setView();
 
 
@@ -502,7 +502,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
                 // the user clicked on colors[which]
 
                 String systemValue = valuesArray[which];
-                user.setLearningLanguage(systemValue);
+                userComplete.setLearningLanguage(systemValue);
                 setView();
 
 
@@ -555,10 +555,10 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
     private void setView() {
 
         Log.i(LOG_TAG,"setView");
-        if(user == null){
-            user = Utility.getUser(getActivity());
+        if(userComplete == null){
+            userComplete = Utility.getUser(getActivity());
         }
-        String spinnerValue = user.getFluentLanguage();
+        String spinnerValue = userComplete.getFluentLanguage();
         Log.i(LOG_TAG,"Fluent Langauge: " + spinnerValue);
 
 
@@ -567,7 +567,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
 
 
 
-        spinnerValue =user.getLearningLanguage();
+        spinnerValue = userComplete.getLearningLanguage();
         Log.i(LOG_TAG,"Learning Langauge: " + spinnerValue);
 
 
@@ -580,7 +580,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
                 public void onFocusChange(View v, boolean hasFocus) {
                     EditText editText = (EditText) v;
                     if(hasFocus){
-                        editText.setHint(user.getName());
+                        editText.setHint(userComplete.getName());
 
                     }else{
                         editText.setHint("");
@@ -595,7 +595,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
             public void onFocusChange(View v, boolean hasFocus) {
                 EditText editText = (EditText) v;
                 if(hasFocus){
-                    editText.setHint(user.getAge());
+                    editText.setHint(userComplete.getAge());
 
                 }else{
                     editText.setHint("");
@@ -609,7 +609,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
             public void onFocusChange(View v, boolean hasFocus) {
                 EditText editText = (EditText) v;
                 if(hasFocus){
-                    editText.setHint(user.getUserDescription());
+                    editText.setHint(userComplete.getUserDescription());
 
                 }else{
                     editText.setHint("");
@@ -618,34 +618,34 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
             }
         });
 
-        Log.i(LOG_TAG,"Age: " + user.getAge());
+        Log.i(LOG_TAG,"Age: " + userComplete.getAge());
 
 
 
-        if(user.getProfilePicture() != null){
+        if(userComplete.getProfilePicture() != null){
 
-            showUserPhoto(user.getProfilePicture());
+            showUserPhoto(userComplete.getProfilePicture());
         }else if (BUNDLE_VALUE_FIRST_TIME_ENABLED){
             String pictureUrl = FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl().toString();
-            user.setProfilePicture(pictureUrl);
+            userComplete.setProfilePicture(pictureUrl);
             showUserPhoto(pictureUrl);
         }
 
-        if(user.getFluentLanguage() != null){
-            profileFluentLanguageImageView.setImageResource(Utility.getDrawableUriForLanguage( user.getFluentLanguage(),getActivity()));
-            profileFluentLanguageTextView.setText(user.getFluentLanguage());
+        if(userComplete.getFluentLanguage() != null){
+            profileFluentLanguageImageView.setImageResource(Utility.getDrawableUriForLanguage( userComplete.getFluentLanguage(),getActivity()));
+            profileFluentLanguageTextView.setText(userComplete.getFluentLanguage());
             fluentLanguageBiggerPictureImageView.setImageResource(
                     Utility.getFluentLangagueBiggerPictureUri(getActivity(),
-                            user.getFluentLanguage()));
+                            userComplete.getFluentLanguage()));
         }
 
 
 
-        Log.i(LOG_TAG,"Age: " + user.getLearningLanguage());
+        Log.i(LOG_TAG,"Age: " + userComplete.getLearningLanguage());
 
-        if (user.getLearningLanguage() != null){
-            profileLanguageOfInterestImageView.setImageResource(Utility.getDrawableUriForLanguage( user.getLearningLanguage(),getActivity()));
-            profileLanguageOfInterestTextView.setText(user.getLearningLanguage());
+        if (userComplete.getLearningLanguage() != null){
+            profileLanguageOfInterestImageView.setImageResource(Utility.getDrawableUriForLanguage( userComplete.getLearningLanguage(),getActivity()));
+            profileLanguageOfInterestTextView.setText(userComplete.getLearningLanguage());
 
         }else{
 

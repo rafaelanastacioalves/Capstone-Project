@@ -27,7 +27,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.speko.android.data.MessageLocal;
-import com.speko.android.data.User;
+import com.speko.android.data.UserComplete;
 import com.speko.android.sync.MyMessageStatusFormatter;
 import com.speko.android.sync.SpekoSyncAdapter;
 import com.squareup.picasso.Picasso;
@@ -218,28 +218,28 @@ public class ChatActivityFragment extends Fragment {
         //TODO Decide if photos are cached or make this method async
 
         Log.i(LOG_TAG, "Init Users");
-        User user = Utility.getUser(getActivity());
+        UserComplete userComplete = Utility.getUser(getActivity());
 
-        User otherUser = Utility.getOtherUserWithId(getActivity(), friendId);
+        UserComplete otherUserComplete = Utility.getOtherUserWithId(getActivity(), friendId);
         //User icon
         Picasso.with(getActivity())
-                .load(user.getProfilePicture())
+                .load(userComplete.getProfilePicture())
                 .into(new Target() {
                     @Override
                     public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
 
-                        User user = Utility.getUser(getActivity());
-                        Log.i(LOG_TAG, "setting Icon for user:" + user.getName());
+                        UserComplete userComplete = Utility.getUser(getActivity());
+                        Log.i(LOG_TAG, "setting Icon for user:" + userComplete.getName());
                         Bitmap myIcon = null;
                         myIcon = bitmap;
                         final com.github.bassaer.chatmessageview.models.User me =
                                 new com.github.bassaer.chatmessageview.models.User(
                                         ME_CHATMESSAGE_ID,
-                                        user.getName(), myIcon);
+                                        userComplete.getName(), myIcon);
                         if (mIdConvertion == null) {
                             mIdConvertion = new HashMap<Integer, String>();
                         }
-                        mIdConvertion.put(ME_CHATMESSAGE_ID, user.getId());
+                        mIdConvertion.put(ME_CHATMESSAGE_ID, userComplete.getId());
                         mUsers[ME_CHATMESSAGE_INDEX] = (me);
 
                         imagesLoaded++;
@@ -266,23 +266,23 @@ public class ChatActivityFragment extends Fragment {
 
 
         int yourId = 1;
-        Picasso.with(getActivity()).load(otherUser.getProfilePicture()).into(new Target() {
+        Picasso.with(getActivity()).load(otherUserComplete.getProfilePicture()).into(new Target() {
             @Override
             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
 
-                User otherUser = Utility.getOtherUserWithId(getActivity(), friendId);
+                UserComplete otherUserComplete = Utility.getOtherUserWithId(getActivity(), friendId);
 
                 Bitmap otherUserIcon = bitmap;
-                Log.i(LOG_TAG, "setting Icon for user:" + otherUser.getName());
+                Log.i(LOG_TAG, "setting Icon for user:" + otherUserComplete.getName());
                 final com.github.bassaer.chatmessageview.models.User otherChatUser =
                         new com.github.bassaer.chatmessageview.models.User(
                                 HIM_CHATMESSAGE_ID,
-                                otherUser.getName(), otherUserIcon);
+                                otherUserComplete.getName(), otherUserIcon);
 
                 if (mIdConvertion == null) {
                     mIdConvertion = new HashMap<Integer, String>();
                 }
-                mIdConvertion.put(HIM_CHATMESSAGE_ID, otherUser.getId());
+                mIdConvertion.put(HIM_CHATMESSAGE_ID, otherUserComplete.getId());
                 mUsers[HIM_CHATMESSAGE_INDEX] = otherChatUser;
                 imagesLoaded++;
                 if (imagesLoaded == totalImagesToBeLoaded) {

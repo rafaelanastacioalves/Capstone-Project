@@ -11,7 +11,18 @@ public class APIException extends Exception {
     }
 
     public int getAPIStatusCodeMessage() {
-        return Integer.valueOf(
-                super.getMessage());
+
+        try {
+            if(super.getMessage() != null){
+                return Integer.valueOf(
+                        super.getMessage());
+            }
+
+        }catch (NumberFormatException e){
+            return -1;
+        }finally {
+            return -1;
+        }
+
     }
 }

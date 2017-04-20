@@ -8,46 +8,36 @@ import java.util.HashMap;
  * Created by rafaelanastacioalves on 12/26/16.
  */
 
-public class User {
+public class UserComplete extends UserPublic {
 
-    private String id;
-    private String name;
-    private String age;
-    private String email;
-    private String fluentLanguage;
+
+
+
     private String learningLanguage;
     private String learningCode;
+    private String age;
+    private String email;
     private String userDescription;
 
     @Exclude
     private HashMap<String,Chat> chats;
-    private String profilePicture;
 
-    public User(){
+    public UserComplete(){
     }
 
-    public User(String name, String id){
+    public UserComplete(String name, String id){
+        super(name, id);
 
-        this.name = name;
-        this.id = id;
     }
 
-    public User(String name, String age, String email, String fluentLanguage){
+    public UserComplete(String name, String age, String email, String fluentLanguage){
         this.name = name;
         this.age = age;
         this.email = email;
         this.fluentLanguage = fluentLanguage;
     }
-    public User(String name){
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    public UserComplete(String name){
+        super(name);
     }
 
     public String getAge() {
@@ -67,21 +57,9 @@ public class User {
         this.email = email;
     }
 
-    public String getFluentLanguage() {
-        return fluentLanguage;
-    }
 
-    public void setFluentLanguage(String fluentLanguage) {
-        this.fluentLanguage = fluentLanguage;
-    }
 
-    public String getId() {
-        return id;
-    }
 
-    public void setId(String id) {
-        this.id = id;
-    }
 
     public String getLearningLanguage() {
         return learningLanguage;
@@ -107,12 +85,28 @@ public class User {
         this.chats = chats;
     }
 
-    public String getUserDescription() {
-        return userDescription;
+    public String getId() {
+        return id;
     }
 
-    public void setUserDescription(String userDescription) {
-        this.userDescription = userDescription;
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getFluentLanguage() {
+        return fluentLanguage;
+    }
+
+    public void setFluentLanguage(String fluentLanguage) {
+        this.fluentLanguage = fluentLanguage;
     }
 
     public String getProfilePicture() {
@@ -122,4 +116,14 @@ public class User {
     public void setProfilePicture(String profilePicture) {
         this.profilePicture = profilePicture;
     }
+
+    public String getUserDescription() {
+        return userDescription;
+    }
+
+    public void setUserDescription(String userDescription) {
+        this.userDescription = userDescription;
+    }
+
+
 }

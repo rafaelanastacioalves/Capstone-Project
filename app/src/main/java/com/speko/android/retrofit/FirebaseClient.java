@@ -1,7 +1,7 @@
 package com.speko.android.retrofit;
 
 import com.speko.android.data.Chat;
-import com.speko.android.data.User;
+import com.speko.android.data.UserComplete;
 
 import java.util.HashMap;
 
@@ -18,21 +18,23 @@ public interface FirebaseClient {
 
 
     @GET("/users/{userId}.json")
-    Call<User> getUser(
+    Call<UserComplete> getUser(
             @Path("userId") String owner );
 
     @GET("/users/{userId}.json")
-    Call<User> getUser(
+    Call<UserComplete> getUser(
             @Path("userId") String owner,
             @Query("auth") String token);
 
+
+
     @GET("/friends/{userId}.json")
-    Call<HashMap<String,User>> getUserFriends(
+    Call<HashMap<String,UserComplete>> getUserFriends(
             @Path("userId") String owner,
             @Query("auth") String token);
 
     @GET("/users/.json?")
-    Call<HashMap<String,User>> getUsersListWith(
+    Call<HashMap<String,UserComplete>> getUsersListWith(
             @Query("auth") String token,
             @Query("orderBy") String orderByKey,
             @Query("equalTo") String equalToKey);

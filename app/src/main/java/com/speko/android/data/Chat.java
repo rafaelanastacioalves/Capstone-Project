@@ -7,7 +7,7 @@ import java.util.HashMap;
  */
 
 public class Chat {
-    private HashMap<String, User> members;
+    private HashMap<String, UserPublic> members;
     private String chatId;
 
     public String getChatId() {
@@ -18,11 +18,11 @@ public class Chat {
         this.chatId = chatId;
     }
 
-    public HashMap<String, User> getMembers() {
+    public HashMap<String, UserPublic> getMembers() {
         return members;
     }
 
-    public void setMembers(HashMap<String, User> members) {
+    public void setMembers(HashMap<String, UserPublic> members) {
         this.members = members;
     }
 }

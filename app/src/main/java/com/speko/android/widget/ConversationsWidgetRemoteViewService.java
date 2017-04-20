@@ -18,7 +18,7 @@ import com.speko.android.ChatActivityFragment;
 import com.speko.android.R;
 import com.speko.android.Utility;
 import com.speko.android.data.ChatMembersColumns;
-import com.speko.android.data.User;
+import com.speko.android.data.UserComplete;
 import com.speko.android.data.UsersProvider;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
@@ -137,7 +137,7 @@ public class ConversationsWidgetRemoteViewService extends RemoteViewsService {
 
                 // we need call these binder methods in orther to get permissions
                 final long identityToken = Binder.clearCallingIdentity();
-                User otherUser = Utility.
+                UserComplete otherUserComplete = Utility.
                         getOtherUserWithId(ConversationsWidgetRemoteViewService.this, otherUserId);
                 Binder.restoreCallingIdentity(identityToken);
 

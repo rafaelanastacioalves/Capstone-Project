@@ -23,7 +23,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.speko.android.data.User;
+import com.speko.android.data.UserComplete;
 import com.speko.android.sync.SpekoSyncAdapter;
 
 import java.util.Arrays;
@@ -223,19 +223,19 @@ public class LoginActivity extends AppCompatActivity implements ProfileFragment.
     }
 
     @Override
-    public void completeSignup(User user) {
+    public void completeSignup(UserComplete userComplete) {
         Log.i(LOG_TAG,"completeSignup");
         //TODO Implement interaction with Activity
 
         final FirebaseUser authUser = auth.getCurrentUser();
 
-        user.setLearningCode(user.getFluentLanguage()
+        userComplete.setLearningCode(userComplete.getFluentLanguage()
                 + "|"
-                + user.getLearningLanguage());
+                + userComplete.getLearningLanguage());
 
         //adding more Provider User info
-        user.setEmail(authUser.getEmail());
-        user.setId(authUser.getUid());
+        userComplete.setEmail(authUser.getEmail());
+        userComplete.setId(authUser.getUid());
 
         OnCompleteListener onCompleteListener = new OnCompleteListener() {
             @Override
@@ -251,7 +251,7 @@ public class LoginActivity extends AppCompatActivity implements ProfileFragment.
                 finish();
             }
         };
-        Utility.setUser(user,this, onCompleteListener);
+        Utility.setUser(userComplete,this, onCompleteListener);
         setLoading(true);
 
 

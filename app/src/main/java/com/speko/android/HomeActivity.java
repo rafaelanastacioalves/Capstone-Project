@@ -28,7 +28,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GetTokenResult;
 import com.google.firebase.database.FirebaseDatabase;
-import com.speko.android.data.User;
+import com.speko.android.data.UserComplete;
 import com.speko.android.data.generated.UsersDatabase;
 import com.speko.android.sync.SpekoSyncAdapter;
 
@@ -261,8 +261,8 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
     }
 
     private void userNotCreatedCheck() {
-        User user = Utility.getUser(this);
-        if(user == null || user.getId() == null || user.getId().isEmpty()){
+        UserComplete userComplete = Utility.getUser(this);
+        if(userComplete == null || userComplete.getId() == null || userComplete.getId().isEmpty()){
             callLoginActivity();
         }
     }
@@ -333,19 +333,19 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
 
 
     @Override
-    public void completeSignup(User user) {
+    public void completeSignup(UserComplete userComplete) {
 
         final FirebaseUser authUser = mFirebaseAuth.getCurrentUser();
 
-        user.setLearningCode(user.getFluentLanguage()
+        userComplete.setLearningCode(userComplete.getFluentLanguage()
                 + "|"
-                + user.getLearningLanguage());
+                + userComplete.getLearningLanguage());
 
         //adding more Provider User info
-        user.setName(authUser.getDisplayName());
-        user.setEmail(authUser.getEmail());
-        user.setId(authUser.getUid());
-        Utility.setUser(user, this, null);
+        userComplete.setName(authUser.getDisplayName());
+        userComplete.setEmail(authUser.getEmail());
+        userComplete.setId(authUser.getUid());
+        Utility.setUser(userComplete, this, null);
 
 
         Toast.makeText(this, "ProfileUpdated!", Toast.LENGTH_SHORT).show();

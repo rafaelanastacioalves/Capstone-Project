@@ -20,7 +20,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.speko.android.data.User;
+import com.speko.android.data.UserComplete;
 import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
@@ -110,7 +110,7 @@ public class FillNewUserDataFragment extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void completeSignup(User user);
+        void completeSignup(UserComplete userComplete);
     }
 
     @OnClick(R.id.signup_button)
@@ -138,18 +138,18 @@ public class FillNewUserDataFragment extends Fragment {
 
 
 
-        User user = new User();
-        user.setAge(age.getText().toString());
-        user.setFluentLanguage(spinner_fluent_language.getSelectedItem().toString());
-        user.setLearningLanguage(spinner_language_of_interest.getSelectedItem().toString());
-        user.setUserDescription(userDescription.getText().toString());
+        UserComplete userComplete = new UserComplete();
+        userComplete.setAge(age.getText().toString());
+        userComplete.setFluentLanguage(spinner_fluent_language.getSelectedItem().toString());
+        userComplete.setLearningLanguage(spinner_language_of_interest.getSelectedItem().toString());
+        userComplete.setUserDescription(userDescription.getText().toString());
         if (downloadUrl != null) {
-            user.setProfilePicture(downloadUrl.toString());
+            userComplete.setProfilePicture(downloadUrl.toString());
         } else {
-            user.setProfilePicture(defaultUrl);
+            userComplete.setProfilePicture(defaultUrl);
         }
 
-        mListener.completeSignup(user);
+        mListener.completeSignup(userComplete);
 
     }
 
