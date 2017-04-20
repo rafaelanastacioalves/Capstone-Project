@@ -164,10 +164,7 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
         Log.i(LOG_TAG, "onLoaderFinished with total data: " + data.getCount());
         mAdapter.swapCursor(data);
         updateEmptyView();
-        if (!SpekoSyncAdapter.isSyncActive(getActivity())) {
-            setRefreshScreen(false);
-        }
-
+        updateScreenState();
     }
 
     private void updateEmptyView() {

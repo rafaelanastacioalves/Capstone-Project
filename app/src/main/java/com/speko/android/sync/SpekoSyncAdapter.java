@@ -12,7 +12,6 @@ import android.content.SharedPreferences;
 import android.content.SyncInfo;
 import android.content.SyncRequest;
 import android.content.SyncResult;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -155,6 +154,10 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
         }
 
         updateWidgets();
+        synchronized (getContext().getContentResolver()){
+            getContext().getContentResolver().notify();
+        }
+
 
     }
 
@@ -262,19 +265,16 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
 
                 Log.d(LOG_TAG, "trying to insert a row...");
                 //noinspection UnusedAssignment
-                Uri rowNumber = getContext().getContentResolver().insert(CHAT_URI, chatCV);
+                int rowNumber = getContext().getContentResolver().delete(CHAT_URI, null,null);
+                if (rowNumber > 0) {
+                    Log.i(LOG_TAG, "deleted successfuly. Count: " + (count + 1));
+                }
+                getContext().getContentResolver().insert(CHAT_URI, chatCV);
                 Log.d(LOG_TAG, "inserted ok! Count: " + (count + 1));
 
             } catch (Exception e) {
-                Log.e(LOG_TAG, "Insert not possible:" + e.getCause());
-                Log.d(LOG_TAG, "Trying to update");
-                Log.d(LOG_TAG, "Values: " + chat.getChatId() + " "
-                        + chat.getMembers());
-                int rows = getContext().getContentResolver().update(CHAT_URI, chatCV,
-                        ChatMembersColumns.FIREBASE_CHAT_ID + " = ?", new String[]{chat.getChatId()});
-                if (rows > 0) {
-                    Log.i(LOG_TAG, "updated successfuly. Count: " + (count + 1));
-                }
+                Log.e(LOG_TAG, "Insert or deleting not possible:" + e.getCause());
+
             }
 
         }
@@ -590,13 +590,14 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
         Log.i("isSyncActive", "start with values: \n " +
                 "account: " + account.toString() + "\n" +
                 "authority: " + authority.toString());
+
         for (SyncInfo syncInfo : ContentResolver.getCurrentSyncs()) {
             Log.i("isSyncActive", "syncInfo: \n" +
-                    "account: " + syncInfo.account.toString() + "\n" +
+                    "account type: " + syncInfo.account + "\n" +
                     "authority: " + syncInfo.authority.toString() + "\n");
 
             // just checked authority, as account seems to be cryptographed
-            if (syncInfo.authority.toString().equals(authority.toString())) {
+            if (syncInfo.authority.toString().equals(authority.toString()) ) {
                 return true;
             }
         }

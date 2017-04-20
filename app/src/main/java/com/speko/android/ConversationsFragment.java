@@ -80,14 +80,16 @@ public class ConversationsFragment extends Fragment implements LoaderManager.Loa
         super.onStart();
         Log.i(LOG_TAG,"Initloader");
         getLoaderManager().initLoader(CONVERSATIONS_LOADER, null, this);
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        sp.registerOnSharedPreferenceChangeListener(this);
-        updateScreenState();
+
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        sp.registerOnSharedPreferenceChangeListener(this);
+        updateScreenState();
+
 
     }
 
@@ -149,6 +151,7 @@ public class ConversationsFragment extends Fragment implements LoaderManager.Loa
     public void onLoadFinished(Loader loader, Cursor data) {
         Log.i(LOG_TAG, "onLoaderFinished with total data: " + data.getCount());
         mAdapter.swapCursor(data);
+        updateScreenState();
     }
 
     @Override
