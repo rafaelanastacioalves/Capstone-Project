@@ -193,36 +193,23 @@ public class Utility {
                 chat = new Chat();
                 HashMap<String, UserPublic> members = new HashMap<>();
 
-                UserComplete userCompleteFriend = new UserComplete(
-                        c.getString(c.getColumnIndex(ChatMembersColumns.OTHER_MEMBER_NAME)),
+                UserPublic userCompleteFriend = new UserPublic(
                         c.getString(c.getColumnIndex(ChatMembersColumns.OTHER_MEMBER_ID)));
 
 
-                Log.i("createRoomForUSers", "Creating chat with \n" + userCompleteFriend +
-                        "\n id: " + userCompleteFriend.getId());
 
                 members.put(userCompleteFriend.getId(), userCompleteFriend);
 
 
-                Log.i("createRoomForUSers", "Creating chat with \n" + mainUserComplete +
-                        "\n id: " + mainUserComplete.getId());
 
-
-                members.put(mainUserComplete.getId(), new UserComplete( mainUserComplete.getName(), mainUserComplete.getId()));
+                members.put(mainUserComplete.getId(), new UserComplete( mainUserComplete.getId()));
 
                 chat.setMembers(members);
-                if (firebaseDatabase == null) {
-                    firebaseDatabase = FirebaseDatabase.getInstance();
-                }
-                Log.i("createRoomForUSers", "Creating chat with \n" + chat.getMembers());
-                String chatId = firebaseDatabase.getReference()
-                        .child("chats")
-                        .push()
-                        .getKey();
-
-                chat.setChatId(chatId);
+                chat.setChatId(c.getString(c.getColumnIndex(ChatMembersColumns.FIREBASE_CHAT_ID)));
                 chatsHashMap.put(chat.getChatId(), chat);
             } while (c.moveToNext());
+
+
         }
 
         c.close();
@@ -287,18 +274,18 @@ public class Utility {
         //TODO
         Chat chat = new Chat();
         HashMap<String, UserPublic> members = new HashMap<>();
-        UserComplete userCompleteFriend = getUserFriendFromDB(context, friendId);
-        Log.i("createRoomForUSers", "Creating chat with \n" + userCompleteFriend +
-                "\n id: " + userCompleteFriend.getId());
+        UserPublic userPublicFriend = getUserFriendFromDB(context, friendId);
+        Log.i("createRoomForUSers", "Creating chat with \n" + userPublicFriend +
+                "\n id: " + userPublicFriend.getId());
 
-        members.put(userCompleteFriend.getId(), new UserComplete(userCompleteFriend.getName(), userCompleteFriend.getId()));
-        UserComplete userComplete = getUser(context);
+        members.put(userPublicFriend.getId(), new UserPublic(userPublicFriend.getId()));
+        UserPublic userPublic = getUser(context);
 
-        Log.i("createRoomForUSers", "Creating chat with \n" + userComplete +
-                "\n id: " + userComplete.getId());
+        Log.i("createRoomForUSers", "Creating chat with \n" + userPublic +
+                "\n id: " + userPublic.getId());
 
 
-        members.put(userComplete.getId(), new UserComplete( userComplete.getName(), userComplete.getId()));
+        members.put(userPublic.getId(), new UserPublic( userPublic.getId()));
 
         chat.setMembers(members);
         if (firebaseDatabase == null) {
@@ -320,14 +307,14 @@ public class Utility {
 
         firebaseDatabase.getReference()
                 .child("users")
-                .child(userComplete.getId())
+                .child(userPublic.getId())
                 .child("chats")
                 .updateChildren((Map) chatHashMap).addOnCompleteListener(onCompleteListener);
         ;
 
         firebaseDatabase.getReference()
                 .child("users")
-                .child(userCompleteFriend.getId())
+                .child(userPublicFriend.getId())
                 .child("chats")
                 .updateChildren((Map) chatHashMap);
         return chatId;

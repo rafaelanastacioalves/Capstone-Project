@@ -15,8 +15,8 @@ public class UserPublic {
 
     }
 
-    public UserPublic(String name){
-        this.name = name;
+    public UserPublic(String id){
+        this.id = id;
     }
 
     public UserPublic(String name, String id){

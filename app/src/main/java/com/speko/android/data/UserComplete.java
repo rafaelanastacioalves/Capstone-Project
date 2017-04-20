@@ -29,6 +29,9 @@ public class UserComplete extends UserPublic {
         super(name, id);
 
     }
+    public UserComplete(String id){
+        super(id);
+    }
 
     public UserComplete(String name, String age, String email, String fluentLanguage){
         this.name = name;
@@ -36,9 +39,7 @@ public class UserComplete extends UserPublic {
         this.email = email;
         this.fluentLanguage = fluentLanguage;
     }
-    public UserComplete(String name){
-        super(name);
-    }
+
 
     public String getAge() {
         return age;
