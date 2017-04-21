@@ -68,7 +68,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
     private final String LOG_TAG = getClass().getSimpleName();
 
     private int mMaxScrollSize;
-    private int TOTAL_SCROLLOING_PERCENTAGE_TO_ANIMATE_AVATAR = 60;
+    private int TOTAL_SCROLLED_PERCENTAGE_TO_ANIMATE_AVATAR = 55;
 
     public static final String BUNDLE_ARGUMENT_IS_SYNCABLE = "bundle_argument_is_syncable";
     private boolean BUNDLE_VALUE_IS_SYNCABLE = false;
@@ -670,7 +670,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
 //        Log.i(LOG_TAG,"percentage of Scrolling: " + percentage);
 
 
-        if (percentage >= TOTAL_SCROLLOING_PERCENTAGE_TO_ANIMATE_AVATAR && mIsAvatarShown) {
+        if (percentage >= TOTAL_SCROLLED_PERCENTAGE_TO_ANIMATE_AVATAR && mIsAvatarShown) {
             mIsAvatarShown = false;
 
             profilePictureContainer.animate()
@@ -682,7 +682,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
             Log.i(LOG_TAG, "Hiding Animation Started");
         }
 
-        if (percentage <= TOTAL_SCROLLOING_PERCENTAGE_TO_ANIMATE_AVATAR && !mIsAvatarShown) {
+        if (percentage <= TOTAL_SCROLLED_PERCENTAGE_TO_ANIMATE_AVATAR && !mIsAvatarShown) {
             mIsAvatarShown = true;
 
             profilePictureContainer
