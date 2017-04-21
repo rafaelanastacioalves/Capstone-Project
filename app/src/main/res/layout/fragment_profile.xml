@@ -68,7 +68,7 @@
             android:elevation="8dp"
             android:layout_height="wrap_content" />
         <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/signup_imageview_profile_picture"
+            android:id="@+id/profile_fragment_imageview_profile_picture"
             android:layout_width="@dimen/profile_user_picture_dimen"
             android:layout_height="@dimen/profile_user_picture_dimen"
             android:src="@drawable/ic_user"

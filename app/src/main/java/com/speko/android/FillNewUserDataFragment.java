@@ -56,7 +56,7 @@ public class FillNewUserDataFragment extends Fragment {
     @BindView(R.id.signup_user_description)
     AppCompatEditText userDescription;
 
-    @BindView(R.id.signup_imageview_profile_picture)
+    @BindView(R.id.profile_fragment_imageview_profile_picture)
     CircleImageView imageView;
 
 

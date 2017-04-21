@@ -104,7 +104,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
     @BindView(R.id.signup_user_description)
     AppCompatEditText userDescription;
 
-    @BindView(R.id.signup_imageview_profile_picture)
+    @BindView(R.id.profile_fragment_imageview_profile_picture)
     CircleImageView profilePicture;
 
     @BindView(R.id.signup_imageview_profile_picture_container)
@@ -265,10 +265,13 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
     @Override
     public void onResume() {
         super.onResume();
+        Log.i(LOG_TAG, "onResume");
         appBarLayout.addOnOffsetChangedListener(this);
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         sp.registerOnSharedPreferenceChangeListener(this);
         updateScreenState();
+
+
     }
 
     @OnClick(R.id.sync_button)
@@ -458,7 +461,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
         return true;
     }
 
-    @OnClick(R.id.signup_imageview_profile_picture)
+    @OnClick(R.id.signup_imageview_profile_picture_container)
     public void onClickUploadPicture(View v){
        Utility.call_to_upload_picture(this);
     }
@@ -674,6 +677,9 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
                     .scaleY(0).scaleX(0)
                     .setDuration(200)
                     .start();
+            profilePictureContainer.setEnabled(false);
+            profilePictureContainer.setClickable(false);
+            Log.i(LOG_TAG, "Hiding Animation Started");
         }
 
         if (percentage <= TOTAL_SCROLLOING_PERCENTAGE_TO_ANIMATE_AVATAR && !mIsAvatarShown) {
@@ -683,14 +689,22 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
                     .animate()
                     .scaleY(1).scaleX(1)
                     .start();
+            profilePictureContainer.setEnabled(true);
+            profilePictureContainer.setClickable(true);
+            Log.i(LOG_TAG, "Showing Animation Started");
+
+
         }
     }
 
 
     @Override
     public void onStart() {
-
         super.onStart();
+        Log.i(LOG_TAG,"onStart");
+        if(userComplete == null){
+            userComplete = Utility.getUser(getActivity());
+        }
     }
 
     @Override
