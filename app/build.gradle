@@ -101,8 +101,11 @@ dependencies {
     //round image view
     compile 'de.hdodenhof:circleimageview:2.1.0'
 
-    // chat message view
-    compile 'com.github.bassaer:chatmessageview:1.2.4'
+    // Gradle dependency on Shimmer for Android
+    compile 'com.facebook.shimmer:shimmer:0.1.0@aar'
+
+
+    compile project(':chatmessageview')
 
 }
 

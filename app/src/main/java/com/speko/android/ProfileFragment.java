@@ -31,6 +31,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -40,6 +41,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.speko.android.data.UserComplete;
 import com.speko.android.sync.SpekoSyncAdapter;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
@@ -50,6 +52,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.app.Activity.RESULT_OK;
 import static com.speko.android.Utility.RC_PHOTO_PICKER;
+import static java.lang.System.load;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -108,7 +111,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
     CircleImageView profilePicture;
 
     @BindView(R.id.signup_imageview_profile_picture_container)
-    FrameLayout profilePictureContainer;
+    ShimmerFrameLayout profilePictureContainer;
 
     private Uri downloadUrl = null;
 
@@ -548,11 +551,22 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
     }
 
     private void showUserPhoto(String downloadUrl) {
+        profilePictureContainer.startShimmerAnimation();
         Picasso.with(getContext()).load(downloadUrl.toString())
                 .placeholder(R.drawable.ic_user)
                 .resize(getResources().getDimensionPixelSize(R.dimen.profile_user_picture_dimen),
                         getResources().getDimensionPixelSize(R.dimen.profile_user_picture_dimen))
-                .centerCrop().into(profilePicture);
+                .centerCrop().into(profilePicture, new Callback() {
+            @Override
+            public void onSuccess() {
+                profilePictureContainer.stopShimmerAnimation();
+            }
+
+            @Override
+            public void onError() {
+
+            }
+        });
     }
 
     private void setView() {
