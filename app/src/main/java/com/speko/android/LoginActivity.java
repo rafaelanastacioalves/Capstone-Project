@@ -81,6 +81,7 @@ public class LoginActivity extends AppCompatActivity implements ProfileFragment.
         startActivityForResult(
                 AuthUI.getInstance()
                         .createSignInIntentBuilder()
+                        .setTheme(R.style.AppTheme_NoActionBar)
                         .setLogo(R.drawable.ic_speko_complete_drawable)
                         .setIsSmartLockEnabled(!BuildConfig.DEBUG)
                         .setProviders(Arrays.asList(
