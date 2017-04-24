@@ -19,14 +19,11 @@
         android:text="@string/friends_that_can_help_you"/>
 
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
         <!-- we don't apply padding here, as we already do in the viewholders -->
         <FrameLayout
             android:layout_width="wrap_content"
             android:layout_gravity="fill"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
             <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/recyclerview_list_empty_textview"
                 app:layout_anchorGravity="fill"
@@ -43,22 +40,22 @@
                 android:id="@+id/user_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
+            <android.support.v4.widget.ContentLoadingProgressBar
+                android:id="@+id/progress_bar"
+                android:layout_gravity="center"
+                style="?android:attr/progressBarStyle"
+                android:visibility="visible"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
 
         </FrameLayout>
         //TODO put it inside the the other frame layout
-        <android.support.v4.widget.ContentLoadingProgressBar
-            android:id="@+id/progress_bar"
-            android:layout_gravity="center"
-            style="?android:attr/progressBarStyle"
-            android:visibility="visible"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
 
 
 
 
 
-    </FrameLayout>
+
 
 </LinearLayout>
