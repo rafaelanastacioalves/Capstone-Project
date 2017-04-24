@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:padding="@dimen/widget_margin"
+    android:layout_margin="@dimen/widget_margin"
     android:layout_height="match_parent">
     <FrameLayout
         android:layout_width="match_parent"
@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
             android:contentDescription="@string/app_name"
             android:layout_gravity="center"
-            android:src="@drawable/ic_speko_complete_drawable"
+            android:src="@drawable/ic_speko_complete_logo"
             />
 
 

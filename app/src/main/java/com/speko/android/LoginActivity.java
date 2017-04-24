@@ -82,7 +82,7 @@ public class LoginActivity extends AppCompatActivity implements ProfileFragment.
                 AuthUI.getInstance()
                         .createSignInIntentBuilder()
                         .setTheme(R.style.AppTheme_NoActionBar)
-                        .setLogo(R.drawable.ic_speko_complete_drawable)
+                        .setLogo(R.drawable.ic_speko_complete_full_screen)
                         .setIsSmartLockEnabled(!BuildConfig.DEBUG)
                         .setProviders(Arrays.asList(
                                 new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build(),
