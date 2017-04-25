@@ -24,7 +24,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:gravity="center_vertical"
-        android:layout_marginLeft="72dp"   >
+        android:layout_marginLeft="@dimen/layout_textview_margin_for_list_with_picture"   >
         <TextView android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:id="@+id/conversation_friend_viewholder_username"
