@@ -1,0 +1,62 @@
+<resources>
+    <string name="action_settings">Settings</string>
+
+    <!-- SyncAdapter related -->
+
+    <!-- TODO: Remove or change this placeholder name -->
+    <string name="profile_fragment">Seu Perfil</string>
+
+
+
+
+
+
+    <!-- Button for test syncinc -->
+    <string name="sync_button">Botão de Sincronizar</string>
+    <string name="user_added">"Usuário adicionado!"</string>
+    <string name="user_does_not_exist">Usuário procurado NÃO existe!</string>
+    <string name="menu_search">Usuários</string>
+    <string name="menu_settings">Configurações</string>
+    <string name="menu_profile">Perfil</string>
+    <string name="menu_conversations">Conversações</string>
+    <string name="conversations_fragment">Sua lista de conversações recentes:</string>
+    <string name="language_of_interest">Idioma de interesse*</string>
+    <string name="button_profile_confirmation_change">Alterar</string>
+    <string name="friends_that_can_help_you">Amigos que podem te ajudar:</string>
+
+
+
+    <!-- Profile form texts-->
+    <string name="age_label_text_field">Idade</string>
+
+    <string name="log_out">Deslogar</string>
+    <string name="signup_description_label">Descreva você mesmo =)</string>
+    <string name="button_profile_upload_picture">Subir Imagem</string>
+    <string name="select_fluent_language">Selecione seu idioma fluente</string>
+    <string name="select_language_of_interest">Selecione seu idioma de interesse</string>
+    <string name="profile_select_option_text">Selecione</string>
+    <string name="name_label_text_field">Nome*</string>
+    <string name="profile_fluent_language_text_view">Idioma Fluente*</string>
+
+
+
+    <string name="languages_must_be_different_error">Idioma Fluente e Idioma de Interesse PRECISAM ser diferentes</string>
+    <string name="age_not_acceptable_error">Por favor insira uma idade aceitável</string>
+    <string name="string_widget_conversations">Conversações do usuário</string>
+    <string name="photo">foto</string>
+
+
+    <!-- Error messages -->
+
+    <string name="no_friend_to_show">Nenhum amigo para mostrar</string>
+    <string name="sync_status_message_server_down">Nenhum amigo para mostrar. O servidor não está retornando nenhum dado.</string>
+    <string name="sync_status_message_server_error">Nenhum amigo para mostrar. O servidor não está retornando nenhum dado válido.</string>
+    <string name="empty_conversations_list_no_network">A rede não está disponível para buscar dados.</string>
+    <string name="connectivity_error">Por favor verifique sua conectividade</string>
+    <string name="profile_register">Registrar</string>
+    <string name="error_must_choose_language_of_interest">Você precisa selecionar seu idioma de interesse</string>
+    <string name="error_must_choose_fluent_language">Você precisa selecionar seu idioma fluente</string>
+    <string name="fulano_de_tal_viewholder">Fulano de Tal Fulano de Tal Fulano de Tal Fulano de Tal Fulano de tal fulano de tal Fulano de Tal Fulano de Tal</string>
+
+
+</resources>
