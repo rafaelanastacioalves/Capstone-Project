@@ -8,8 +8,8 @@
     android:background="@drawable/rounded_corners_primary_dark">
 
     <FrameLayout
-
-        android:layout_width="56dp"
+        android:id="@+id/frameLayout"
+        android:layout_width="@dimen/listitem_main_imageview_container_width"
         android:layout_height="72dp"
         android:layout_alignParentLeft="true"
         >
@@ -29,9 +29,11 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:gravity="center_vertical"
-        android:orientation="vertical"
         android:layout_alignParentTop="true"
-        android:layout_marginLeft="72dp">
+        android:layout_toEndOf="@+id/frameLayout"
+        android:orientation="vertical"
+        android:layout_marginStart="@dimen/text_list_item_content_margin_related_to_imageview"
+        >
 
         <TextView
             android:id="@+id/friend_viewholder_username"

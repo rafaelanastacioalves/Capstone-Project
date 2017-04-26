@@ -27,6 +27,8 @@
     <dimen name="default_screen_margin">16dp</dimen>
     <dimen name="profile_user_picture_dimen">120dp</dimen>
     <dimen name="layout_textview_margin_for_list_with_picture">72dp</dimen>
+    <dimen name="text_list_item_content_margin_related_to_imageview">16dp</dimen>
+    <dimen name="listitem_main_imageview_container_width">56dp</dimen>
 
 
 </resources>
