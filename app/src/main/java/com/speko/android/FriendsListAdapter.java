@@ -68,6 +68,8 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
 
 
         holder.mNameTextView.setText(userName);
+        holder.mNameTextView.setContentDescription(mContext.
+                getString(R.string.a11y_friend_name_content_description, userName));
         if(viewItensClickable != null){
             holder.friendViewHolder.setClickable(viewItensClickable);
 
@@ -80,11 +82,20 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
         )).placeholder(R.drawable.ic_placeholder_profile_photo)
                 .into(holder.friendProfilePicture) ;
 
+        holder.friendProfilePicture.setContentDescription(
+                mContext.getString(R.string.a11y_friend_picture_content_description)
+        );
+
+
         String fluentLanguage = mCursor.getString(
                 mCursor.getColumnIndex(UserColumns.FLUENT_LANGUAGE)
         );
         holder.friendProfileFluentLanguagePicture.setImageResource(
                 Utility.getDrawableUriForLanguage(fluentLanguage,mContext)
+        );
+        holder.friendProfileFluentLanguagePicture.setContentDescription(
+                mContext.getString(R.string.a11y_friend_fluent_language_content_description,
+                        Utility.getCompleteLanguageNameString(fluentLanguage,mContext))
         );
 
         Log.i(LOG_TAG, "settingEnabled friendViewHolder: " + viewItensClickable);

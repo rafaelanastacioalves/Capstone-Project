@@ -14,6 +14,7 @@
 
 
     <android.support.design.widget.TextInputLayout
+        android:contentDescription="@string/profile_name_content_description"
         android:layout_marginTop="@dimen/widget_margin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -40,7 +41,7 @@
         android:orientation="vertical">
 
         <ImageView
-            android:layout_gravity="bottom|right"
+            android:layout_gravity="bottom|end"
             android:src="@drawable/ic_edit_black_16dp"
 
             android:layout_width="wrap_content"
@@ -87,7 +88,7 @@
         android:orientation="vertical">
 
         <ImageView
-            android:layout_gravity="bottom|right"
+            android:layout_gravity="bottom|end"
             android:src="@drawable/ic_edit_black_16dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
@@ -130,6 +131,7 @@
 
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:contentDescription="@string/age_label_text_field_content_description"
         android:hint="@string/age_label_text_field"
         app:layout_columnSpan="2"
 
@@ -147,8 +149,8 @@
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:contentDescription="@string/profile_description_label_content_description"
         android:layout_marginTop="@dimen/widget_margin"
-
         android:hint="@string/signup_description_label"
         app:layout_columnSpan="2"
 

@@ -12,6 +12,7 @@
         android:layout_width="0dp"
         android:layout_weight="0.5"
         android:layout_height="wrap_content"
+        android:contentDescription="@string/button_profile_confirmation_change_content_description"
         android:text="@string/button_profile_confirmation_change"
         />
 
@@ -22,7 +23,8 @@
         android:layout_width="0dp"
         android:layout_weight="0.5"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/fragment_horizontal_margin"
+        android:layout_marginStart="@dimen/fragment_horizontal_margin"
+        android:contentDescription="@string/log_out_content_description"
         android:text="@string/log_out"/>
 
 </LinearLayout>

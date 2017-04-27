@@ -14,7 +14,6 @@ import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
-import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
@@ -26,7 +25,6 @@ import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -52,7 +50,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.app.Activity.RESULT_OK;
 import static com.speko.android.Utility.RC_PHOTO_PICKER;
-import static java.lang.System.load;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -114,9 +111,6 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
     ShimmerFrameLayout profilePictureContainer;
 
     private Uri downloadUrl = null;
-
-    @BindView(R.id.progress_bar)
-    ContentLoadingProgressBar progressBar;
 
     @BindView(R.id.profile_grid_layout)
     GridLayout gridLayout;
@@ -227,7 +221,6 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
         ButterKnife.bind(this,view);
         profileListView.setPadding(0,Utility.getStatusBarHeight(getActivity()),0,0);
-        setRefreshScreen(true);
         setup(view);
         ButterKnife.bind(this,view);
 
@@ -280,7 +273,6 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
     @OnClick(R.id.sync_button)
     public void onClickSync(View v) {
         SpekoSyncAdapter.syncImmediatly(getActivity());
-        setRefreshScreen(true);
 //        getLoaderManager().restartLoader(FRIENDS_LOADER,null, this);
     }
 
@@ -302,13 +294,6 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
     }
 
     private void updateScreenState() {
-        if (SpekoSyncAdapter.isSyncActive(getContext())) {
-            Log.i(LOG_TAG, "Sync is active");
-            setRefreshScreen(true);
-        } else {
-            Log.i(LOG_TAG, "Sync is NOT active");
-            setRefreshScreen(false);
-        }
 
         if(BUNDLE_VALUE_IS_SYNCABLE){
             // if is syncing or off line
@@ -536,6 +521,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
             // Upload file to Firebase Storage
             photoRef.putFile(selectedImageUri)
                     .addOnSuccessListener(getActivity(), new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @SuppressWarnings("VisibleForTests")
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
                             Log.i(LOG_TAG, "Result OK from Firebase persistance");
 
@@ -552,6 +538,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
 
     private void showUserPhoto(String downloadUrl) {
         profilePictureContainer.startShimmerAnimation();
+
         Picasso.with(getContext()).load(downloadUrl.toString())
                 .placeholder(R.drawable.ic_user)
                 .resize(getResources().getDimensionPixelSize(R.dimen.profile_user_picture_dimen),
@@ -598,9 +585,16 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
                     EditText editText = (EditText) v;
                     if(hasFocus){
                         editText.setHint(userComplete.getName());
+                        nameEditText.setContentDescription(
+                                getString(R.string.a11y_profile_name_content_description,
+                                        userComplete.getName()));
 
                     }else{
+
                         editText.setHint("");
+                        nameEditText.setContentDescription(
+                                getString(R.string.a11y_profile_name_content_description,
+                                        getString(R.string.profile_empty_content_description)));
 
                     }
                 }
@@ -613,9 +607,15 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
                 EditText editText = (EditText) v;
                 if(hasFocus){
                     editText.setHint(userComplete.getAge());
+                    ageEditText.setContentDescription(
+                            getString(R.string.a11y_profile_age_content_description,
+                                    userComplete.getAge()));
 
                 }else{
-                    editText.setHint("");
+                    ageEditText.setContentDescription(
+                            getString(R.string.a11y_profile_age_content_description,
+                                    getString(R.string.profile_empty_content_description))
+                    );
 
                 }
             }
@@ -627,9 +627,15 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
                 EditText editText = (EditText) v;
                 if(hasFocus){
                     editText.setHint(userComplete.getUserDescription());
+                    userDescription.setContentDescription(
+                            getString(R.string.a11y_profile_user_description_content_description,
+                                    userComplete.getUserDescription()));
 
                 }else{
                     editText.setHint("");
+                    userDescription.setContentDescription(
+                            getString(R.string.a11y_profile_user_description_content_description,
+                                    getString(R.string.profile_empty_content_description)));
 
                 }
             }
@@ -650,10 +656,19 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
 
         if(userComplete.getFluentLanguage() != null){
             profileFluentLanguageImageView.setImageResource(Utility.getDrawableUriForLanguage( userComplete.getFluentLanguage(),getActivity()));
+            profileFluentLanguageContainer.setContentDescription(
+                    getString(R.string.profile_fluent_language_content_descritption,
+                            Utility.getCompleteLanguageNameString(userComplete.getFluentLanguage(),getActivity())
+            ));
             profileFluentLanguageTextView.setText(userComplete.getFluentLanguage());
             fluentLanguageBiggerPictureImageView.setImageResource(
                     Utility.getFluentLangagueBiggerPictureUri(getActivity(),
                             userComplete.getFluentLanguage()));
+        }else {
+            profileFluentLanguageContainer.setContentDescription(
+                    getString(R.string.profile_fluent_language_content_descritption,
+                            getString(R.string.profile_empty_content_description))
+                    );
         }
 
 
@@ -663,8 +678,16 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
         if (userComplete.getLearningLanguage() != null){
             profileLanguageOfInterestImageView.setImageResource(Utility.getDrawableUriForLanguage( userComplete.getLearningLanguage(),getActivity()));
             profileLanguageOfInterestTextView.setText(userComplete.getLearningLanguage());
+            profileLanguageOfInterestContainer.setContentDescription(
+                    getString(R.string.profile_language_of_interest_content_descritption,
+                            Utility.getCompleteLanguageNameString(userComplete.getLearningLanguage(),getActivity())
+                    ));
 
         }else{
+            profileLanguageOfInterestContainer.setContentDescription(
+                    getString(R.string.profile_fluent_language_content_descritption,
+                            getString(R.string.profile_empty_content_description))
+                    );
 
         }
 
@@ -732,7 +755,6 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
         if (loader.getId() == USER_LOADER){
             Log.i(LOG_TAG,"onLoaderFinished");
             setView();
-            setRefreshScreen(false);
 
         }
 
@@ -741,23 +763,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
 
     }
 
-    private void setRefreshScreen(Boolean active) {
-        //TODO Implement
-        Log.i(LOG_TAG, "setRefresh: " + active.toString());
-        if (active) {
 
-            progressBar.show();
-            //if onClickSync active, disable list clicking
-
-
-        } else {
-            progressBar.hide();
-            //if onClickSync NOT active, enable list clicking
-
-        }
-
-
-    }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {

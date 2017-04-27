@@ -16,7 +16,8 @@
         android:layout_marginRight="@dimen/fragment_horizontal_margin"
         android:layout_width="match_parent"
         android:layout_height="@dimen/textview_default_height"
-        android:text="@string/friends_that_can_help_you"/>
+        android:contentDescription="@string/friends_that_can_help_you_title"
+        android:text="@string/friends_that_can_help_you_title"/>
 
 
         <!-- we don't apply padding here, as we already do in the viewholders -->

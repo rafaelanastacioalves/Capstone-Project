@@ -30,7 +30,8 @@
         android:layout_marginLeft="@dimen/fragment_horizontal_margin"
         android:layout_marginRight="@dimen/fragment_horizontal_margin"
         android:layout_height="@dimen/textview_default_height"
-        android:text="@string/conversations_fragment" />
+        android:contentDescription="@string/conversations_fragment_title"
+        android:text="@string/conversations_fragment_title" />
     
     <FrameLayout
         android:layout_width="match_parent"

@@ -107,6 +107,9 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
 
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
+        mBottomNavigationView.setContentDescription(this.getString(
+                R.string.bottom_navigation_view_content_description)
+        );
 
         connectivitySnackBar = Snackbar.make(mCoordinatorLayout,
                 R.string.connectivity_error, Snackbar.LENGTH_INDEFINITE);

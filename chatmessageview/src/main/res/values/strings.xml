@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">ChatMessageView</string>
     <string name="input_hint">Message..</string>
     <string name="unknown">Unknown</string>
@@ -20,6 +20,11 @@
     <string name="default_date_cell_text">2016/08/08</string>
     <string name="default_user_name_1">Michael</string>
     <string name="default_user_name_2">Alice</string>
+
+
+    <!-- a11y strings-->
+    <string name="a11y_message_sent_content_description">Your message: <xliff:g id="user_sent_message">%1$s</xliff:g></string>
+    <string name="a11y_message_received_content_description">Your message: <xliff:g id="user_sent_message">%1$s</xliff:g></string>
 
 
 </resources>

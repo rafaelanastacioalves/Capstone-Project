@@ -17,7 +17,7 @@
             android:layout_gravity="center_vertical"
             tools:src="@drawable/ic_user"
 
-            android:layout_marginLeft="@dimen/circle_image_view_deafult_margin"
+            android:layout_marginStart="@dimen/circle_image_view_deafult_margin"
             android:layout_width="@dimen/chat_profile_picture"
             android:layout_height="@dimen/chat_profile_picture" />
     </FrameLayout>
@@ -32,13 +32,16 @@
             android:layout_width="match_parent"
             android:id="@+id/conversation_friend_viewholder_username"
             android:textColor="@color/colorWhite"
+            android:ellipsize="end"
+            android:maxLength="@integer/max_length_list_item_name"
+            android:maxLines="1"
             tools:text="Fulano de Tal"/>
 
     </LinearLayout>
 
 
     <FrameLayout
-        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:layout_width="72dp"
         android:layout_height="72dp"
         >

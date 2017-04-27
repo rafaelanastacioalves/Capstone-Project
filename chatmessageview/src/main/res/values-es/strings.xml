@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="input_hint">Mensagem..</string>
     <string name="a11y_message_sent_content_description">Your message:</string>
-
 </resources>

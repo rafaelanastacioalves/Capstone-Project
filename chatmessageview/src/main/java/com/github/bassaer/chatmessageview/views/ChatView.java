@@ -149,6 +149,7 @@ public class ChatView extends LinearLayout {
             }
         }
         mMessageView.setMessage(message);
+        mMessageView.setContentDescription(getContext().getString(R.string.a11y_message_sent_content_description ,message));
 //        hideKeyboard();
         mMessageView.scrollToEnd();
     }
@@ -167,6 +168,7 @@ public class ChatView extends LinearLayout {
             }
         }
         mMessageView.setMessage(message);
+        mMessageView.setContentDescription(getResources().getString(R.string.a11y_message_received_content_description, message));
         if (mAutoScroll) {
             mMessageView.scrollToEnd();
         }

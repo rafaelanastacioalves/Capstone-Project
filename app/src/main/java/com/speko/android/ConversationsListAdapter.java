@@ -78,14 +78,18 @@ public class ConversationsListAdapter extends RecyclerView.Adapter<Conversations
 
 
             holder.mNameTextView.setText(otherUserName);
+            holder.mNameTextView.setContentDescription(
+                    mContext.getString(R.string.a11y_friend_name_content_description, otherUserName)
+            );
 
             Picasso.with(mContext).load(
                     mCursor.getString(
                             mCursor.getColumnIndex(ChatMembersColumns.OTHER_MEMBER_PHOTO_URL)
                     )).placeholder(R.drawable.ic_placeholder_profile_photo)
                     .into(holder.mProfilePicture);
-            String id = mCursor.getString(
-                    mCursor.getColumnIndex(ChatMembersColumns.OTHER_MEMBER_ID)
+            holder.mProfilePicture.setContentDescription(mContext.getString(
+                        R.string.a11y_friend_picture_content_description
+                    )
             );
 
 
@@ -95,6 +99,11 @@ public class ConversationsListAdapter extends RecyclerView.Adapter<Conversations
                     holder.conversationProfileFluentLanguagePicture.setImageResource(
                     Utility.getDrawableUriForLanguage(fluentLanguage,mContext)
             );
+
+                    holder.conversationProfileFluentLanguagePicture.setContentDescription(
+                        mContext.getString(R.string.a11y_friend_fluent_language_content_description,
+                                Utility.getCompleteLanguageNameString(fluentLanguage, mContext))
+                    );
 
             holder.conversationViewHolderContainer.setEnabled(itemsClickable);
         }

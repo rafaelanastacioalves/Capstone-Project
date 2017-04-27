@@ -72,6 +72,15 @@ public class Utility {
     }
 
 
+    private static final Map<String, String> completeLanguageToCompleteLanguageHash;
+    static {
+        Hashtable<String,String> tmp =
+                new Hashtable<String, String>();
+        tmp.put("PT-BR","complete_language_pt_br");
+        tmp.put("EN-US","complete_language_en_us");
+        tmp.put("SP","complete_language_sp");
+        completeLanguageToCompleteLanguageHash = Collections.unmodifiableMap(tmp);
+    }
 
     public static final int RC_PHOTO_PICKER = 3;
 
@@ -457,6 +466,24 @@ public class Utility {
         Log.i("getDrawableUriFor...", "the image URI is: " + uri);
 
         return imageResource;
+    }
+
+    public static String getCompleteLanguageNameString(String language, Context mContext){
+        Log.i("getCompleteLangUriF...", "the fluent language is: " + language);
+        String uri = "@string/" + completeLanguageToCompleteLanguageHash.
+                get(
+                language);
+        Log.i("getCompleteLangUriF...", "the image URI is: " + uri);
+
+        int languageResource = mContext.getResources().getIdentifier(
+                uri, null, mContext.getPackageName()
+        );
+
+        String completeLanguageString = mContext.getString(languageResource);
+
+        return completeLanguageString;
+
+
     }
 
     public static boolean isValidAge(String ageString) {

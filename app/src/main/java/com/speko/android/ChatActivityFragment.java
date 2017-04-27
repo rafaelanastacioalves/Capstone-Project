@@ -40,6 +40,8 @@ import java.util.Random;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.speko.android.Utility.getOtherUserWithId;
+
 /**
  * A placeholder fragment containing a simple view.
  */
@@ -209,7 +211,9 @@ public class ChatActivityFragment extends Fragment {
         mChatView.setMessageMarginTop(5);
         mChatView.setMessageMarginBottom(5);
 
-        toolbar.setTitle(Utility.getOtherUserWithId(getActivity(),friendId).getName());
+        String otherUserName = Utility.getOtherUserWithId(getActivity(),friendId).getName();
+        toolbar.setTitle(otherUserName);
+        toolbar.setContentDescription(getActivity().getString(R.string.a11y_other_user_content_description, otherUserName));
 
     }
 
@@ -220,7 +224,7 @@ public class ChatActivityFragment extends Fragment {
         Log.i(LOG_TAG, "Init Users");
         UserComplete userComplete = Utility.getUser(getActivity());
 
-        UserComplete otherUserComplete = Utility.getOtherUserWithId(getActivity(), friendId);
+        UserComplete otherUserComplete = getOtherUserWithId(getActivity(), friendId);
         //User icon
         Picasso.with(getActivity())
                 .load(userComplete.getProfilePicture())
@@ -270,7 +274,7 @@ public class ChatActivityFragment extends Fragment {
             @Override
             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
 
-                UserComplete otherUserComplete = Utility.getOtherUserWithId(getActivity(), friendId);
+                UserComplete otherUserComplete = getOtherUserWithId(getActivity(), friendId);
 
                 Bitmap otherUserIcon = bitmap;
                 Log.i(LOG_TAG, "setting Icon for user:" + otherUserComplete.getName());

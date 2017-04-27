@@ -1,6 +1,5 @@
 package com.speko.android.widget;
 
-import android.annotation.TargetApi;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -106,12 +105,14 @@ public class ConversationsWidgetRemoteViewService extends RemoteViewsService {
                         data.getColumnIndex(ChatMembersColumns.OTHER_MEMBER_NAME)
                 );
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
-                    setRemoteContentDescription(views, userName + getString(R.string.photo));
-                }
 
 
                 views.setTextViewText(R.id.conversation_friend_viewholder_username, userName);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
+                    views.setContentDescription(R.id.conversation_friend_viewholder_username,
+                            getString(R.string.a11y_friend_name_content_description, userName));
+                }
+
 
                 Bitmap profilePicture = null;
                 try {
@@ -127,10 +128,16 @@ public class ConversationsWidgetRemoteViewService extends RemoteViewsService {
                 if (profilePicture != null) {
                     views.setImageViewBitmap(R.id.conversation_friend_profile_picture,
                             profilePicture);
+
                 } else {
                     views.setImageViewResource(R.id.conversation_friend_profile_picture,
                             R.drawable.ic_placeholder_profile_photo);
                 }
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
+                    views.setContentDescription(R.id.conversation_friend_profile_picture,
+                            getString(R.string.a11y_friend_picture_content_description));
+                }
+
                 String otherUserId = data.getString(
                         data.getColumnIndex(ChatMembersColumns.OTHER_MEMBER_ID)
                 );
@@ -148,8 +155,12 @@ public class ConversationsWidgetRemoteViewService extends RemoteViewsService {
                         Utility.getDrawableUriForLanguage(fluentLanguage,
                                 ConversationsWidgetRemoteViewService.this)
                 );
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1) {
+                    views.setContentDescription(R.id.conversation_friend_fluent_language_profile_picture,
+                            getString(R.string.a11y_friend_fluent_language_content_description,
+                                    fluentLanguage));
 
-
+                }
                 final Intent fillIntent = new Intent();
 
                 String chatId = data.getString(
@@ -175,11 +186,7 @@ public class ConversationsWidgetRemoteViewService extends RemoteViewsService {
                 return 1;
             }
 
-            @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1)
-            private void setRemoteContentDescription(RemoteViews views, String description) {
-                Log.i(LOG_TAG,"getRemoteContentDescription");
-                views.setContentDescription(R.id.conversation_friend_profile_picture, description);
-            }
+
 
             @Override
             public long getItemId(int position) {
