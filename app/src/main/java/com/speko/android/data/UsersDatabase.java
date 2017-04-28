@@ -12,9 +12,10 @@ import net.simonvt.schematic.annotation.Table;
  * Created by rafaelalves on 14/01/17.
  */
 
+@SuppressWarnings("ALL")
 @Database(version = UsersDatabase.VERSION)
 public class UsersDatabase {
-    private UsersDatabase(){
+    public UsersDatabase(){
 
     }
 
@@ -24,6 +25,7 @@ public class UsersDatabase {
     public static final String USERS_TABLE = "users";
     @Table(ChatMembersColumns.class) @IfNotExists
     public static final String CHAT_MEMBERS_TABLE = "chat_members";
+    @SuppressWarnings("UnusedParameters")
     @OnCreate
     public static void onCreate(SQLiteDatabase db) {
         Log.i("UsersDatabase", "onCreate" );

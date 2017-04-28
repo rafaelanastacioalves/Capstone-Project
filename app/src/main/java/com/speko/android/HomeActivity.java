@@ -1,8 +1,6 @@
 package com.speko.android;
 
-import android.accounts.Account;
 import android.content.BroadcastReceiver;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -27,7 +25,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GetTokenResult;
-import com.google.firebase.database.FirebaseDatabase;
 import com.speko.android.data.UserComplete;
 import com.speko.android.data.generated.UsersDatabase;
 import com.speko.android.sync.SpekoSyncAdapter;
@@ -49,16 +46,12 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
 
     private final String LOG_TAG = getClass().getSimpleName();
     // Instance fields
-    Account mAccount;
-    private ContentResolver mResolver;
     private FirebaseAuth mFirebaseAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
-    private static UsersDatabase userDB;
     private int mSelectedItem;
-    private FirebaseDatabase firebaseDatabase;
 
     // TODO: Maybe refactor and put it apart because of repeated code in chat activity
-    private BroadcastReceiver connectivityChangeReceiver = new BroadcastReceiver() {
+    private final BroadcastReceiver connectivityChangeReceiver = new BroadcastReceiver() {
         private final String LOG_TAG = "BroadcastReceiver";
 
         @Override
@@ -98,7 +91,7 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        UsersDatabase userDB;
         userDB = UsersDatabase.getInstance(getApplicationContext());
         userDB.onCreate(userDB.getReadableDatabase());
 
@@ -114,8 +107,6 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
         connectivitySnackBar = Snackbar.make(mCoordinatorLayout,
                 R.string.connectivity_error, Snackbar.LENGTH_INDEFINITE);
 
-        // Get the content resolver for your app
-        mResolver = getContentResolver();
 
         mFirebaseAuth = FirebaseAuth.getInstance();
 
@@ -211,6 +202,7 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
                 break;
             case R.id.action_conversations:
                 Log.i(LOG_TAG, "Selecting Conversations");
+                //noinspection ConstantConditions
                 frag = ConversationsFragment.newInstance(getUser(this).getId());
                 break;
         }
@@ -288,6 +280,7 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
 
     private void setFireBaseToken() {
         FirebaseUser user = mFirebaseAuth.getCurrentUser();
+        //noinspection ConstantConditions
         user.getToken(false).addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
             public final String LOG_TAG = getClass().getSimpleName();
 
@@ -296,12 +289,14 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
                 if (task.isSuccessful()) {
                     String userToken = task.getResult().getToken();
                     Log.i(LOG_TAG, "O token Deu certo! \n");
+                    //noinspection ConstantConditions
                     Log.i(LOG_TAG, "O ID do usuário é: \n" + mFirebaseAuth.getCurrentUser().getUid());
                     SpekoSyncAdapter.setUserToken(userToken);
                     SpekoSyncAdapter.initializeSyncAdapter(getApplication());
 
 
                 } else {
+                    //noinspection ConstantConditions,ThrowableResultOfMethodCallIgnored
                     Log.e(LOG_TAG, task.getException().getMessage());
                 }
             }
@@ -328,6 +323,7 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
         if (mAuthStateListener != null) {
             mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
         }
+        //noinspection ConstantConditions
         if (connectivityChangeReceiver != null) {
             unregisterReceiver(connectivityChangeReceiver);
         }
@@ -345,6 +341,7 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
                 + userComplete.getLearningLanguage());
 
         //adding more Provider User info
+        //noinspection ConstantConditions
         userComplete.setName(authUser.getDisplayName());
         userComplete.setEmail(authUser.getEmail());
         userComplete.setId(authUser.getUid());

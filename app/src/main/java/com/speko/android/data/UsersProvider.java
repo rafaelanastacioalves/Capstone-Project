@@ -17,13 +17,14 @@ import static com.speko.android.data.UserContract.CONTENT_AUTHORITY;
  * Created by rafaelalves on 19/12/16.
  */
 
+@SuppressWarnings("ALL")
 @ContentProvider(authority = CONTENT_AUTHORITY, database = UsersDatabase.class)
 public final class UsersProvider {
 
     public static final Uri URI
             = new Uri.Builder().scheme(ContentResolver.SCHEME_CONTENT).authority(CONTENT_AUTHORITY).build();
 
-    static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
+    private static final Uri BASE_CONTENT_URI = Uri.parse("content://" + CONTENT_AUTHORITY);
     private static final String LOG_TAG = "UsersProvider";
 
     interface Path{
@@ -47,6 +48,7 @@ public final class UsersProvider {
                 path = Path.USER,
                 type = "vnd.android.cursor.item/user")
         public static final Uri USER_URI = buildUri(Path.USER);
+        @SuppressWarnings("FinalStaticMethod")
         @InexactContentUri(
                 name = "FRIENDS_LIST",
                 path = Path.USER + "/" + Path.FRIENDS + "/*",
@@ -58,6 +60,7 @@ public final class UsersProvider {
             return buildUri(Path.USER,Path.FRIENDS, firebaseUserId);
         }
 
+        @SuppressWarnings("FinalStaticMethod")
         @InexactContentUri(
                 name = "FRIEND",
                 path = Path.USER + "/*",
@@ -76,6 +79,7 @@ public final class UsersProvider {
                     path = Path.CHAT_MEMBERS,
                     type = "vnd.android.cursor.item/chat_members")
             public static final Uri CHAT_URI = buildUri(Path.CHAT_MEMBERS);
+            @SuppressWarnings("FinalStaticMethod")
             @InexactContentUri(
                     name = "FRIENDS_LIST",
                     path = Path.CHAT_MEMBERS+ "/" + Path.OTHER_MEMBER + "/*",

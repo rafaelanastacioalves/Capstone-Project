@@ -8,6 +8,7 @@ import android.util.Log;
 /**
  * Created by rafaelalves on 19/12/16.
  */
+@SuppressWarnings("ALL")
 public class SpekoAuthenticatorService extends Service {
     private SpekoAuthenticator mAuthenticator;
 

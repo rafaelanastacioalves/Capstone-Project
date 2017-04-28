@@ -1,19 +1,21 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="title_activity_home">HomeActivity</string>
-    <string name="action_settings">Settings</string>
 
     <!-- SyncAdapter related -->
-    <string name="sync_account_type">android.speko.com</string>
-    <string name="content_authority">com.speko.android</string>
-    <string name="firebase_database_node_users">users</string>
+    <string name="content_authority" translatable="false">com.speko.android</string>
+    <string name="firebase_database_node_users" translatable="false">users</string>
 
     <!-- TODO: Remove or change this placeholder name -->
-    <string name="profile_fragment">Your Profile</string>
 
     <!-- Languages entries for user selection-->
     <string name="language_entry_pt_br">Brazilian Portuguese</string>
     <string name="language_entry_en_us">United States English</string>
     <string name="language_entry_es">Spanish</string>
+
+
+    <string name="complete_language_pt_br">@string/language_entry_pt_br</string>
+    <string name="complete_language_en_us">@string/language_entry_en_us</string>
+    <string name="complete_language_sp">@string/language_entry_es</string>
+
 
 
     <!-- Languages values for use by the system. Not translatable-->
@@ -24,10 +26,7 @@
 
     <!-- Button for test syncinc -->
     <string name="sync_button">Sync Button</string>
-    <string name="user_added">"User Added!"</string>
-    <string name="user_does_not_exist">User searched does NOT exist</string>
     <string name="menu_search">Users</string>
-    <string name="menu_settings">Settings</string>
     <string name="menu_profile">Profile</string>
     <string name="menu_conversations">Conversations</string>
     <string name="conversations_fragment_title">Your list of recent conversations:</string>
@@ -43,7 +42,6 @@
 
     <string name="log_out">Log Out</string>
     <string name="signup_description_label">Describe yourself =)</string>
-    <string name="button_profile_upload_picture">Upload Picture</string>
     <string name="select_fluent_language">Select your fluent language</string>
     <string name="select_language_of_interest">Select your language of interest</string>
     <string name="profile_select_option_text">Select</string>
@@ -61,11 +59,10 @@
     <string name="languages_must_be_different_error">Fluent Language and Language of Interest MUST be different</string>
     <string name="age_not_acceptable_error">Please put an acceptable age.</string>
     <string name="string_widget_conversations">User Conversations</string>
-    <string name="photo">photo</string>
 
     <!-- Shared Preferences Status-->
-    <string name="shared_preference_sync_status_key">sync-status</string>
-    <string name="shared_preference_active_connectivity_status_key">active-connectivity-status</string>
+    <string name="shared_preference_sync_status_key" translatable="false">sync-status</string>
+    <string name="shared_preference_active_connectivity_status_key" translatable="false">active-connectivity-status</string>
 
 
     <!-- Error messages -->
@@ -78,7 +75,7 @@
     <string name="profile_register">Register</string>
     <string name="error_must_choose_language_of_interest">You must select your language of interest.</string>
     <string name="error_must_choose_fluent_language">You must choose a fluent language.</string>
-    <string name="fulano_de_tal_viewholder">Fulano de Tal Fulano de Tal Fulano de Tal Fulano de Tal Fulano de tal fulano de tal Fulano de Tal Fulano de Tal</string>
+    <string name="fulano_de_tal_viewholder" translatable="false">Fulano de Tal Fulano de Tal Fulano de Tal Fulano de Tal Fulano de tal fulano de tal Fulano de Tal Fulano de Tal</string>
 
 
     <!--others-->
@@ -92,9 +89,6 @@
     <string name="log_out_content_description">Logout Button</string>
     <string name="profile_register_content_description">Register Button</string>
     <string name="a11y_other_user_content_description">You are talking to: <xliff:g id="other_user_name">%1$s</xliff:g></string>
-    <string name="complete_language_pt_br">Brazilian Portuguese</string>
-    <string name="complete_language_en_us">United States English</string>
-    <string name="complete_language_sp">Spanish</string>
     <string name="a11y_friend_fluent_language_content_description">Your friend fluent language: <xliff:g id="fluent_language_complete">%1$s</xliff:g></string>
     <string name="a11y_friend_name_content_description">Your friend name: <xliff:g id="friend_name">%1$s</xliff:g> </string>
     <string name="a11y_friend_picture_content_description">Your friend\'s picture</string>
@@ -105,6 +99,8 @@
     <string name="a11y_profile_user_description_content_description">Your profile user\'s description is <xliff:g id="profile_description">%1$s</xliff:g> </string>
     <string name="profile_fluent_language_content_descritption">Your profile fluent language is<xliff:g id="profile_fluent_language">%1$s</xliff:g> </string>
     <string name="profile_language_of_interest_content_descritption">Your profile language of interest is<xliff:g id="profile_language_of_interest">%1$s</xliff:g> </string>
+    <string name="speko_splash_image_content_descrition">Speko Splash Image</string>
+    <string name="your_fluent_language_picture_representation">Your fluent language picture representation</string>
 
 
 </resources>

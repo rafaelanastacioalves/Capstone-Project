@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="horizontal"
     android:layout_marginBottom="@dimen/default_margin_form"
     android:layout_width="match_parent"
-    android:id="@+id/profile_options_edit"
     android:layout_height="wrap_content">
     <android.support.v7.widget.AppCompatButton
         android:id="@+id/fragment_button_profile_change"

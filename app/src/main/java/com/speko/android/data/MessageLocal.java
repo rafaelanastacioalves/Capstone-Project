@@ -6,6 +6,7 @@ import com.google.firebase.database.IgnoreExtraProperties;
  * Created by rafaelalves on 06/02/17.
  */
 
+@SuppressWarnings("ALL")
 @IgnoreExtraProperties
 public class MessageLocal {
 

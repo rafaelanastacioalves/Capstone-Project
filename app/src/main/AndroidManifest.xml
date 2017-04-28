@@ -14,6 +14,7 @@
 
     <application
         android:allowBackup="true"
+        android:name=".SpekoApplication"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
@@ -68,7 +69,7 @@
         <!-- The SyncAdapter service -->
         <service
             android:name=".sync.SpekoSyncService"
-            android:exported="true">
+            tools:ignore="ExportedService">
             <intent-filter>
                 <action android:name="android.content.SyncAdapter" />
             </intent-filter>
@@ -82,7 +83,8 @@
         </service>
 
         <!-- SyncAdapter's dummy authentication service -->
-        <service android:name=".sync.SpekoAuthenticatorService">
+        <service android:name=".sync.SpekoAuthenticatorService"
+            tools:ignore="ExportedService">
             <intent-filter>
                 <action android:name="android.accounts.AccountAuthenticator" />
             </intent-filter>
@@ -104,7 +106,8 @@
             android:label="@string/string_widget_conversations">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"
+                    tools:ignore="BatteryLife" />
                 <action android:name="com.speko.android.ACTION_DATA_UPDATED"/>
             </intent-filter>
 

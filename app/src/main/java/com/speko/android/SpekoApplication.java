@@ -7,6 +7,7 @@ import com.google.firebase.database.Logger;
  * Created by rafaelalves on 04/02/17.
  */
 
+@SuppressWarnings("ALL")
 public class SpekoApplication extends android.app.Application {
 
     @Override

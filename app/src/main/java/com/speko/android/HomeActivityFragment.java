@@ -1,5 +1,6 @@
 package com.speko.android;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -17,10 +18,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.FirebaseDatabase;
 import com.speko.android.sync.SpekoSyncAdapter;
 
 import butterknife.BindView;
@@ -32,9 +29,6 @@ import butterknife.ButterKnife;
 public class HomeActivityFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>,
         SharedPreferences.OnSharedPreferenceChangeListener {
 
-    static final int COL_USER_ID = 0;
-    static final int COL_USER_NAME = 1;
-    static final int COL_EMAIL = 2;
     private static final int FRIENDS_LOADER = 1;
     private final String LOG_TAG = getClass().getSimpleName();
     @BindView(R.id.user_list)
@@ -48,10 +42,8 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
     @BindView(R.id.fragment_home_container)
     View fragmentHomeContainer;
 
-    private FirebaseDatabase firebaseDatabase;
-    private FirebaseUser authUser;
+
     private FriendsListAdapter mAdapter;
-    private ChildEventListener userListListener;
 
 
     public HomeActivityFragment() {
@@ -131,10 +123,6 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
     public void onStart() {
         Log.i(LOG_TAG, "onStart");
 
-        // we putted here because until onActivityCreated, the activity hasn' decided to
-        // put the user to login Ativity when necessary
-        firebaseDatabase = FirebaseDatabase.getInstance();
-        authUser = FirebaseAuth.getInstance().getCurrentUser();
 
         Log.i(LOG_TAG, "Initloader");
         getLoaderManager().initLoader(FRIENDS_LOADER, null, this);
@@ -167,6 +155,7 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
         updateScreenState();
     }
 
+    @SuppressLint("SwitchIntDef")
     private void updateEmptyView() {
         Log.i(LOG_TAG, "updateEmptyView");
 
@@ -205,7 +194,7 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
 
     }
 
-    public void updateScreenState() {
+    private void updateScreenState() {
         updateEmptyView();
         if (SpekoSyncAdapter.isSyncActive(getContext())) {
             Log.i(LOG_TAG, "Sync is active");

@@ -18,8 +18,8 @@ import butterknife.ButterKnife;
 import static android.net.ConnectivityManager.CONNECTIVITY_ACTION;
 
 public class ChatActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
-    public static final String CHAT_ID = "CHAT_ID";
-    public static final String FRIEND_ID = "FRIEND_ID";
+    private static final String CHAT_ID = "CHAT_ID";
+    private static final String FRIEND_ID = "FRIEND_ID";
     private final String LOG_TAG = getClass().getSimpleName();
     private Snackbar connectivitySnackBar;
     private SharedPreferences sp;
@@ -28,7 +28,7 @@ public class ChatActivity extends AppCompatActivity implements SharedPreferences
     CoordinatorLayout mCoordinatorLayout;
 
     // TODO: Maybe refactor and put it apart because of repeated code in chat activity
-    private BroadcastReceiver connectivityChangeReceiver = new BroadcastReceiver() {
+    private final BroadcastReceiver connectivityChangeReceiver = new BroadcastReceiver() {
         private final String LOG_TAG = "BroadcastReceiver";
 
         @Override
@@ -131,7 +131,7 @@ public class ChatActivity extends AppCompatActivity implements SharedPreferences
         }
     }
 
-    public void updateScreenState() {
+    private void updateScreenState() {
 
         //in case we are offline
         if (!Utility.isNetworkAvailable(this)) {

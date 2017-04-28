@@ -8,6 +8,7 @@ import android.util.Log;
 /**
  * Created by rafaelalves on 14/12/16.
  */
+@SuppressWarnings("ALL")
 public class SpekoSyncService extends Service {
     private static final Object sSyncAdapterLock = new Object();
     private static SpekoSyncAdapter sSpekoSyncAdapter = null;

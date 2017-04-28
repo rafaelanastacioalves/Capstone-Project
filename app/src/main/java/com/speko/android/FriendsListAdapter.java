@@ -21,13 +21,14 @@ import de.hdodenhof.circleimageview.CircleImageView;
  * Created by rafaelalves on 21/01/17.
  */
 
+@SuppressWarnings("ALL")
 public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.UserViewHolder>  {
 
 
     private final String LOG_TAG = getClass().getSimpleName();
     private final Context mContext;
     private Cursor mCursor;
-    private FriendsAdapterOnClickHandler mClickHanlder;
+    private final FriendsAdapterOnClickHandler mClickHanlder;
     private Boolean viewItensClickable;
 
     public FriendsListAdapter(Context context, FriendsAdapterOnClickHandler dh){
@@ -124,11 +125,11 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
 
         // if is connected, so are clickable the items
         viewItensClickable =  Utility.getIsConnectedStatus(mContext);
-        Log.i(LOG_TAG, "viewItemClickable: " + viewItensClickable.booleanValue());
+        Log.i(LOG_TAG, "viewItemClickable: " + viewItensClickable);
         notifyDataSetChanged();
     }
 
-    public static interface FriendsAdapterOnClickHandler{
+    public interface FriendsAdapterOnClickHandler{
         void onClick(String friendID);
     }
 

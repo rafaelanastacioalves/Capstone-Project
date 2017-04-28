@@ -4,7 +4,8 @@ package com.speko.android.data;
  * Created by rafaelanastacioalves on 12/26/16.
  */
 
-public class UserEntity {
+@SuppressWarnings("ALL")
+class UserEntity {
     private String name;
     public UserEntity(){
 

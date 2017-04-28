@@ -19,7 +19,8 @@
             android:layout_marginLeft="@dimen/circle_image_view_deafult_margin"
             android:layout_marginRight="@dimen/circle_image_view_deafult_margin"
             android:layout_width="@dimen/chat_profile_picture"
-            android:layout_height="@dimen/chat_profile_picture" />
+            android:layout_height="@dimen/chat_profile_picture"
+            tools:ignore="ContentDescription" />
     </FrameLayout>
     <LinearLayout
         android:layout_width="wrap_content"
@@ -48,7 +49,8 @@
             android:layout_marginLeft="@dimen/circle_image_view_deafult_margin"
             android:layout_marginRight="@dimen/circle_image_view_deafult_margin"
             android:layout_width="@dimen/chat_profile_picture"
-            android:layout_height="@dimen/chat_profile_picture" />
+            android:layout_height="@dimen/chat_profile_picture"
+            tools:ignore="ContentDescription" />
     </FrameLayout>
 
 </RelativeLayout>

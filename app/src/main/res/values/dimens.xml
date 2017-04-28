@@ -1,15 +1,11 @@
 <resources>
     <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
-    <dimen name="fragment_vertical_margin">16dp</dimen>
     <dimen name="fragment_horizontal_margin">16dp</dimen>
-    <dimen name="fab_margin">16dp</dimen>
     <dimen name="appbar_elevation">4dp</dimen>
     <dimen name="toolbar_height">56dp</dimen>
     <dimen name="friends_profile_picture">40dp</dimen>
     <dimen name="chat_profile_picture">40dp</dimen>
-    <dimen name="friend_profile_image">40dp</dimen>
 
     <dimen name="material_list_item_height">72dp</dimen>
     <dimen name="circle_image_view_deafult_margin">16dp</dimen>
@@ -26,7 +22,6 @@
     <dimen name="textview_default_height">48dp</dimen>
     <dimen name="default_screen_margin">16dp</dimen>
     <dimen name="profile_user_picture_dimen">120dp</dimen>
-    <dimen name="layout_textview_margin_for_list_with_picture">72dp</dimen>
     <dimen name="text_list_item_content_margin_related_to_imageview">16dp</dimen>
     <dimen name="listitem_main_imageview_container_width">56dp</dimen>
 

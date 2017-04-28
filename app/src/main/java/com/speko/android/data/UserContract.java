@@ -6,6 +6,7 @@ import android.net.Uri;
  * Created by rafaelalves on 14/01/17.
  */
 
+@SuppressWarnings("ALL")
 public class UserContract {
     public static final String CONTENT_AUTHORITY = "com.speko.android.data";
 

@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
  * Created by rafaelalves on 22/04/17.
  */
 
+@SuppressWarnings("ALL")
 public class SplashActivity extends AppCompatActivity {
 
     public void onAttachedToWindow() {

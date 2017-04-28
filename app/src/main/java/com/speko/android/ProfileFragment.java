@@ -56,19 +56,17 @@ import static com.speko.android.Utility.RC_PHOTO_PICKER;
  * Activities that contain this fragment must implement the
  * {@link ProfileFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link ProfileFragment#newInstance} factory method to
- * create an instance of this fragment.
  */
 public class ProfileFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, SharedPreferences.OnSharedPreferenceChangeListener, AppBarLayout.OnOffsetChangedListener{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+
     private static final int USER_LOADER = 2;
     private final String LOG_TAG = getClass().getSimpleName();
 
     private int mMaxScrollSize;
-    private int TOTAL_SCROLLED_PERCENTAGE_TO_ANIMATE_AVATAR = 55;
+    @SuppressWarnings("FieldCanBeLocal")
+    private final int TOTAL_SCROLLED_PERCENTAGE_TO_ANIMATE_AVATAR = 55;
 
     public static final String BUNDLE_ARGUMENT_IS_SYNCABLE = "bundle_argument_is_syncable";
     private boolean BUNDLE_VALUE_IS_SYNCABLE = false;
@@ -87,9 +85,6 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
     @BindView(R.id.sync_button)
     Button sync_button;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     @BindView(R.id.signup_edittext_input_age)
     EditText ageEditText;
@@ -161,23 +156,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ProfileFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ProfileFragment newInstance(String param1, String param2) {
-        ProfileFragment fragment = new ProfileFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -237,12 +216,14 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
 
         if(BUNDLE_VALUE_FIRST_TIME_ENABLED){
             Log.i(LOG_TAG, "First Time Enabled TRUE!");
+            //noinspection ConstantConditions
             profileOptionsContainerViewStub.setLayoutResource(R.layout.profile_options_signup);
             profileOptionsContainerViewStub.inflate();
 
         }else{
 
             Log.i(LOG_TAG, "First Time Enabled FALSE!");
+            //noinspection ConstantConditions
             profileOptionsContainerViewStub.setLayoutResource(R.layout.profile_options_edit);
             profileOptionsContainerViewStub.inflate();
             signupButton = (AppCompatButton) view.findViewById(R.id.fragment_button_profile_change);
@@ -271,14 +252,14 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
     }
 
     @OnClick(R.id.sync_button)
-    public void onClickSync(View v) {
+    public void onClickSync() {
         SpekoSyncAdapter.syncImmediatly(getActivity());
 //        getLoaderManager().restartLoader(FRIENDS_LOADER,null, this);
     }
 
 
     @OnClick(R.id.log_out) @Optional
-    public void onClicklogOut(View v) {
+    public void onClicklogOut() {
 
         Utility.deleteEverything(getContext());
         FirebaseAuth.getInstance().signOut();
@@ -299,8 +280,10 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
             // if is syncing or off line
             if (SpekoSyncAdapter.isSyncActive(getContext()) ||
                     !Utility.getIsConnectedStatus(getContext())){
+                //noinspection ConstantConditions
                 signupButton.setClickable(false);
             }else{
+                //noinspection ConstantConditions
                 signupButton.setClickable(true);
             }
         }
@@ -309,7 +292,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
     }
 
     @OnClick(R.id.fragment_button_profile_register) @Optional
-    public void onClickRegisterUser(View v){
+    public void onClickRegisterUser(){
         if (populateAndValidateUserObjectCorrectly()){
             mListener.completeSignup(userComplete);
         }
@@ -318,7 +301,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
     }
 
     @OnClick(R.id.fragment_button_profile_change) @Optional
-    public void onClickChangeProfile(View v){
+    public void onClickChangeProfile(){
 
         if(populateAndValidateUserObjectCorrectly()){
             final Context applicationContext = getActivity().getApplication();
@@ -450,12 +433,12 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
     }
 
     @OnClick(R.id.signup_imageview_profile_picture_container)
-    public void onClickUploadPicture(View v){
+    public void onClickUploadPicture(){
        Utility.call_to_upload_picture(this);
     }
 
     @OnClick(R.id.profile_fluent_language_container)
-    public void onClickChangeFluentLanguage(View v){
+    public void onClickChangeFluentLanguage(){
 
         final String[] entriesArray  = getResources().getStringArray(R.array.options_entries_languages);
         final String[] valuesArray  = getResources().getStringArray(R.array.options_values_languages);
@@ -479,7 +462,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
     }
 
     @OnClick(R.id.profile_language_of_interest_container)
-    public void onClickChangeLanguageOfInterest(View v){
+    public void onClickChangeLanguageOfInterest(){
 
         final String[] entriesArray  = getResources().getStringArray(R.array.options_entries_languages);
         final String[] valuesArray  = getResources().getStringArray(R.array.options_values_languages);
@@ -513,7 +496,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
             Uri selectedImageUri = data.getData();
 
             // Get a reference to store file at user_pictures/<UID>/<FILENAME>
-            StorageReference photoRef = FirebaseStorage.getInstance().getReference()
+            @SuppressWarnings("ConstantConditions") StorageReference photoRef = FirebaseStorage.getInstance().getReference()
                     .child(getString(R.string.user_pictures))
                     .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                     .child(selectedImageUri.getLastPathSegment());
@@ -527,6 +510,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
 
                             // When the image has successfully uploaded, we get its download URL
                             downloadUrl = taskSnapshot.getDownloadUrl();
+                            //noinspection ConstantConditions
                             showUserPhoto(downloadUrl.toString());
 
 
@@ -539,7 +523,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
     private void showUserPhoto(String downloadUrl) {
         profilePictureContainer.startShimmerAnimation();
 
-        Picasso.with(getContext()).load(downloadUrl.toString())
+        Picasso.with(getContext()).load(downloadUrl)
                 .placeholder(R.drawable.ic_user)
                 .resize(getResources().getDimensionPixelSize(R.dimen.profile_user_picture_dimen),
                         getResources().getDimensionPixelSize(R.dimen.profile_user_picture_dimen))
@@ -562,7 +546,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
         if(userComplete == null){
             userComplete = Utility.getUser(getActivity());
         }
-        String spinnerValue = userComplete.getFluentLanguage();
+        @SuppressWarnings("ConstantConditions") String spinnerValue = userComplete.getFluentLanguage();
         Log.i(LOG_TAG,"Fluent Langauge: " + spinnerValue);
 
 
@@ -576,6 +560,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
 
 
         if(BUNDLE_VALUE_FIRST_TIME_ENABLED){
+            //noinspection ConstantConditions
             nameEditText.setText(FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
 
         }else {
@@ -649,7 +634,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
 
             showUserPhoto(userComplete.getProfilePicture());
         }else if (BUNDLE_VALUE_FIRST_TIME_ENABLED){
-            String pictureUrl = FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl().toString();
+            @SuppressWarnings("ConstantConditions") String pictureUrl = FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl().toString();
             userComplete.setProfilePicture(pictureUrl);
             showUserPhoto(pictureUrl);
         }

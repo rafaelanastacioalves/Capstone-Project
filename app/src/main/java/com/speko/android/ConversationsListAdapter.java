@@ -21,13 +21,14 @@ import de.hdodenhof.circleimageview.CircleImageView;
  * Created by rafaelalves on 21/01/17.
  */
 
+@SuppressWarnings("DefaultFileTemplate")
 public class ConversationsListAdapter extends RecyclerView.Adapter<ConversationsListAdapter.UserChatViewHolder> implements SharedPreferences.OnSharedPreferenceChangeListener {
 
 
     private final String LOG_TAG = getClass().getSimpleName();
     private final Context mContext;
     private Cursor mCursor;
-    private ConversationsAdapterOnClickHandler mClickHanlder;
+    private final ConversationsAdapterOnClickHandler mClickHanlder;
     private boolean itemsClickable;
     private boolean viewItensClickable;
 
@@ -133,7 +134,7 @@ public class ConversationsListAdapter extends RecyclerView.Adapter<Conversations
         notifyDataSetChanged();
     }
 
-    public static interface ConversationsAdapterOnClickHandler {
+    public interface ConversationsAdapterOnClickHandler {
         void onClick(String friendID);
 
     }

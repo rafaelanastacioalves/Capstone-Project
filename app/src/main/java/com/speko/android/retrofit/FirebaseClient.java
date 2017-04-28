@@ -14,6 +14,7 @@ import retrofit2.http.Query;
  * Created by rafaelanastacioalves on 12/28/16.
  */
 
+@SuppressWarnings("ALL")
 public interface FirebaseClient {
 
 

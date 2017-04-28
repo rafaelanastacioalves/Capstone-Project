@@ -13,6 +13,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/ic_speko_drawable"
-        android:contentDescription="" />
+        android:contentDescription="@string/speko_splash_image_content_descrition" />
 
 </LinearLayout>

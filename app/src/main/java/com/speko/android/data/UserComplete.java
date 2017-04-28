@@ -8,6 +8,7 @@ import java.util.HashMap;
  * Created by rafaelanastacioalves on 12/26/16.
  */
 
+@SuppressWarnings("ALL")
 public class UserComplete extends UserPublic {
 
 

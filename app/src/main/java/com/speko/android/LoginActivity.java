@@ -13,7 +13,6 @@ import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
 import com.firebase.ui.auth.AuthUI;
-import com.firebase.ui.auth.ui.ResultCodes;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -115,15 +114,7 @@ public class LoginActivity extends AppCompatActivity implements ProfileFragment.
                 finish();
             }
 
-            // No network
-            if (resultCode == ResultCodes.RESULT_NO_NETWORK) {
 
-                Log.w(LOG_TAG, "Result no Network");
-
-                //TODO Implement
-//                showSnackbar(R.string.no_internet_connection);
-                return;
-            }
 
             // User is not signed in. Maybe just wait for the user to press
             // "sign in" again, or show a message.
@@ -135,7 +126,7 @@ public class LoginActivity extends AppCompatActivity implements ProfileFragment.
 
     private void newUserProcedure() {
         final FirebaseUser authUser = auth.getCurrentUser();
-        String uid = authUser.getUid();
+        @SuppressWarnings("ConstantConditions") String uid = authUser.getUid();
 
         authUser.getToken(false).addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
             @Override
@@ -144,6 +135,7 @@ public class LoginActivity extends AppCompatActivity implements ProfileFragment.
                     final Context context = getApplicationContext();
                     String userToken = task.getResult().getToken();
                     Log.i(LOG_TAG, "O token Deu certo! \n");
+                    //noinspection ConstantConditions
                     Log.i(LOG_TAG, "O ID do usuário é: \n" + auth.getCurrentUser().getUid());
                     SpekoSyncAdapter.setUserToken(userToken);
                     SpekoSyncAdapter.initializeSyncAdapter(context);
@@ -235,6 +227,7 @@ public class LoginActivity extends AppCompatActivity implements ProfileFragment.
                 + userComplete.getLearningLanguage());
 
         //adding more Provider User info
+        //noinspection ConstantConditions
         userComplete.setEmail(authUser.getEmail());
         userComplete.setId(authUser.getUid());
 

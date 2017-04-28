@@ -3,10 +3,13 @@ package com.speko.android.retrofit;
 /**
  * Created by rafaelalves on 05/01/17.
  */
+@SuppressWarnings("DefaultFileTemplate")
 public class AccessToken {
+    @SuppressWarnings("CanBeFinal")
     private String accessToken;
     private String tokenType;
 
+    @SuppressWarnings("SameParameterValue")
     public AccessToken(String tokenType, String accessToken){
         this.tokenType = tokenType;
         this.accessToken = accessToken;

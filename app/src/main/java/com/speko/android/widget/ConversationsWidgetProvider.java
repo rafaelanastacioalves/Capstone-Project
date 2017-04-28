@@ -1,5 +1,6 @@
 package com.speko.android.widget;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
@@ -25,10 +26,12 @@ import static com.speko.android.sync.SpekoSyncAdapter.ACTION_DATA_UPDATED;
  * Created by rafaelalves on 23/03/17.
  */
 
+@SuppressWarnings("ALL")
 @TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class ConversationsWidgetProvider extends AppWidgetProvider {
     private final String LOG =  getClass().getSimpleName();
 
+    @SuppressLint("ObsoleteSdkInt")
     @Override
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
         // Perform this loop procedure for each App Widget that belongs to this provider

@@ -12,6 +12,7 @@ import static net.simonvt.schematic.annotation.DataType.Type.TEXT;
  * Created by rafaelalves on 14/01/17.
  */
 
+@SuppressWarnings("ALL")
 public interface UserColumns {
 
     @DataType(TEXT) @PrimaryKey @Unique

@@ -6,6 +6,7 @@ import java.util.HashMap;
  * Created by rafaelalves on 09/02/17.
  */
 
+@SuppressWarnings("DefaultFileTemplate")
 public class Chat {
     private HashMap<String, UserPublic> members;
     private String chatId;

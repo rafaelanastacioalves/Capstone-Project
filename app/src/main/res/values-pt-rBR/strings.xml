@@ -1,11 +1,8 @@
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="action_settings">Settings</string>
+<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
     <!-- SyncAdapter related -->
 
     <!-- TODO: Remove or change this placeholder name -->
-    <string name="profile_fragment">Seu Perfil</string>
-
 
 
     <!-- Languages entries for user selection-->
@@ -17,10 +14,7 @@
 
     <!-- Button for test syncinc -->
     <string name="sync_button">Botão de Sincronizar</string>
-    <string name="user_added">"Usuário adicionado!"</string>
-    <string name="user_does_not_exist">Usuário procurado NÃO existe!</string>
     <string name="menu_search">Usuários</string>
-    <string name="menu_settings">Configurações</string>
     <string name="menu_profile">Perfil</string>
     <string name="menu_conversations">Conversações</string>
     <string name="conversations_fragment_title">Sua lista de conversações recentes:</string>
@@ -35,7 +29,6 @@
 
     <string name="log_out">Deslogar</string>
     <string name="signup_description_label">Descreva você mesmo =)</string>
-    <string name="button_profile_upload_picture">Subir Imagem</string>
     <string name="select_fluent_language">Selecione seu idioma fluente</string>
     <string name="select_language_of_interest">Selecione seu idioma de interesse</string>
     <string name="profile_select_option_text">Selecione</string>
@@ -47,7 +40,6 @@
     <string name="languages_must_be_different_error">Idioma Fluente e Idioma de Interesse PRECISAM ser diferentes</string>
     <string name="age_not_acceptable_error">Por favor insira uma idade aceitável</string>
     <string name="string_widget_conversations">Conversações do usuário</string>
-    <string name="photo">foto</string>
 
 
     <!-- Error messages -->
@@ -60,13 +52,14 @@
     <string name="profile_register">Registrar</string>
     <string name="error_must_choose_language_of_interest">Você precisa selecionar seu idioma de interesse</string>
     <string name="error_must_choose_fluent_language">Você precisa selecionar seu idioma fluente</string>
-    <string name="fulano_de_tal_viewholder">Fulano de Tal Fulano de Tal Fulano de Tal Fulano de Tal Fulano de tal fulano de tal Fulano de Tal Fulano de Tal</string>
+    <string name="fulano_de_tal_viewholder" translatable="false" tools:ignore="ExtraTranslation">Fulano de Tal Fulano de Tal Fulano de Tal Fulano de Tal Fulano de tal fulano de tal Fulano de Tal Fulano de Tal</string>
 
     <!-- outros-->
 
     <string name="profile_picture_content_description">Sua imagem de perfil</string>
     <string name="profile_name_content_description">Your profile name</string>
     <string name="age_label_text_field_content_description" />
+    <string name="profile_description_label_content_description">Sua descrição de usuário de perfil</string>
     <string name="button_profile_confirmation_change_content_description">Botão Mudar</string>
     <string name="log_out_content_description">Botão sair</string>
     <string name="profile_register_content_description">Botão de registrar</string>
@@ -81,6 +74,8 @@
     <string name="a11y_profile_user_description_content_description">A descrição de perfil do seu usuário é <xliff:g id="profile_description">%1$s</xliff:g> </string>
     <string name="profile_fluent_language_content_descritption">Seu idioma fluente de perfil é<xliff:g id="profile_fluent_language">%1$s</xliff:g> </string>
     <string name="profile_language_of_interest_content_descritption">Seu idioma de interesse no perfil é<xliff:g id="profile_language_of_interest">%1$s</xliff:g> </string>
+    <string name="speko_splash_image_content_descrition">Speko Splash Image</string>
+    <string name="your_fluent_language_picture_representation">Your fluent language picture representation</string>
 
 
 </resources>

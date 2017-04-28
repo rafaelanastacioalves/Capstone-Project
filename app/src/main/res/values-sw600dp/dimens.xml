@@ -7,9 +7,7 @@
     <dimen name="default_screen_margin">24dp</dimen>
     <dimen name="text_list_item_content_margin_related_to_imageview">32dp</dimen>
     <dimen name="listitem_main_imageview_container_width">64dp</dimen>
-    <dimen name="activity_horizontal_margin">24dp</dimen>
     <dimen name="activity_vertical_margin">24dp</dimen>
-    <dimen name="fragment_vertical_margin">24dp</dimen>
     <dimen name="widget_margin">16dp</dimen>
 
 

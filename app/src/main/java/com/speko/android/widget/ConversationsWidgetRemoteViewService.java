@@ -1,5 +1,6 @@
 package com.speko.android.widget;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -28,6 +29,7 @@ import java.io.IOException;
  * Created by rafaelalves on 23/03/17.
  */
 
+@SuppressWarnings("ALL")
 public class ConversationsWidgetRemoteViewService extends RemoteViewsService {
     private final String LOG = getClass().getSimpleName();
 
@@ -90,6 +92,7 @@ public class ConversationsWidgetRemoteViewService extends RemoteViewsService {
                 return data == null ? 0 : data.getCount();
             }
 
+            @SuppressLint("ObsoleteSdkInt")
             @Override
             public RemoteViews getViewAt(int position) {
                 Log.i(LOG_TAG,"getViewAt");
@@ -203,7 +206,7 @@ public class ConversationsWidgetRemoteViewService extends RemoteViewsService {
         };
     }
 
-    public class CircleTransform implements Transformation {
+    private class CircleTransform implements Transformation {
         @Override
         public Bitmap transform(Bitmap source) {
             int size = Math.min(source.getWidth(), source.getHeight());

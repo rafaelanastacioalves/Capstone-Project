@@ -2,6 +2,7 @@ package com.speko.android.sync;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.annotation.SuppressLint;
 import android.content.AbstractThreadedSyncAdapter;
 import android.content.ContentProviderClient;
 import android.content.ContentResolver;
@@ -20,7 +21,6 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.FirebaseDatabase;
 import com.speko.android.R;
 import com.speko.android.Utility;
 import com.speko.android.data.Chat;
@@ -56,11 +56,11 @@ import static com.speko.android.sync.SpekoAuthenticator.ACCOUNT;
 /**
  * Created by rafaelalves on 14/12/16.
  */
+@SuppressWarnings("ALL")
 public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
     private static final int SYNC_INTERVAL = 1000; //every minute
     private static final int FLEX_TIME = 1000; // every minute
     private static final String LOG = "SpekoSyncAdapter";
-    private static FirebaseDatabase mFirebaseDatabase;
     private static FirebaseAuth mFirebaseAuth;
     private static final String LOG_TAG = "SpekoSyncAdapter";
     private static String userToken;
@@ -71,6 +71,7 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
             "com.speko.android.ACTION_DATA_UPDATED";
 
 
+    @SuppressWarnings("SameParameterValue")
     public SpekoSyncAdapter(Context context, boolean autoInitialize) {
         super(context, autoInitialize);
         Log.i(LOG_TAG, "Constructor Called");
@@ -89,11 +90,11 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
     public @interface LocationStatus {
     }
 
-    public static final int SYNC_STATUS_OK = 0;
+    private static final int SYNC_STATUS_OK = 0;
     public static final int SYNC_STATUS_SERVER_DOWN = 1;
     public static final int SYNC_STATUS_SERVER_ERROR = 2;
     public static final int SYNC_STATUS_UNKNOWN = 3;
-    public static final int SYNC_STATUS_INVALID = 4;
+    private static final int SYNC_STATUS_INVALID = 4;
 
     public static void setUserToken(String userToken) {
         SpekoSyncAdapter.userToken = userToken;
@@ -204,6 +205,7 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
                 userToken)
         );
 
+        //noinspection ConstantConditions,ConstantConditions
         if (mFirebaseAuth.getCurrentUser().getUid() == null) {
             Log.w(LOG_TAG, "method with null User variable!");
             return null;
@@ -288,6 +290,7 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
                 userToken)
         );
 
+        //noinspection ConstantConditions,ConstantConditions
         if (mFirebaseAuth.getCurrentUser().getUid() == null) {
             Log.w(LOG_TAG, "method with null User variable!");
             return null;
@@ -346,6 +349,7 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
 
         }
 
+        //noinspection ConstantConditions
         getContext().getContentResolver().delete(UsersProvider.Users.USER_URI,
                 UserColumns.FRIEND_OF + " = ?"
                 , new String[]{mainUserComplete.getId()});
@@ -374,8 +378,7 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
         Response<HashMap<String, UserComplete>> response = call.execute();
 
         if (response.isSuccessful()) {
-            HashMap<String, UserComplete> friends = response.body();
-            return friends;
+            return response.body();
         } else {
             Log.e(LOG_TAG, "Response not successfull");
             throw new APIException(
@@ -388,10 +391,12 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
 
     /**
      * Persists user. For internal usage.
-     * @param userComplete
+     * @param userComplete The user object to be persisted. It is supposed to be the main user of
+     *                     the app
      */
 
     private void persistUser(@NonNull UserComplete userComplete) {
+        //noinspection ConstantConditions
         if (userComplete == null) {
             Log.w(LOG_TAG, "method with null User variable!");
             return;
@@ -408,6 +413,7 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
     }
 
     public static void persistUser(@NonNull UserComplete userComplete, Context context){
+        //noinspection ConstantConditions
         if (userComplete == null) {
             Log.w(LOG_TAG, "method with null User variable!");
             return;
@@ -448,6 +454,7 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
                         "Bearer",
                         idToken)
         );
+        //noinspection ConstantConditions,ConstantConditions
         if (mFirebaseAuth.getCurrentUser().getUid() == null) {
             Log.w(LOG_TAG, "method with null User variable!");
             return null;
@@ -485,6 +492,7 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
                         "Bearer",
                         idToken)
         );
+        //noinspection ConstantConditions,ConstantConditions
         if (mFirebaseAuth.getCurrentUser().getUid() == null) {
             Log.w(LOG_TAG, "method with null User variable!");
             return null;
@@ -517,7 +525,6 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
     public static void initializeSyncAdapter(Context context) {
 
         Log.d("SpekoSyncAdapter", "initializeSyncAdapter");
-        mFirebaseDatabase = FirebaseDatabase.getInstance();
         mFirebaseAuth = FirebaseAuth.getInstance();
         getSyncAccount(context);
 
@@ -529,7 +536,7 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
      *
      * @param context The application context
      */
-    public static Account getSyncAccount(Context context) {
+    private static Account getSyncAccount(Context context) {
         // Create the account type and default account
         Account newAccount = new Account(
                 ACCOUNT, ACCOUNT_TYPE);
@@ -589,15 +596,15 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
         String authority = UserContract.AUTHORITY;
         Log.i("isSyncActive", "start with values: \n " +
                 "account: " + account.toString() + "\n" +
-                "authority: " + authority.toString());
+                "authority: " + authority);
 
         for (SyncInfo syncInfo : ContentResolver.getCurrentSyncs()) {
             Log.i("isSyncActive", "syncInfo: \n" +
                     "account type: " + syncInfo.account + "\n" +
-                    "authority: " + syncInfo.authority.toString() + "\n");
+                    "authority: " + syncInfo.authority + "\n");
 
             // just checked authority, as account seems to be cryptographed
-            if (syncInfo.authority.toString().equals(authority.toString()) ) {
+            if (syncInfo.authority.equals(authority) ) {
                 return true;
             }
         }
@@ -609,6 +616,8 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
     /**
      * Helper method to schedule the onClickSync adapter periodic execution
      */
+    @SuppressWarnings("SameParameterValue")
+    @SuppressLint("ObsoleteSdkInt")
     private static void configurePeriodicSync(Context context, int syncInterval, int flexTime) {
         Account account = getSyncAccount(context);
         String authority = context.getString(R.string.content_authority);
@@ -633,7 +642,7 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
 
     }
 
-    public static void setSyncStatus(Context c, @LocationStatus int syncStatus) {
+    private static void setSyncStatus(Context c, @LocationStatus int syncStatus) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c);
         SharedPreferences.Editor spe = sp.edit();
         spe.putInt(c.getString(R.string.shared_preference_sync_status_key), syncStatus);

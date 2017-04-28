@@ -35,9 +35,8 @@
             android:id="@+id/conversations_list"
             tools:listitem="@layout/conversation_viewholder"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"></android.support.v7.widget.RecyclerView>
+            android:layout_height="match_parent" />
 
-        //TODO put it inside the the other frame layout
         <android.support.v4.widget.ContentLoadingProgressBar
             android:id="@+id/progress_bar"
             android:layout_gravity="center"

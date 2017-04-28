@@ -1,5 +1,6 @@
 package com.speko.android;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -24,8 +25,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.speko.android.data.Chat;
 import com.speko.android.data.ChatMembersColumns;
 import com.speko.android.data.MessageLocal;
-import com.speko.android.data.UserComplete;
 import com.speko.android.data.UserColumns;
+import com.speko.android.data.UserComplete;
 import com.speko.android.data.UserPublic;
 import com.speko.android.data.UsersProvider;
 import com.speko.android.sync.SpekoSyncAdapter;
@@ -43,10 +44,10 @@ import java.util.Map;
  * Created by rafaelalves on 31/01/17.
  */
 
+@SuppressWarnings("ALL")
 public class Utility {
 
     private final String LOG_TAG = getClass().getSimpleName();
-    private static UserComplete mUserComplete;
     private static FirebaseDatabase firebaseDatabase;
     private static FirebaseUser authUser;
 
@@ -90,7 +91,7 @@ public class Utility {
             UserColumns.NAME,
             UserColumns.EMAIL
     };
-    public static final String DATE_TIME_FORMAT = "yyyy/MM/dd HH:mm:ss Z";
+    private static final String DATE_TIME_FORMAT = "yyyy/MM/dd HH:mm:ss Z";
 
 
     public static @Nullable
@@ -110,7 +111,6 @@ public class Utility {
      */
     public static void setUser(UserComplete userComplete, Context c, OnCompleteListener onCompleteListener){
         SpekoSyncAdapter.persistUser(userComplete, c);
-        mUserComplete = userComplete;
         authUser = FirebaseAuth.getInstance().getCurrentUser();
         if(firebaseDatabase==null){
             firebaseDatabase = FirebaseDatabase.getInstance();
@@ -132,8 +132,11 @@ public class Utility {
         }
         Cursor c = context.getContentResolver().query(UsersProvider.Users.USER_URI
         , null, UserColumns.FIREBASE_ID + " = ? ", new String[]{fireBaseUser.getUid()}, null);
-        UserComplete userComplete = new UserComplete();
-        if(c.moveToFirst()){
+        UserComplete userComplete = null;
+
+        //noinspection ConstantConditions
+        if(c != null && c.moveToFirst()){
+            userComplete = new UserComplete();
             userComplete.setLearningLanguage(c.getString(c.getColumnIndex(UserColumns.LEARNING_LANGUAGE)));
             userComplete.setLearningCode(c.getString(c.getColumnIndex(UserColumns.LEARNING_CODE)));
             userComplete.setFluentLanguage(c.getString(c.getColumnIndex(UserColumns.FLUENT_LANGUAGE)));
@@ -142,11 +145,11 @@ public class Utility {
             userComplete.setEmail(c.getString(c.getColumnIndex(UserColumns.EMAIL)));
             userComplete.setAge(c.getString(c.getColumnIndex(UserColumns.AGE)));
             userComplete.setUserDescription(c.getString(c.getColumnIndex(UserColumns.USER_DESCRIPTION)));
-            userComplete.setProfilePicture(c.getString(c.getColumnIndex(UserColumns.USER_PHOTO_URL))); ;
+            userComplete.setProfilePicture(c.getString(c.getColumnIndex(UserColumns.USER_PHOTO_URL)));
+            userComplete.setChats(getUserConversationsFromDB(context, userComplete));
 
         }
 
-        userComplete.setChats(getUserConversationsFromDB(context, userComplete));
         c.close();
         return userComplete;
     }
@@ -162,8 +165,10 @@ public class Utility {
 
         Cursor c = context.getContentResolver().query(UsersProvider.Users.userWith(id)
                 , null, null, null, null);
-        UserComplete userComplete = new UserComplete();
-        if(c.moveToFirst()){
+        UserComplete userComplete = null ;
+        //noinspection ConstantConditions
+        if( c != null && c.moveToFirst()){
+            userComplete = new UserComplete();
             userComplete.setLearningLanguage(c.getString(c.getColumnIndex(UserColumns.LEARNING_LANGUAGE)));
             userComplete.setLearningCode(c.getString(c.getColumnIndex(UserColumns.LEARNING_CODE)));
             userComplete.setFluentLanguage(c.getString(c.getColumnIndex(UserColumns.FLUENT_LANGUAGE)));
@@ -193,7 +198,9 @@ public class Utility {
                 , null, null, null, null);
         HashMap<String, Chat> chatsHashMap = null;
         Chat chat;
-        if (c.moveToFirst()){
+        //noinspection ConstantConditions
+        if (c!= null && c.moveToFirst()){
+            //noinspection ConstantConditions
             if (chatsHashMap == null) {
                 chatsHashMap = new HashMap<>();
             }
@@ -263,7 +270,8 @@ public class Utility {
         Cursor c = context.getContentResolver().
                 query(UsersProvider.ChatMembers.chatInfoWithUser(otherUserId),
                         null, null, null, null);
-        if (c.moveToFirst()){
+        //noinspection ConstantConditions
+        if (c != null && c.moveToFirst()){
             chatIdWithOtherUser = c.getString(
                     c.getColumnIndex(ChatMembersColumns.FIREBASE_CHAT_ID));
         }
@@ -271,7 +279,7 @@ public class Utility {
         return chatIdWithOtherUser;
     }
 
-    public static Loader getUserConversationsCursorLoader(Context context) {
+    public static Loader<Cursor> getUserConversationsCursorLoader(Context context) {
         return new CursorLoader(context, UsersProvider.ChatMembers.CHAT_URI
                 ,
                 null,
@@ -279,7 +287,8 @@ public class Utility {
                 null,
                 null);    }
 
-    public static String createRoomForUsers(Context context, String friendId, String userID,OnCompleteListener onCompleteListener ) {
+    @SuppressWarnings("UnusedParameters")
+    public static String createRoomForUsers(Context context, String friendId, String userID, OnCompleteListener onCompleteListener ) {
         //TODO
         Chat chat = new Chat();
         HashMap<String, UserPublic> members = new HashMap<>();
@@ -290,6 +299,7 @@ public class Utility {
         members.put(userPublicFriend.getId(), new UserPublic(userPublicFriend.getId()));
         UserPublic userPublic = getUser(context);
 
+        //noinspection ConstantConditions
         Log.i("createRoomForUSers", "Creating chat with \n" + userPublic +
                 "\n id: " + userPublic.getId());
 
@@ -310,17 +320,19 @@ public class Utility {
 
         HashMap<String, Chat> chatHashMap = new HashMap<String, Chat>();
         chatHashMap.put(chatId, chat);
+        //noinspection unchecked
         firebaseDatabase.getReference()
                 .child("chats")
                 .updateChildren((Map) chatHashMap);
 
+        //noinspection unchecked
         firebaseDatabase.getReference()
                 .child("users")
                 .child(userPublic.getId())
                 .child("chats")
                 .updateChildren((Map) chatHashMap).addOnCompleteListener(onCompleteListener);
-        ;
 
+        //noinspection unchecked
         firebaseDatabase.getReference()
                 .child("users")
                 .child(userPublicFriend.getId())
@@ -353,6 +365,7 @@ public class Utility {
         Cursor c = context.getContentResolver().query(UsersProvider.Users.USER_URI
                 , null, UserColumns.FIREBASE_ID + " = ? ", new String[]{friendId}, null);
         UserComplete userComplete = new UserComplete();
+        //noinspection ConstantConditions
         if(c.moveToFirst()){
             userComplete.setLearningLanguage(c.getString(c.getColumnIndex(UserColumns.LEARNING_LANGUAGE)));
             userComplete.setLearningCode(c.getString(c.getColumnIndex(UserColumns.LEARNING_CODE)));
@@ -362,7 +375,7 @@ public class Utility {
             userComplete.setEmail(c.getString(c.getColumnIndex(UserColumns.EMAIL)));
             userComplete.setAge(c.getString(c.getColumnIndex(UserColumns.AGE)));
             userComplete.setUserDescription(c.getString(c.getColumnIndex(UserColumns.USER_DESCRIPTION)));
-            userComplete.setProfilePicture(c.getString(c.getColumnIndex(UserColumns.USER_PHOTO_URL))); ;
+            userComplete.setProfilePicture(c.getString(c.getColumnIndex(UserColumns.USER_PHOTO_URL)));
 
         }
 
@@ -432,23 +445,25 @@ public class Utility {
         }
         com.github.bassaer.chatmessageview.models.User user =
                 new com.github.bassaer.chatmessageview.models.User(parsedId, firebaseModel.getName(),null);
-        Message parsedMessage = new Message.Builder()
+        return new Message.Builder()
                 .setUser(user)
                 .setRightMessage(isRighMessage)
                 .setMessageStatusType(firebaseModel.getmStatus())
                 .setMessageText(firebaseModel.getmMessageText())
                 .setCreatedAt(calendarInstance)
                 .build();
-        return parsedMessage;
     }
 
-    public static Date parseDate(String date, String format) throws ParseException
+    @SuppressWarnings("SameParameterValue")
+    private static Date parseDate(String date, String format) throws ParseException
     {
+        @SuppressLint("SimpleDateFormat")
         SimpleDateFormat formatter = new SimpleDateFormat(format);
         return formatter.parse(date);
     }
 
-    public static String fromCalendarToString(Calendar calendar, String format){
+    @SuppressWarnings("SameParameterValue")
+    private static String fromCalendarToString(Calendar calendar, String format){
         return TimeUtils.calendarToString(calendar, format);
 
     }
@@ -479,10 +494,7 @@ public class Utility {
                 uri, null, mContext.getPackageName()
         );
 
-        String completeLanguageString = mContext.getString(languageResource);
-
-        return completeLanguageString;
-
+        return mContext.getString(languageResource);
 
     }
 
@@ -501,11 +513,13 @@ public class Utility {
 
     public static void deleteEverything(Context context){
         context.getContentResolver().delete(UsersProvider.Users.USER_URI,null,null);
+        //noinspection ConstantConditions
         context.getContentResolver().delete(UsersProvider.Users
                 .usersFriendsFrom(getUser(context).getId()),null,null);
         context.getContentResolver().delete(UsersProvider.ChatMembers.CHAT_URI,null,null);
     }
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public static boolean isNetworkAvailable(Context c){
         ConnectivityManager cm = (ConnectivityManager) c.
                 getSystemService(Context.CONNECTIVITY_SERVICE);

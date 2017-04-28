@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.util.SparseArrayCompat;
 import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -33,8 +34,7 @@ import com.speko.android.sync.SpekoSyncAdapter;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Objects;
 import java.util.Random;
 
 import butterknife.BindView;
@@ -62,21 +62,17 @@ public class ChatActivityFragment extends Fragment {
     private String chatId;
     private String friendId;
 
-    private ArrayList<Message> mMessageList;
 
     // this ID is necessary because of Firebase and of the library for chat message models
-    public static HashMap<Integer,String> mIdConvertion;
+    public static SparseArrayCompat<String> mIdConvertion;
 
 
-    private com.github.bassaer.chatmessageview.models.User[] mUsers = new com.github.bassaer.chatmessageview.models.User[2];
-    public static final int ME_CHATMESSAGE_INDEX  = 0;
-    public static final int HIM_CHATMESSAGE_INDEX = 1;
+    private final com.github.bassaer.chatmessageview.models.User[] mUsers = new com.github.bassaer.chatmessageview.models.User[2];
+    private static final int ME_CHATMESSAGE_INDEX  = 0;
+    private static final int HIM_CHATMESSAGE_INDEX = 1;
     private final int totalImagesToBeLoaded = 2;
     private int imagesLoaded;
     private EditText mInputEditText;
-
-    public ChatActivityFragment() {
-    }
 
 
     @BindView(R.id.chat_view)
@@ -141,7 +137,7 @@ public class ChatActivityFragment extends Fragment {
             public void onClick(View view) {
 
 
-                if(chatId == null && mMessageList==null) {
+                if(chatId == null ) {
                     OnCompleteListener onCompleteListener = new OnCompleteListener() {
                         @Override
                         public void onComplete(@NonNull Task task) {
@@ -149,6 +145,7 @@ public class ChatActivityFragment extends Fragment {
                             SpekoSyncAdapter.syncImmediatly(getContext());
                         }
                     };
+                    //noinspection ConstantConditions
                     chatId = Utility.createRoomForUsers(getActivity(),friendId, Utility.getUser(getActivity()).getId(), onCompleteListener);
                     setupFirebaseChat(chatId);
 
@@ -226,6 +223,7 @@ public class ChatActivityFragment extends Fragment {
 
         UserComplete otherUserComplete = getOtherUserWithId(getActivity(), friendId);
         //User icon
+        //noinspection ConstantConditions
         Picasso.with(getActivity())
                 .load(userComplete.getProfilePicture())
                 .into(new Target() {
@@ -233,15 +231,15 @@ public class ChatActivityFragment extends Fragment {
                     public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
 
                         UserComplete userComplete = Utility.getUser(getActivity());
+                        //noinspection ConstantConditions
                         Log.i(LOG_TAG, "setting Icon for user:" + userComplete.getName());
-                        Bitmap myIcon = null;
-                        myIcon = bitmap;
                         final com.github.bassaer.chatmessageview.models.User me =
                                 new com.github.bassaer.chatmessageview.models.User(
                                         ME_CHATMESSAGE_ID,
-                                        userComplete.getName(), myIcon);
+                                        userComplete.getName(), bitmap);
                         if (mIdConvertion == null) {
-                            mIdConvertion = new HashMap<Integer, String>();
+                            //noinspection Convert2Diamond
+                            mIdConvertion = new SparseArrayCompat<String>();
                         }
                         mIdConvertion.put(ME_CHATMESSAGE_ID, userComplete.getId());
                         mUsers[ME_CHATMESSAGE_INDEX] = (me);
@@ -269,22 +267,21 @@ public class ChatActivityFragment extends Fragment {
                 });
 
 
-        int yourId = 1;
         Picasso.with(getActivity()).load(otherUserComplete.getProfilePicture()).into(new Target() {
             @Override
             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
 
                 UserComplete otherUserComplete = getOtherUserWithId(getActivity(), friendId);
 
-                Bitmap otherUserIcon = bitmap;
                 Log.i(LOG_TAG, "setting Icon for user:" + otherUserComplete.getName());
                 final com.github.bassaer.chatmessageview.models.User otherChatUser =
                         new com.github.bassaer.chatmessageview.models.User(
                                 HIM_CHATMESSAGE_ID,
-                                otherUserComplete.getName(), otherUserIcon);
+                                otherUserComplete.getName(), bitmap);
 
                 if (mIdConvertion == null) {
-                    mIdConvertion = new HashMap<Integer, String>();
+                    //noinspection Convert2Diamond
+                    mIdConvertion = new SparseArrayCompat<String>();
                 }
                 mIdConvertion.put(HIM_CHATMESSAGE_ID, otherUserComplete.getId());
                 mUsers[HIM_CHATMESSAGE_INDEX] = otherChatUser;
@@ -351,6 +348,7 @@ public class ChatActivityFragment extends Fragment {
         AppCompatActivity activity = (AppCompatActivity) getActivity();
         Toolbar toolbar = (Toolbar) activity.findViewById(R.id.toolbar);
         activity.setSupportActionBar(toolbar);
+        //noinspection ConstantConditions
         activity.getSupportActionBar().setDisplayShowTitleEnabled(true);
         activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -376,22 +374,6 @@ public class ChatActivityFragment extends Fragment {
         mFirebaseDatabaseReference.push().setValue(firebaseMessage);
     }
 
-    public void sendMessage(){
-
-        if(chatId == null && mMessageList.size() < 1) {
-            OnCompleteListener onCompleteListener = new OnCompleteListener() {
-                @Override
-                public void onComplete(@NonNull Task task) {
-                    Log.i("onComplete", "Room creation completed!");
-                    SpekoSyncAdapter.syncImmediatly(getContext());
-                }
-            };
-            String chatId = Utility.createRoomForUsers(getActivity(),friendId, Utility.getUser(getActivity()).getId(), onCompleteListener);
-            setupFirebaseChat(chatId);
-        }
-
-
-    }
 
 
     private void attachDatabaseReadListener() {
@@ -414,8 +396,7 @@ public class ChatActivityFragment extends Fragment {
                     Message message = Utility.parseFromFirebaseModel(messageFromFirebase);
                     for (com.github.bassaer.chatmessageview.models.User user : mUsers) {
                         if (
-                                mIdConvertion.get(message.getUser().getId()) ==
-                                mIdConvertion.get(user.getId())
+                                Objects.equals(mIdConvertion.get(message.getUser().getId()), mIdConvertion.get(user.getId()))
                                 ) {
                                     Log.i(LOG_TAG, "setting the icon from  onChildAdded callback");
                                     message.getUser().setIcon(user.getIcon());

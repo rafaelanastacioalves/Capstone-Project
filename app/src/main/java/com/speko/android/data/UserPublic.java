@@ -4,14 +4,15 @@ package com.speko.android.data;
  * Created by rafaelalves on 20/04/17.
  */
 
+@SuppressWarnings("ALL")
 public class UserPublic {
-    protected String id;
-    protected String name;
-    protected String fluentLanguage;
-    protected String profilePicture;
+    String id;
+    String name;
+    String fluentLanguage;
+    String profilePicture;
 
 
-    public UserPublic(){
+    UserPublic(){
 
     }
 
@@ -19,7 +20,7 @@ public class UserPublic {
         this.id = id;
     }
 
-    public UserPublic(String name, String id){
+    UserPublic(String name, String id){
         this.name = name;
         this.id = id;
     }

@@ -11,6 +11,7 @@ import retrofit2.Response;
  * Created by rafaelalves on 06/04/17.
  */
 
+@SuppressWarnings("ALL")
 public class ErrorUtils {
 
     public static APIError parseError(Response<?> response) {

@@ -14,18 +14,27 @@ import com.speko.android.R;
  * Message status format sample
  * Created by nakayama on 2017/02/16.
  */
+@SuppressWarnings("ALL")
 public class MyMessageStatusFormatter implements IMessageStatusIconFormatter, IMessageStatusTextFormatter {
-    public static final int STATUS_DELIVERING = 0;
-    public static final int STATUS_DELIVERED = 1;
-    public static final int STATUS_SEEN = 2;
-    public static final int STATUS_ERROR = 3;
+    private static final int STATUS_DELIVERING = 0;
+    private static final int STATUS_DELIVERED = 1;
+    private static final int STATUS_SEEN = 2;
+    private static final int STATUS_ERROR = 3;
+    @SuppressWarnings("CanBeFinal")
     private Drawable mDeliveringIcon;
+    @SuppressWarnings("CanBeFinal")
     private Drawable mDeliveredIcon;
+    @SuppressWarnings("CanBeFinal")
     private Drawable mSeenIcon;
+    @SuppressWarnings("CanBeFinal")
     private Drawable mErrorIcon;
+    @SuppressWarnings("CanBeFinal")
     private String mDeliveringText;
+    @SuppressWarnings("CanBeFinal")
     private String mDeliveredText;
+    @SuppressWarnings("CanBeFinal")
     private String mSeenText;
+    @SuppressWarnings("CanBeFinal")
     private String mErrorText;
 
     public MyMessageStatusFormatter(Context context) {

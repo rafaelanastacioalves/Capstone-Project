@@ -1,6 +1,6 @@
 package com.speko.android;
 
-import android.content.Context;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -48,9 +48,6 @@ public class ConversationsFragment extends Fragment implements LoaderManager.Loa
     @BindView(R.id.fragment_conversations_container)
     View fragmentConversationsContainer;
 
-    public ConversationsFragment() {
-        // Required empty public constructor
-    }
 
     /**
      * Use this factory method to create a new instance of
@@ -68,12 +65,7 @@ public class ConversationsFragment extends Fragment implements LoaderManager.Loa
         return fragment;
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-        }
-    }
+
 
     @Override
     public void onStart() {
@@ -133,16 +125,8 @@ public class ConversationsFragment extends Fragment implements LoaderManager.Loa
     }
 
 
-
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-
-    }
-
-
-    @Override
-    public Loader onCreateLoader(int id, Bundle args) {
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         Log.i(LOG_TAG,"onCreateLoader");
         return Utility.getUserConversationsCursorLoader(getContext());
     }
@@ -218,6 +202,7 @@ public class ConversationsFragment extends Fragment implements LoaderManager.Loa
         }
     }
 
+    @SuppressLint("SwitchIntDef")
     private void updateEmptyView() {
 
         Log.i(LOG_TAG, "updateEmptyView");

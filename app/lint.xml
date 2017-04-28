@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<lint>
+    <issue id="UnusedResources">
+        <ignore path="src/main/res/drawable-xxxhdpi/bigger_picture_language_en_us.jpeg" />
+        <ignore path="src/main/res/drawable-xxxhdpi/bigger_picture_language_pt_br.jpeg" />
+    </issue>
+</lint>
