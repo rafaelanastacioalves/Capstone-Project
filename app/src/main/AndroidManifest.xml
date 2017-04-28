@@ -34,7 +34,7 @@
         </activity>
 
         <activity android:name=".SplashActivity"
-            android:theme="@style/SplashTheme"
+            android:theme="@style/AppTheme.NoActionBar"
             android:screenOrientation="sensorPortrait"
 
             >
