@@ -238,6 +238,20 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
         if (userComplete.getChats() == null) {
             return;
         }
+
+        // first we try to delete past content
+        try{
+            //noinspection UnusedAssignment
+            int rowNumber = getContext().getContentResolver().delete(CHAT_URI, null,null);
+            if (rowNumber > 0) {
+                Log.i(LOG_TAG, "deleted successfuly. Count: " + (count + 1));
+            }
+        }catch (Exception e){
+            Log.e(LOG_TAG, "Insert or deleting not possible:" + e.getCause());
+
+        }
+
+
         Chat[] chastList = userComplete.getChats().values().toArray(new Chat[userComplete.getChats().size()]);
         for (Chat chat :
                 chastList) {
@@ -266,11 +280,7 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
             try {
 
                 Log.d(LOG_TAG, "trying to insert a row...");
-                //noinspection UnusedAssignment
-                int rowNumber = getContext().getContentResolver().delete(CHAT_URI, null,null);
-                if (rowNumber > 0) {
-                    Log.i(LOG_TAG, "deleted successfuly. Count: " + (count + 1));
-                }
+
                 getContext().getContentResolver().insert(CHAT_URI, chatCV);
                 Log.d(LOG_TAG, "inserted ok! Count: " + (count + 1));
 

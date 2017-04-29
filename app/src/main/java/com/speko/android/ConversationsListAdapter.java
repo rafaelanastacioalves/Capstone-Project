@@ -107,6 +107,7 @@ public class ConversationsListAdapter extends RecyclerView.Adapter<Conversations
                     );
 
             holder.conversationViewHolderContainer.setEnabled(itemsClickable);
+            Log.i(LOG_TAG, "end of onBindViewHolder");
         }
     }
 

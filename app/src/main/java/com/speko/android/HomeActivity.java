@@ -155,8 +155,11 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
         if (savedInstanceState != null) {
             mSelectedItem = savedInstanceState.getInt(SELECTED_ITEM, 0);
             selectedItem = mBottomNavigationView.getMenu().findItem(mSelectedItem);
+            Log.i(LOG_TAG, "previous selected item is: " + selectedItem.toString());
         } else {
             selectedItem = mBottomNavigationView.getMenu().getItem(0);
+            Log.i(LOG_TAG, "first time selecting item: " + selectedItem.toString());
+
         }
         selectFragment(selectedItem);
 
@@ -213,7 +216,11 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
         // uncheck the other items.
         for (int i = 0; i < mBottomNavigationView.getMenu().size(); i++) {
             MenuItem menuItem = mBottomNavigationView.getMenu().getItem(i);
-            menuItem.setChecked(menuItem.getItemId() == item.getItemId());
+            if (menuItem.getItemId() == mSelectedItem){
+                Log.i(LOG_TAG, "Checked menu is: "+  String.valueOf(menuItem.getItemId()));
+                menuItem.setEnabled(true);
+
+            }
         }
 
 

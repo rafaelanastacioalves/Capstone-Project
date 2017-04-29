@@ -128,6 +128,7 @@ public class Utility {
     private static UserComplete getUserFromDB(Context context){
         FirebaseUser fireBaseUser = getFirebaseAuthUser();
         if(fireBaseUser == null){
+            Log.w("Utility", "There is no firebase user!");
             return null;
         }
         Cursor c = context.getContentResolver().query(UsersProvider.Users.USER_URI
@@ -135,7 +136,7 @@ public class Utility {
         UserComplete userComplete = null;
 
         //noinspection ConstantConditions
-        if(c != null && c.moveToFirst()){
+        if( c.moveToFirst()){
             userComplete = new UserComplete();
             userComplete.setLearningLanguage(c.getString(c.getColumnIndex(UserColumns.LEARNING_LANGUAGE)));
             userComplete.setLearningCode(c.getString(c.getColumnIndex(UserColumns.LEARNING_CODE)));
@@ -512,10 +513,13 @@ public class Utility {
     }
 
     public static void deleteEverything(Context context){
-        context.getContentResolver().delete(UsersProvider.Users.USER_URI,null,null);
+
         //noinspection ConstantConditions
         context.getContentResolver().delete(UsersProvider.Users
                 .usersFriendsFrom(getUser(context).getId()),null,null);
+
+        context.getContentResolver().delete(UsersProvider.Users.USER_URI,null,null);
+
         context.getContentResolver().delete(UsersProvider.ChatMembers.CHAT_URI,null,null);
     }
 
