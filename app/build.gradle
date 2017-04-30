@@ -51,7 +51,7 @@ android {
         debug {
             applicationIdSuffix ".debug"
             versionNameSuffix "-debug"
-            minifyEnabled false
+            minifyEnabled true
             useProguard false
             resValue('string', 'app_name', 'Speko-D')
         }
