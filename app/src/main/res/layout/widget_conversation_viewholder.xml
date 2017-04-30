@@ -9,7 +9,7 @@
         android:layout_width="72dp"
         android:layout_height="72dp"
         android:layout_alignParentStart="true"
-        >
+        android:id="@+id/frameLayout3">
 
         <ImageView
             android:id="@+id/conversation_friend_profile_picture"
@@ -26,11 +26,13 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:gravity="center_vertical"
-        android:layout_marginStart="72dp"   >
+        android:layout_toStartOf="@+id/frameLayout2"
+        android:layout_toEndOf="@+id/frameLayout3">
         <TextView android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:id="@+id/conversation_friend_viewholder_username"
             android:textColor="@color/colorWhite"
+            style="@style/AppTheme.ConversationTextview"
             tools:text="Fulano de Tal"/>
 
     </LinearLayout>
@@ -40,7 +42,7 @@
         android:layout_alignParentEnd="true"
         android:layout_width="72dp"
         android:layout_height="72dp"
-        >
+        android:id="@+id/frameLayout2">
 
         <ImageView
             android:id="@+id/conversation_friend_fluent_language_profile_picture"

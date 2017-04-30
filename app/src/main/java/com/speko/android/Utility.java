@@ -110,7 +110,6 @@ public class Utility {
      * @param c
      */
     public static void setUserIntoFirebase(UserComplete userComplete, Context c, OnCompleteListener onCompleteListener){
-        SpekoSyncAdapter.persistUser(userComplete, c);
         authUser = FirebaseAuth.getInstance().getCurrentUser();
         if(firebaseDatabase==null){
             firebaseDatabase = FirebaseDatabase.getInstance();
@@ -180,8 +179,8 @@ public class Utility {
 
             Log.i("getUserFriendFromDB", "Retrieved user friend with id: " + userComplete.getId());
 
-
         }
+
 
         c.close();
         return userComplete;
@@ -513,10 +512,12 @@ public class Utility {
     }
 
     public static void deleteEverything(Context context){
-
+        if (authUser == null) {
+            authUser = getFirebaseAuthUser();
+        }
         //noinspection ConstantConditions
         context.getContentResolver().delete(UsersProvider.Users
-                .usersFriendsFrom(getUser(context).getId()),null,null);
+                .usersFriendsFrom(authUser.getUid()),null,null);
 
         context.getContentResolver().delete(UsersProvider.Users.USER_URI,null,null);
 

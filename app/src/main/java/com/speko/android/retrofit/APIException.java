@@ -1,5 +1,7 @@
 package com.speko.android.retrofit;
 
+import android.util.Log;
+
 /**
  * Created by rafaelalves on 06/04/17.
  */
@@ -20,6 +22,7 @@ public class APIException extends Exception {
             }
 
         } catch (NumberFormatException e) {
+            Log.e("APIException", e.getMessage());
         }
         return -1;
 

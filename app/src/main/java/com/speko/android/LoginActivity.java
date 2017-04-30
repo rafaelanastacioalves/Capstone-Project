@@ -1,6 +1,5 @@
 package com.speko.android;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -217,7 +216,6 @@ public class LoginActivity extends AppCompatActivity implements ProfileFragment.
         OnCompleteListener onCompleteListener = new OnCompleteListener() {
             @Override
             public void onComplete(@NonNull Task task) {
-                final Context context = getApplicationContext();
                 Toast.makeText(getBaseContext(),"Signed Up Successfully!",Toast.LENGTH_SHORT).show();
 
                 setResult(RESULT_OK);

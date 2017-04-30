@@ -30,6 +30,7 @@ public class ConversationsListAdapter extends RecyclerView.Adapter<Conversations
     private Cursor mCursor;
     private final ConversationsAdapterOnClickHandler mClickHanlder;
     private boolean itemsClickable;
+    @SuppressWarnings("unused")
     private boolean viewItensClickable;
 
     public ConversationsListAdapter(Context context, ConversationsAdapterOnClickHandler dh){
@@ -58,11 +59,6 @@ public class ConversationsListAdapter extends RecyclerView.Adapter<Conversations
 
     public void swapCursor(Cursor c){
         this.mCursor = c;
-        notifyDataSetChanged();
-    }
-
-    public void setItemsClickable(boolean clickable){
-        itemsClickable = clickable;
         notifyDataSetChanged();
     }
 

@@ -31,10 +31,7 @@
         <TextView android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:id="@+id/conversation_friend_viewholder_username"
-            android:textColor="@color/colorWhite"
-            android:ellipsize="end"
-            android:maxLength="@integer/max_length_list_item_name"
-            android:maxLines="1"
+            style="@style/AppTheme.ConversationTextview"
             tools:text="Fulano de Tal"/>
 
     </LinearLayout>

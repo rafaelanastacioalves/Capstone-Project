@@ -86,9 +86,12 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
     }
 
     public static void clearAccount(Activity context) {
+        Log.i(LOG_TAG, "Clear Account");
+
         Account account = getSyncAccount(context);
         userToken = null;
         if (account !=null){
+            Log.i(LOG_TAG, "Clearing Account");
             AccountManager.get(context).removeAccount(account,  context,null,null);
         }
     }

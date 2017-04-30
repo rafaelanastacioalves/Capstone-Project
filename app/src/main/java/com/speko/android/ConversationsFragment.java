@@ -243,9 +243,9 @@ public class ConversationsFragment extends Fragment implements LoaderManager.Loa
 
     @Override
     public void setLoading(Boolean isLoading) {
-        if (isLoading){
-
-        }else{
+        
+        // if is NOT loading, we update screen state
+        if (!isLoading){
             updateScreenState();
         }
 

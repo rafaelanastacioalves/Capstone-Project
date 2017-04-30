@@ -1,4 +1,4 @@
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:tools="http://schemas.android.com/tools" xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 
     <!-- SyncAdapter related -->
     <string name="content_authority" translatable="false">com.speko.android</string>
@@ -12,9 +12,9 @@
     <string name="language_entry_es">Spanish</string>
 
 
-    <string name="complete_language_pt_br">@string/language_entry_pt_br</string>
-    <string name="complete_language_en_us">@string/language_entry_en_us</string>
-    <string name="complete_language_sp">@string/language_entry_es</string>
+    <string name="complete_language_pt_br" tools:ignore="UnusedResources">@string/language_entry_pt_br</string>
+    <string name="complete_language_en_us" tools:ignore="UnusedResources">@string/language_entry_en_us</string>
+    <string name="complete_language_sp" tools:ignore="UnusedResources">@string/language_entry_es</string>
 
 
 

@@ -36,6 +36,10 @@ import io.fabric.sdk.android.Fabric;
 import static android.net.ConnectivityManager.CONNECTIVITY_ACTION;
 import static com.speko.android.Utility.getUser;
 
+/**
+ * Should not retrieve user infor here. As it could be still loading database and it
+ * could be returned null. Here we just need id info so use Firebase framework instead.
+ */
 public class HomeActivity extends AppCompatActivity implements ProfileFragment.OnFragmentInteractionListener {
 
     // Constants
@@ -221,7 +225,8 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
             case R.id.action_conversations:
                 Log.i(LOG_TAG, "Selecting Conversations");
                 //noinspection ConstantConditions
-                currentFragment = ConversationsFragment.newInstance(getUser(this).getId());
+                currentFragment = ConversationsFragment.newInstance(mFirebaseAuth
+                        .getCurrentUser().getUid());
                 break;
         }
 
@@ -308,7 +313,7 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
         Log.i(LOG_TAG, "setFireBaseToken");
         FirebaseUser user = mFirebaseAuth.getCurrentUser();
         //noinspection ConstantConditions
-        user.getToken(false).addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
+        user.getToken(false ).addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
             public final String LOG_TAG = getClass().getSimpleName();
 
             @Override
@@ -385,5 +390,6 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
 }
 interface UpdateFragmentStatus
 {
-    public void setLoading(Boolean isLoading);
+    @SuppressWarnings("SameParameterValue")
+    void setLoading(Boolean isLoading);
 }

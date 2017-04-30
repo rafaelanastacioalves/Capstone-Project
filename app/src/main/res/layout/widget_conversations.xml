@@ -4,6 +4,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_margin="@dimen/widget_margin"
+    android:background="@android:color/white"
 
     android:layout_height="match_parent">
     <FrameLayout

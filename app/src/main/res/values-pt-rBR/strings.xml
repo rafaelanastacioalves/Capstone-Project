@@ -10,6 +10,10 @@
     <string name="language_entry_en_us">Inglês dos Estados Unidos</string>
     <string name="language_entry_es">Espanhol</string>
 
+    <string name="complete_language_pt_br">@string/language_entry_pt_br</string>
+    <string name="complete_language_en_us">@string/language_entry_en_us</string>
+    <string name="complete_language_sp">@string/language_entry_es</string>
+
 
 
     <!-- Button for test syncinc -->

@@ -238,6 +238,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
 
         }
 
+        //noinspection StatementWithEmptyBody
         if(BUNDLE_VALUE_IS_SYNCABLE){
 //            Log.i(LOG_TAG, "Syncable TRUE!");
 //            sync_button = (Button)  view.findViewById(R.id.sync_button);
@@ -553,25 +554,19 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
         Log.i(LOG_TAG,"setView");
         if(userComplete == null){
             userComplete = Utility.getUser(getActivity());
+
+            // if as ultimate case it is null (first time user)
+            if (userComplete == null){
+                userComplete = new UserComplete();
+            }
         }
-        @SuppressWarnings("ConstantConditions") String spinnerValue = userComplete.getFluentLanguage();
-        Log.i(LOG_TAG,"Fluent Langauge: " + spinnerValue);
-
-
-
-
-
-
-
-        spinnerValue = userComplete.getLearningLanguage();
-        Log.i(LOG_TAG,"Learning Langauge: " + spinnerValue);
 
 
         if(BUNDLE_VALUE_FIRST_TIME_ENABLED){
             //noinspection ConstantConditions
             nameEditText.setText(FirebaseAuth.getInstance().getCurrentUser().getDisplayName());
 
-        }else {
+        }else{
             nameEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                 @Override
                 public void onFocusChange(View v, boolean hasFocus) {
@@ -592,49 +587,53 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
                     }
                 }
             });
+
+
+            ageEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    EditText editText = (EditText) v;
+                    if(hasFocus){
+                        editText.setHint(userComplete.getAge());
+                        ageEditText.setContentDescription(
+                                getString(R.string.a11y_profile_age_content_description,
+                                        userComplete.getAge()));
+
+                    }else{
+                        ageEditText.setContentDescription(
+                                getString(R.string.a11y_profile_age_content_description,
+                                        getString(R.string.profile_empty_content_description))
+                        );
+
+                    }
+                }
+            });
+
+            userDescription.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    EditText editText = (EditText) v;
+                    if(hasFocus){
+                        editText.setHint(userComplete.getUserDescription());
+                        userDescription.setContentDescription(
+                                getString(R.string.a11y_profile_user_description_content_description,
+                                        userComplete.getUserDescription()));
+
+                    }else{
+                        editText.setHint("");
+                        userDescription.setContentDescription(
+                                getString(R.string.a11y_profile_user_description_content_description,
+                                        getString(R.string.profile_empty_content_description)));
+
+                    }
+                }
+            });
+
+            Log.i(LOG_TAG,"Age: " + userComplete.getAge());
+
+
         }
 
-        ageEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                EditText editText = (EditText) v;
-                if(hasFocus){
-                    editText.setHint(userComplete.getAge());
-                    ageEditText.setContentDescription(
-                            getString(R.string.a11y_profile_age_content_description,
-                                    userComplete.getAge()));
-
-                }else{
-                    ageEditText.setContentDescription(
-                            getString(R.string.a11y_profile_age_content_description,
-                                    getString(R.string.profile_empty_content_description))
-                    );
-
-                }
-            }
-        });
-
-        userDescription.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                EditText editText = (EditText) v;
-                if(hasFocus){
-                    editText.setHint(userComplete.getUserDescription());
-                    userDescription.setContentDescription(
-                            getString(R.string.a11y_profile_user_description_content_description,
-                                    userComplete.getUserDescription()));
-
-                }else{
-                    editText.setHint("");
-                    userDescription.setContentDescription(
-                            getString(R.string.a11y_profile_user_description_content_description,
-                                    getString(R.string.profile_empty_content_description)));
-
-                }
-            }
-        });
-
-        Log.i(LOG_TAG,"Age: " + userComplete.getAge());
 
 
 
