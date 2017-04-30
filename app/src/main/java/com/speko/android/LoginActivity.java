@@ -17,13 +17,11 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.GetTokenResult;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.speko.android.data.UserComplete;
-import com.speko.android.sync.SpekoSyncAdapter;
 
 import java.util.Arrays;
 
@@ -128,20 +126,6 @@ public class LoginActivity extends AppCompatActivity implements ProfileFragment.
         final FirebaseUser authUser = auth.getCurrentUser();
         @SuppressWarnings("ConstantConditions") String uid = authUser.getUid();
 
-        authUser.getToken(false).addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
-            @Override
-            public void onComplete(@NonNull Task<GetTokenResult> task) {
-                if (task.isSuccessful()) {
-                    final Context context = getApplicationContext();
-                    String userToken = task.getResult().getToken();
-                    Log.i(LOG_TAG, "O token Deu certo! \n");
-                    //noinspection ConstantConditions
-                    Log.i(LOG_TAG, "O ID do usuário é: \n" + auth.getCurrentUser().getUid());
-                    SpekoSyncAdapter.setUserToken(userToken);
-                    SpekoSyncAdapter.initializeSyncAdapter(context);
-                }
-            }
-        });
         Log.d(LOG_TAG,"Querying possible reference to the user in database with uid: " + uid);
 
                 userEventListener = new ValueEventListener() {
@@ -180,7 +164,6 @@ public class LoginActivity extends AppCompatActivity implements ProfileFragment.
                             Log.i(LOG_TAG, "Setting Loading false");
                             setLoading(false);
 
-                            SpekoSyncAdapter.syncImmediatly(getApplicationContext());
                             Log.i(LOG_TAG, "There is the user!: " + dataSnapshot + "\n" +
                                     "should go to main activity");
                             setResult(RESULT_OK);
@@ -236,16 +219,13 @@ public class LoginActivity extends AppCompatActivity implements ProfileFragment.
             public void onComplete(@NonNull Task task) {
                 final Context context = getApplicationContext();
                 Toast.makeText(getBaseContext(),"Signed Up Successfully!",Toast.LENGTH_SHORT).show();
-                //we call syncImmediatly here just for redundancy. It is already called in
-                // HomeActivity.
-                SpekoSyncAdapter.syncImmediatly(context);
-                //TODO Refactor this
+
                 setResult(RESULT_OK);
                 startActivity(new Intent(getApplicationContext(), HomeActivity.class));
                 finish();
             }
         };
-        Utility.setUser(userComplete,this, onCompleteListener);
+        Utility.setUserIntoFirebase(userComplete,this, onCompleteListener);
         setLoading(true);
 
 

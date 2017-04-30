@@ -109,7 +109,7 @@ public class Utility {
      * @param userComplete
      * @param c
      */
-    public static void setUser(UserComplete userComplete, Context c, OnCompleteListener onCompleteListener){
+    public static void setUserIntoFirebase(UserComplete userComplete, Context c, OnCompleteListener onCompleteListener){
         SpekoSyncAdapter.persistUser(userComplete, c);
         authUser = FirebaseAuth.getInstance().getCurrentUser();
         if(firebaseDatabase==null){

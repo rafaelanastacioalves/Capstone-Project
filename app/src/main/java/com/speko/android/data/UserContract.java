@@ -8,10 +8,10 @@ import android.net.Uri;
 
 @SuppressWarnings("ALL")
 public class UserContract {
-    public static final String CONTENT_AUTHORITY = "com.speko.android.data";
+    public static final String CONTENT_AUTHORITY = "com.speko.android";
 
     // The authority for the sync adapter's content provider
-    public static final String AUTHORITY = "com.speko.android.data";
+    public static final String AUTHORITY = "com.speko.android";
 
     // An account type, in the form of a domain name
     public static final String ACCOUNT_TYPE = "android.speko.com";

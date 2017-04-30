@@ -68,6 +68,10 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
 
                 }
             }
+            if(intent.getAction().equals(SpekoSyncAdapter.ACTION_DATA_UPDATED)){
+                Log.i(LOG_TAG, "Action data Updated");
+                ((UpdateFragmentStatus)currentFragment).setLoading(false);
+            }
         }
 
         public void setActiveConnectivityStatus(Context c, boolean connectivityStatus) {
@@ -86,6 +90,7 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
     @BindView(R.id.home_activity_coordinator_layout)
     CoordinatorLayout mCoordinatorLayout;
     private Snackbar connectivitySnackBar;
+    private Fragment currentFragment;
 
 
     @Override
@@ -110,8 +115,6 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
 
         mFirebaseAuth = FirebaseAuth.getInstance();
 
-        userNotLoggedcheck();
-        userNotCreatedCheck();
 
 //        setFireBaseToken();
 
@@ -129,7 +132,7 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
                     // User is signed in
                     //TODO implement this
 
-                    setFireBaseToken();
+//                    setFireBaseToken();
 
 
                 } else {
@@ -137,10 +140,18 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
 
                     // User is signed out
                     //TODO implement this
+                    clearAccount();
                     callLoginActivity();
                 }
             }
         };
+
+
+        if(!isUserLogged()){
+            callLoginActivity();
+            return;
+        }
+        userNotCreatedCheck();
 
 
         mBottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -166,6 +177,11 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
 
     }
 
+    private void clearAccount() {
+        SpekoSyncAdapter.clearAccount(this);
+
+    }
+
     private void callLoginActivity() {
         Intent i = new Intent(getApplicationContext(), LoginActivity.class);
         startActivity(i);
@@ -185,28 +201,27 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
 
 
     private void selectFragment(MenuItem item) {
-        Fragment frag = null;
         // init corresponding fragment
         switch (item.getItemId()) {
             case R.id.action_search:
                 Log.i(LOG_TAG, "Selecting HomeActivityFragment");
 
-                frag = new HomeActivityFragment();
+                currentFragment = new HomeActivityFragment();
 
                 break;
             case R.id.action_profile:
                 Log.i(LOG_TAG, "Selecting Profile");
 
-                frag = new ProfileFragment();
+                currentFragment = new ProfileFragment();
                 Bundle args = new Bundle();
                 args.putBoolean(ProfileFragment.BUNDLE_ARGUMENT_IS_SYNCABLE, true);
                 args.putBoolean(ProfileFragment.BUNDLE_ARGUMENT_FIRST_TIME_ENABLED, false);
-                frag.setArguments(args);
+                currentFragment.setArguments(args);
                 break;
             case R.id.action_conversations:
                 Log.i(LOG_TAG, "Selecting Conversations");
                 //noinspection ConstantConditions
-                frag = ConversationsFragment.newInstance(getUser(this).getId());
+                currentFragment = ConversationsFragment.newInstance(getUser(this).getId());
                 break;
         }
 
@@ -224,9 +239,9 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
         }
 
 
-        if (frag != null) {
+        if (currentFragment != null) {
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.home_activity_fragment_container, frag, frag.getTag());
+            ft.replace(R.id.home_activity_fragment_container, currentFragment, currentFragment.getTag());
             ft.commit();
         }
     }
@@ -244,33 +259,37 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
         userNotCreatedCheck();
         IntentFilter filter = new IntentFilter();
         filter.addAction(CONNECTIVITY_ACTION);
+        filter.addAction(SpekoSyncAdapter.ACTION_DATA_UPDATED);
         registerReceiver(connectivityChangeReceiver, filter);
 
         super.onStart();
     }
 
-    private void userNotLoggedcheck() {
+    private boolean isUserLogged() {
 
         FirebaseUser user = mFirebaseAuth.getCurrentUser();
         if (user == null) {
             Log.i(LOG_TAG, "User Not Logged, calling LoginActivity");
             // User is signed in
 
-            callLoginActivity();
+            return false;
         }
+        return true;
 
 
     }
 
     private void userNotCreatedCheck() {
+        Log.i(LOG_TAG, "userNotCreatedCheck");
         UserComplete userComplete = Utility.getUser(this);
         if(userComplete == null || userComplete.getId() == null || userComplete.getId().isEmpty()){
-            callLoginActivity();
+            setFireBaseToken();
         }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.i(LOG_TAG, "onActivityResult");
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RC_SIGN_IN) {
             if (resultCode == RESULT_OK) {
@@ -286,6 +305,7 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
     }
 
     private void setFireBaseToken() {
+        Log.i(LOG_TAG, "setFireBaseToken");
         FirebaseUser user = mFirebaseAuth.getCurrentUser();
         //noinspection ConstantConditions
         user.getToken(false).addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
@@ -296,8 +316,6 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
                 if (task.isSuccessful()) {
                     String userToken = task.getResult().getToken();
                     Log.i(LOG_TAG, "O token Deu certo! \n");
-                    //noinspection ConstantConditions
-                    Log.i(LOG_TAG, "O ID do usuário é: \n" + mFirebaseAuth.getCurrentUser().getUid());
                     SpekoSyncAdapter.setUserToken(userToken);
                     SpekoSyncAdapter.initializeSyncAdapter(getApplication());
 
@@ -305,6 +323,8 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
                 } else {
                     //noinspection ConstantConditions,ThrowableResultOfMethodCallIgnored
                     Log.e(LOG_TAG, task.getException().getMessage());
+                    callLoginActivity();
+
                 }
             }
         });
@@ -352,7 +372,7 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
         userComplete.setName(authUser.getDisplayName());
         userComplete.setEmail(authUser.getEmail());
         userComplete.setId(authUser.getUid());
-        Utility.setUser(userComplete, this, null);
+        Utility.setUserIntoFirebase(userComplete, this, null);
 
 
         Toast.makeText(this, "ProfileUpdated!", Toast.LENGTH_SHORT).show();
@@ -360,4 +380,10 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
 
     }
 
+
+
+}
+interface UpdateFragmentStatus
+{
+    public void setLoading(Boolean isLoading);
 }

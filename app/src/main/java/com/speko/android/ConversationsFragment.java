@@ -28,7 +28,9 @@ import butterknife.ButterKnife;
  * Use the {@link ConversationsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ConversationsFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, SharedPreferences.OnSharedPreferenceChangeListener {
+public class ConversationsFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>
+        , SharedPreferences.OnSharedPreferenceChangeListener ,
+                UpdateFragmentStatus{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String USER_ID = "param1";
@@ -128,8 +130,11 @@ public class ConversationsFragment extends Fragment implements LoaderManager.Loa
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         Log.i(LOG_TAG,"onCreateLoader");
+        setRefreshScreen(true);
         return Utility.getUserConversationsCursorLoader(getContext());
     }
+
+
 
     @Override
     public void onLoadFinished(Loader loader, Cursor data) {
@@ -142,6 +147,7 @@ public class ConversationsFragment extends Fragment implements LoaderManager.Loa
     public void onLoaderReset(Loader loader) {
         Log.i(LOG_TAG,"onLoaderReset");
         mAdapter.swapCursor(null);
+        updateScreenState();
     }
 
 
@@ -231,6 +237,16 @@ public class ConversationsFragment extends Fragment implements LoaderManager.Loa
             if (emptyListTextView != null) {
                 emptyListTextView.setText(message);
             }
+        }
+
+    }
+
+    @Override
+    public void setLoading(Boolean isLoading) {
+        if (isLoading){
+
+        }else{
+            updateScreenState();
         }
 
     }

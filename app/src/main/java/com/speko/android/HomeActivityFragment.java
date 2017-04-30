@@ -27,7 +27,7 @@ import butterknife.ButterKnife;
  * A placeholder fragment containing a simple view.
  */
 public class HomeActivityFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>,
-        SharedPreferences.OnSharedPreferenceChangeListener {
+        SharedPreferences.OnSharedPreferenceChangeListener, UpdateFragmentStatus {
 
     private static final int FRIENDS_LOADER = 1;
     private final String LOG_TAG = getClass().getSimpleName();
@@ -190,6 +190,7 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         Log.i(LOG_TAG, "onLoaderReset");
+        updateScreenState();
         mAdapter.swapCursor(null);
 
     }
@@ -227,5 +228,10 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
     }
 
 
-
+    @Override
+    public void setLoading(Boolean isLoading) {
+        if(!isLoading){
+            updateScreenState();
+        }
+    }
 }

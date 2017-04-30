@@ -3,6 +3,7 @@ package com.speko.android.sync;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.AbstractThreadedSyncAdapter;
 import android.content.ContentProviderClient;
 import android.content.ContentResolver;
@@ -58,8 +59,8 @@ import static com.speko.android.sync.SpekoAuthenticator.ACCOUNT;
  */
 @SuppressWarnings("ALL")
 public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
-    private static final int SYNC_INTERVAL = 1000; //every minute
-    private static final int FLEX_TIME = 1000; // every minute
+    private static final int SYNC_INTERVAL = 60*60 ; //in seconds
+    private static final int FLEX_TIME = SYNC_INTERVAL/6;
     private static final String LOG = "SpekoSyncAdapter";
     private static FirebaseAuth mFirebaseAuth;
     private static final String LOG_TAG = "SpekoSyncAdapter";
@@ -82,6 +83,14 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
         super(context, autoInitialize, allowParallelSyncs);
         Log.i(LOG_TAG, "Constructor Called");
 
+    }
+
+    public static void clearAccount(Activity context) {
+        Account account = getSyncAccount(context);
+        userToken = null;
+        if (account !=null){
+            AccountManager.get(context).removeAccount(account,  context,null,null);
+        }
     }
 
     @Retention(RetentionPolicy.SOURCE)
@@ -547,6 +556,8 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
      * @param context The application context
      */
     private static Account getSyncAccount(Context context) {
+        Log.d("SpekoSyncAdapter", "getSyncAccount");
+
         // Create the account type and default account
         Account newAccount = new Account(
                 ACCOUNT, ACCOUNT_TYPE);
@@ -558,38 +569,39 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
          * Add the account and account type, no password or user data
          * If successful, return the Account object, otherwise report an error.
          */
-        if (accountManager.addAccountExplicitly(newAccount, null, null)) {
+
+        if(null == accountManager.getPassword(newAccount)){
+
+            /*
+             * Add the account and account type, no password or user data
+             * If successful, return the Account object, otherwise report an error.
+             */
+            if (!accountManager.addAccountExplicitly(newAccount, "", null)) {
+                return null;
+            }
             /*
              * If you don't set android:syncable="true" in
              * in your <provider> element in the manifest,
-             * then call context.setIsSyncable(account, CONTENT_AUTHORITY, 1)
+             * then call ContentResolver.setIsSyncable(account, AUTHORITY, 1)
              * here.
              */
-            onAccountCreated(newAccount, context);
 
+                onAccountCreated(newAccount, context);
+            }
 
-        } else {
-            /*
-             * The account exists or some other error occurred. Log this, report it,
-             * or handle it internally.
-             */
-
-            Log.w("HomeActivity", "Deu ruim com o Account: " + newAccount);
-//            return null;
-        }
 
         return newAccount;
 
     }
 
     private static void onAccountCreated(Account newAccount, Context context) {
+        Log.d("SpekoSyncAdapter", "onAccountCreated");
 
         configurePeriodicSync(context, SYNC_INTERVAL, FLEX_TIME);
         // Inform the system that this account is eligible for auto onClickSync when the network is up
         ContentResolver.setSyncAutomatically(newAccount, AUTHORITY, true);
 
-//        TODO Uncomment this:
-//        syncImmediatly(context);
+        syncImmediatly(context);
     }
 
     public static void syncImmediatly(Context context) {
@@ -604,6 +616,9 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
 
         Account account = SpekoSyncAdapter.getSyncAccount(context);
         String authority = UserContract.AUTHORITY;
+        if (account == null){
+            return false;
+        }
         Log.i("isSyncActive", "start with values: \n " +
                 "account: " + account.toString() + "\n" +
                 "authority: " + authority);
@@ -638,7 +653,7 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
                         syncPeriodic(syncInterval, flexTime).
                         setSyncAdapter(account, authority).
                         setExtras(new Bundle()).build();
-                Log.i(LOG_TAG, "request: " + request.toString());
+                Log.i(LOG_TAG, "ConfigurePeriodicSync ->  request: " + request.toString());
 
                 ContentResolver.requestSync(request);
             } else {

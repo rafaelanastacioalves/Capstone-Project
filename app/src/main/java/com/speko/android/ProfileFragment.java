@@ -57,7 +57,10 @@ import static com.speko.android.Utility.RC_PHOTO_PICKER;
  * {@link ProfileFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
  */
-public class ProfileFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, SharedPreferences.OnSharedPreferenceChangeListener, AppBarLayout.OnOffsetChangedListener{
+public class ProfileFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>,
+        SharedPreferences.OnSharedPreferenceChangeListener,
+        AppBarLayout.OnOffsetChangedListener,
+        UpdateFragmentStatus {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 
@@ -143,6 +146,11 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
 
     private UserComplete userComplete;
     private OnFragmentInteractionListener mListener;
+
+    @Override
+    public void setLoading(Boolean isLoading) {
+        updateScreenState();
+    }
 
 
     public interface OnFragmentInteractionListener {
@@ -231,9 +239,9 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
         }
 
         if(BUNDLE_VALUE_IS_SYNCABLE){
-            Log.i(LOG_TAG, "Syncable TRUE!");
-            sync_button = (Button)  view.findViewById(R.id.sync_button);
-            sync_button.setVisibility(View.VISIBLE);
+//            Log.i(LOG_TAG, "Syncable TRUE!");
+//            sync_button = (Button)  view.findViewById(R.id.sync_button);
+//            sync_button.setVisibility(View.VISIBLE);
 
         }
     }
@@ -311,7 +319,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
                     SpekoSyncAdapter.syncImmediatly(applicationContext);
                 }
             };
-            Utility.setUser(userComplete,getActivity(), onCompleteListener);
+            Utility.setUserIntoFirebase(userComplete,getActivity(), onCompleteListener);
 
 
             Toast.makeText(getActivity(), "ProfileUpdated!", Toast.LENGTH_SHORT).show();

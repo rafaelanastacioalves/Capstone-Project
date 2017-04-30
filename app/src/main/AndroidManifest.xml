@@ -69,6 +69,7 @@
         <!-- The SyncAdapter service -->
         <service
             android:name=".sync.SpekoSyncService"
+            android:exported="true"
             tools:ignore="ExportedService">
             <intent-filter>
                 <action android:name="android.content.SyncAdapter" />
@@ -97,7 +98,7 @@
 
         <provider
             android:name=".data.generated.UsersProvider"
-            android:authorities="com.speko.android.data"
+            android:authorities="com.speko.android"
             android:exported="false" />
 
 
