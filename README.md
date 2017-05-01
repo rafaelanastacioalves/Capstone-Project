@@ -12,7 +12,7 @@ google-services.json for release uses (get it here -> https://console.firebase.g
 	
 sign.properties
 	
-	put it in /keys
+	put it in app/keys
 release.jks
 	
-	put it in /keys
+	put it in app/keys
