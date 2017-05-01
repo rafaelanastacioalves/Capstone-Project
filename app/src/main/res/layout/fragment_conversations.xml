@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/fragment_conversations_container"
-
     tools:context="com.speko.android.HomeActivity">
 
     <!-- TODO: Update blank fragment layout -->
@@ -20,34 +19,32 @@
 
     <FrameLayout
         android:layout_width="match_parent"
+        android:layout_gravity="fill"
         android:layout_height="match_parent">
 
         <android.support.v7.widget.AppCompatTextView
             android:id="@+id/recyclerview_list_empty_textview"
-            app:layout_anchorGravity="fill"
-            android:padding="@dimen/default_screen_margin"
-            android:gravity="center_horizontal"
-            android:text="@string/no_friend_to_show"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:padding="@dimen/default_screen_margin"
+            android:text="@string/no_friend_to_show"
+            app:layout_anchorGravity="fill" />
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/conversations_list"
-            tools:listitem="@layout/conversation_viewholder"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            tools:listitem="@layout/conversation_viewholder" />
 
         <android.support.v4.widget.ContentLoadingProgressBar
             android:id="@+id/progress_bar"
-            android:layout_gravity="center"
             style="?android:attr/progressBarStyle"
-            android:visibility="visible"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="visible" />
 
     </FrameLayout>
-
-
 
 
 </LinearLayout>
