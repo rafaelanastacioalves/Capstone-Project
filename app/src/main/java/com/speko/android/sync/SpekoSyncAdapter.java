@@ -51,7 +51,6 @@ import static com.speko.android.data.UserContract.ACCOUNT_TYPE;
 import static com.speko.android.data.UserContract.AUTHORITY;
 import static com.speko.android.data.UsersProvider.ChatMembers.CHAT_URI;
 import static com.speko.android.data.UsersProvider.Users.USER_URI;
-import static com.speko.android.sync.SpekoAuthenticator.ACCOUNT;
 
 
 /**
@@ -560,10 +559,13 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
      */
     private static Account getSyncAccount(Context context) {
         Log.d("SpekoSyncAdapter", "getSyncAccount");
-
+        if (mFirebaseAuth == null){
+            mFirebaseAuth = FirebaseAuth.getInstance();
+        }
+        String accountEmail = mFirebaseAuth.getCurrentUser().getEmail();
         // Create the account type and default account
         Account newAccount = new Account(
-                ACCOUNT, ACCOUNT_TYPE);
+                accountEmail, ACCOUNT_TYPE);
         // Get an instance of the Android account manager
         AccountManager accountManager =
                 (AccountManager) context.getSystemService(
