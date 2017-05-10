@@ -12,6 +12,9 @@ import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import static com.speko.android.retrofit.retrofitConstants.API_BASE_URL;
+
+
 /**
  * Created by rafaelanastacioalves on 12/28/16.
  */
@@ -19,7 +22,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 @SuppressWarnings("ALL")
 public class ServiceGenerator {
 
-    private static final String API_BASE_URL = "https://speko-debug.firebaseio.com/";
     private static final HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
 
     private static final OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
