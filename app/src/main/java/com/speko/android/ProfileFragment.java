@@ -156,6 +156,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void completeSignup(UserComplete userComplete);
+        void signOut();
     }
 
 
@@ -269,9 +270,8 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
 
     @OnClick(R.id.log_out) @Optional
     public void onClicklogOut() {
+        mListener.signOut();
 
-        Utility.deleteEverything(getContext());
-        FirebaseAuth.getInstance().signOut();
     }
 
 

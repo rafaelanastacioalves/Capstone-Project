@@ -228,4 +228,9 @@ public class LoginActivity extends AppCompatActivity implements ProfileFragment.
 
 
     }
+
+    @Override
+    public void signOut() {
+        //nothing to do in this situation
+    }
 }

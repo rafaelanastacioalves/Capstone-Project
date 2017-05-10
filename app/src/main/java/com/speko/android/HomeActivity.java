@@ -34,7 +34,6 @@ import butterknife.ButterKnife;
 import io.fabric.sdk.android.Fabric;
 
 import static android.net.ConnectivityManager.CONNECTIVITY_ACTION;
-import static com.speko.android.Utility.getUser;
 
 /**
  * Should not retrieve user infor here. As it could be still loading database and it
@@ -144,7 +143,6 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
 
                     // User is signed out
                     //TODO implement this
-                    clearAccount();
                     callLoginActivity();
                 }
             }
@@ -385,6 +383,14 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
 
     }
 
+    @Override
+    public void signOut() {
+        clearAccount();
+        Utility.deleteEverything(this);
+        FirebaseAuth.getInstance().signOut();
+
+
+    }
 
 
 }
