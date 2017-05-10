@@ -69,10 +69,7 @@ android {
         def propFile = new File("$projectDir/keys/sign.properties")
 
 
-        lintOptions {
-
-            abortOnError false
-        }
+       
 
 
         release {
