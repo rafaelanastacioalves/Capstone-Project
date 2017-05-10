@@ -20,6 +20,43 @@ apply plugin: 'io.fabric'
 
 
 
+apply plugin: 'de.undercouch.download'
+
+task downloadDebugGoogleJson(type: Download) {
+    src 'https://firebasestorage.googleapis.com/v0/b/speko-debug.appspot.com/o/setup_files%2Fgoogle-services.json?alt=media&token=80312842-d672-4d49-a800-254c86614ab7'
+    dest file("$projectDir/src/debug/google-services.json")
+    doLast {
+        cleanBuildCache
+    }
+}
+
+task downloadReleaseGoogleJson(type: Download) {
+    src 'https://firebasestorage.googleapis.com/v0/b/firebase-speko.appspot.com/o/setup_files%2Fgoogle-services.json?alt=media&token=99d46238-2dbf-43b1-b27d-6bad7b5bd0dc'
+    dest file("$projectDir/src/release/google-services.json")
+}
+
+task downloadReleaseSignProperties(type: Download) {
+    src 'https://firebasestorage.googleapis.com/v0/b/firebase-speko.appspot.com/o/setup_files%2Fsign.properties?alt=media&token=aec77f08-897d-44d1-ab26-03e5b812b832'
+    dest file("$projectDir/keys/sign.properties")
+}
+
+task downloadReleaseKey(type: Download) {
+    dependsOn downloadReleaseSignProperties
+
+    src 'https://firebasestorage.googleapis.com/v0/b/firebase-speko.appspot.com/o/setup_files%2Frelease.jks?alt=media&token=227dc517-e853-493f-b1bb-9e5ee560dccd'
+    dest file("$projectDir/keys/release.jks")
+
+}
+
+preBuild.dependsOn downloadReleaseSignProperties
+preBuild.dependsOn downloadReleaseGoogleJson
+preBuild.dependsOn downloadReleaseKey
+preBuild.dependsOn downloadDebugGoogleJson
+afterEvaluate{
+    tasks.getByPath(":app:processDebugGoogleServices").dependsOn downloadDebugGoogleJson
+
+}
+
 repositories {
     maven { url 'https://maven.fabric.io/public' }
 }
@@ -29,18 +66,22 @@ repositories {
 android {
     signingConfigs {
         def Properties signProps = new Properties()
-        def propFile = new File("$name/keys/sign.properties")
+        def propFile = new File("$projectDir/keys/sign.properties")
 
 
+        lintOptions {
+
+            abortOnError false
+        }
 
 
         release {
-            if (propFile.exists()) {
+            if (propFile.exists()){
                 signProps.load(new InputStreamReader(new FileInputStream(propFile), "UTF-8"))
             }
             keyAlias 'release'
             keyPassword signProps['KEY_PASSWORD_RELEASE']
-            storeFile file("$rootDir/$name/keys/release.jks")
+            storeFile file("$projectDir/keys/release.jks")
             storePassword signProps['STORE_PASSWORD_RELEASE']
         }
 
@@ -58,7 +99,7 @@ android {
     buildTypes {
         release {
             minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.ic_speko_drawable_small'
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             resValue('string', 'app_name', 'Speko')
             signingConfig signingConfigs.release
         }
@@ -126,42 +167,8 @@ dependencies {
 }
 
 
-apply plugin: 'de.undercouch.download'
 
-task downloadDebugGoogleJson(type: Download) {
-    src 'https://firebasestorage.googleapis.com/v0/b/speko-debug.appspot.com/o/setup_files%2Fgoogle-services.json?alt=media&token=80312842-d672-4d49-a800-254c86614ab7'
-    dest file("$projectDir/src/debug/google-services.json")
-}
 
-task downloadReleaseGoogleJson(type: Download) {
-    src 'https://firebasestorage.googleapis.com/v0/b/firebase-speko.appspot.com/o/setup_files%2Fgoogle-services.json?alt=media&token=99d46238-2dbf-43b1-b27d-6bad7b5bd0dc'
-    dest file("$projectDir/src/release/google-services.json")
-}
-
-task downloadReleaseSignProperties(type: Download) {
-    src 'https://firebasestorage.googleapis.com/v0/b/speko-debug.appspot.com/o/setup_files%2Frelease.jks?alt=media&token=a897d038-8d24-4272-be69-71dc62afdd9f'
-    dest file("$projectDir/keys/sign.properties")
-}
-
-task downloadReleaseKey(type: Download) {
-    dependsOn downloadReleaseSignProperties
-
-    src 'https://firebasestorage.googleapis.com/v0/b/speko-debug.appspot.com/o/setup_files%2Fsign.properties?alt=media&token=d676065d-7aea-446e-b771-670952aa5147'
-    dest file("$projectDir/keys/release.jks")
-
-}
-
-afterEvaluate{
-    tasks.getByPath(":app:processDebugGoogleServices").dependsOn downloadDebugGoogleJson
-    tasks.getByPath(":app:processReleaseGoogleServices").dependsOn downloadReleaseGoogleJson
-//    downloadDebugGoogleJson.dependsOn tasks.getByPath(":app:processDebugGoogleServices")
-
-}
-
-preBuild.dependsOn downloadReleaseSignProperties
-preBuild.dependsOn downloadReleaseGoogleJson
-preBuild.dependsOn downloadReleaseKey
-preBuild.dependsOn downloadDebugGoogleJson
 
 
 
