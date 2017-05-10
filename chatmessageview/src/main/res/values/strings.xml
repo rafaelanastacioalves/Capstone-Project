@@ -1,5 +1,5 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="app_name">ChatMessageView</string>
+    <string name="app_name" translatable="false">ChatMessageView</string>
     <string name="input_hint">Message..</string>
     <string name="unknown">Unknown</string>
 
@@ -12,14 +12,14 @@
 
     <!-- Default setting for demo-->
     <string name="default_text_short">Hello!!</string>
-    <string name="default_text_long">
+    <string name="default_text_long" translatable="false">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit,
         sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
     </string>
-    <string name="default_time_text">10:30 AM</string>
-    <string name="default_date_cell_text">2016/08/08</string>
-    <string name="default_user_name_1">Michael</string>
-    <string name="default_user_name_2">Alice</string>
+    <string name="default_time_text" translatable="false">10:30 AM</string>
+    <string name="default_date_cell_text" translatable="false">2016/08/08</string>
+    <string name="default_user_name_1" translatable="false">Michael</string>
+    <string name="default_user_name_2" translatable="false">Alice</string>
 
 
     <!-- a11y strings-->

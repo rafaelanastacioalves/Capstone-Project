@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="input_hint">Mensagem..</string>
-    <string name="a11y_message_sent_content_description">Your message:</string>
+    <string name="a11y_message_sent_content_description">Sua mensagem:</string>
+    <string name="unknown">Desconhecido</string>
+    <string name="sent">Enviado</string>
+    <string name="sending">Enviando</string>
+    <string name="seen">Visto</string>
+    <string name="error">Erro</string>
+    <string name="default_user_name_1"></string>
+    <string name="default_text_short">Olá!!</string>
+    <string name="a11y_message_received_content_description">Sua mensagem:</string>
 
 </resources>

@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="a11y_message_sent_content_description">Your message:</string>
+    <string name="a11y_message_sent_content_description">Su mensaje:</string>
+    <string name="unknown">Desconocido</string>
+    <string name="sent">Enviado</string>
+    <string name="sending">Enviando</string>
+    <string name="seen">Visto</string>
+    <string name="error">Erro</string>
+    <string name="default_text_short">¡Hola !!</string>
+    <string name="a11y_message_received_content_description">Su mensaje:</string>
 </resources>
