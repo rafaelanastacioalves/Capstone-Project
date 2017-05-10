@@ -3,7 +3,7 @@
 <resources>
 
     <!-- Facebook app credentials-->
-    <string name="facebook_app_id">166280200514769</string>
+    <string name="facebook_app_id" translatable="false">166280200514769</string>
 
 
 </resources>
