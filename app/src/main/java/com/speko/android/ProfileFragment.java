@@ -279,7 +279,6 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
     public void onPause() {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         sp.unregisterOnSharedPreferenceChangeListener(this);
-        userComplete = null;
         super.onPause();
     }
 
