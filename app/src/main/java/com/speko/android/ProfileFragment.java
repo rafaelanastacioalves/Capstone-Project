@@ -599,6 +599,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
                                         userComplete.getAge()));
 
                     }else{
+                        editText.setHint("");
                         ageEditText.setContentDescription(
                                 getString(R.string.a11y_profile_age_content_description,
                                         getString(R.string.profile_empty_content_description))
