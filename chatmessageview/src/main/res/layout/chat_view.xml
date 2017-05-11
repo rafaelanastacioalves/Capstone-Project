@@ -39,6 +39,7 @@
             android:layout_weight="1"/>
 
         <ImageButton
+            android:contentDescription="@string/send_button"
             android:id="@+id/send_button"
             android:layout_gravity="bottom"
             android:layout_width="@dimen/icon_normal"

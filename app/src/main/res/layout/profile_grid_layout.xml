@@ -133,7 +133,6 @@
 
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:contentDescription="@string/age_label_text_field_content_description"
         android:hint="@string/age_label_text_field"
         app:layout_columnSpan="2"
 

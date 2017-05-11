@@ -216,7 +216,7 @@ public class LoginActivity extends AppCompatActivity implements ProfileFragment.
         OnCompleteListener onCompleteListener = new OnCompleteListener() {
             @Override
             public void onComplete(@NonNull Task task) {
-                Toast.makeText(getBaseContext(),"Signed Up Successfully!",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getBaseContext(), R.string.sign_up_success,Toast.LENGTH_SHORT).show();
 
                 setResult(RESULT_OK);
                 startActivity(new Intent(getApplicationContext(), HomeActivity.class));

@@ -8,4 +8,5 @@
     <string name="error">Erro</string>
     <string name="default_text_short">¡Hola !!</string>
     <string name="a11y_message_received_content_description">Su mensaje:</string>
+    <string name="send_button">Botón enviar</string>
 </resources>

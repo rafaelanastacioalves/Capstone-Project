@@ -66,7 +66,6 @@
 
     <string name="profile_picture_content_description">Su foto de perfil</string>
     <string name="profile_name_content_description">El nombre de perfil</string>
-    <string name="age_label_text_field_content_description" />
     <string name="profile_description_label_content_description">Descripción del usuario en su perfil</string>
     <string name="button_profile_confirmation_change_content_description">botón para cambiar</string>
     <string name="log_out_content_description">botón para salir</string>
@@ -84,6 +83,11 @@
     <string name="profile_language_of_interest_content_descritption">Su lengua de interés en su perfil es <xliff:g id="profile_language_of_interest">%1$s</xliff:g> </string>
     <string name="speko_splash_image_content_descrition">Speko Splash Image</string>
     <string name="your_fluent_language_picture_representation">Your fluent language picture representation</string>
+    <string name="profile_update_toast">Profile Updated!</string>
+    <string name="must_fill_name">You must fill a name.</string>
+    <string name="sign_up_success">Registrado com éxito!</string>
+    <string name="fulano_de_tal_viewholder" translatable="false">Fulano de Tal Fulano de Tal Fulano de Tal Fulano de Tal Fulano de tal fulano de tal Fulano de Tal Fulano de Tal</string>
+    <string name="at_least_3_char">El nombre debe tener al menos 3 caracteres</string>
 
 
 </resources>

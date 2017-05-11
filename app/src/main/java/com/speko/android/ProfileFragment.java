@@ -345,7 +345,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
             Utility.setUserIntoFirebase(userComplete,getActivity(), onCompleteListener);
 
 
-            Toast.makeText(getActivity(), "ProfileUpdated!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), R.string.profile_update_toast, Toast.LENGTH_SHORT).show();
 
         }
 
@@ -391,7 +391,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
                 // and even the value already put is empty
                 if (userComplete.getName() == null || userComplete.getName().isEmpty()){
 
-                    Toast.makeText(getActivity(), "You must fill a name.", Toast.LENGTH_SHORT)
+                    Toast.makeText(getActivity(), R.string.must_fill_name, Toast.LENGTH_SHORT)
                             .show();
                     return false;
 
@@ -399,7 +399,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
 
 
         } else if (nameEditText.getText().length() < 3) {
-            Toast.makeText(getActivity(), "The name must be at least 3 characters",
+            Toast.makeText(getActivity(), R.string.at_least_3_char,
                     Toast.LENGTH_SHORT).show();
             return false;
 
