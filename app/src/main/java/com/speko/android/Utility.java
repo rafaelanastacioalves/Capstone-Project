@@ -40,6 +40,9 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
+import static com.speko.android.data.UserColumns.FIREBASE_ID;
+import static com.speko.android.data.UsersProvider.Users.USER_URI;
+
 /**
  * Created by rafaelalves on 31/01/17.
  */
@@ -87,7 +90,7 @@ public class Utility {
 
 
     private static final String[] USER_COLUMNS = {
-            UserColumns.FIREBASE_ID,
+            FIREBASE_ID,
             UserColumns.NAME,
             UserColumns.EMAIL
     };
@@ -106,6 +109,7 @@ public class Utility {
 
     /**
      * Persists current into Firebase
+     *
      * @param userComplete
      * @param c
      */
@@ -122,6 +126,14 @@ public class Utility {
                 .updateChildren(userHashMap).addOnCompleteListener(onCompleteListener);
     }
 
+    public static void deleteUserFromDB(Context c, String userId){
+        // deleting any row first
+        c.getContentResolver().delete(USER_URI,
+                FIREBASE_ID + " = ?",
+                new String[]{userId});
+
+    }
+
 
 
     private static UserComplete getUserFromDB(Context context){
@@ -130,8 +142,8 @@ public class Utility {
             Log.w("Utility", "There is no firebase user!");
             return null;
         }
-        Cursor c = context.getContentResolver().query(UsersProvider.Users.USER_URI
-        , null, UserColumns.FIREBASE_ID + " = ? ", new String[]{fireBaseUser.getUid()}, null);
+        Cursor c = context.getContentResolver().query(USER_URI
+        , null, FIREBASE_ID + " = ? ", new String[]{fireBaseUser.getUid()}, null);
         UserComplete userComplete = null;
 
         //noinspection ConstantConditions
@@ -140,7 +152,7 @@ public class Utility {
             userComplete.setLearningLanguage(c.getString(c.getColumnIndex(UserColumns.LEARNING_LANGUAGE)));
             userComplete.setLearningCode(c.getString(c.getColumnIndex(UserColumns.LEARNING_CODE)));
             userComplete.setFluentLanguage(c.getString(c.getColumnIndex(UserColumns.FLUENT_LANGUAGE)));
-            userComplete.setId(c.getString(c.getColumnIndex(UserColumns.FIREBASE_ID)));
+            userComplete.setId(c.getString(c.getColumnIndex(FIREBASE_ID)));
             userComplete.setName(c.getString(c.getColumnIndex(UserColumns.NAME)));
             userComplete.setEmail(c.getString(c.getColumnIndex(UserColumns.EMAIL)));
             userComplete.setAge(c.getString(c.getColumnIndex(UserColumns.AGE)));
@@ -172,7 +184,7 @@ public class Utility {
             userComplete.setLearningLanguage(c.getString(c.getColumnIndex(UserColumns.LEARNING_LANGUAGE)));
             userComplete.setLearningCode(c.getString(c.getColumnIndex(UserColumns.LEARNING_CODE)));
             userComplete.setFluentLanguage(c.getString(c.getColumnIndex(UserColumns.FLUENT_LANGUAGE)));
-            userComplete.setId(c.getString(c.getColumnIndex(UserColumns.FIREBASE_ID)));
+            userComplete.setId(c.getString(c.getColumnIndex(FIREBASE_ID)));
             userComplete.setName(c.getString(c.getColumnIndex(UserColumns.NAME)));
             userComplete.setEmail(c.getString(c.getColumnIndex(UserColumns.EMAIL)));
             userComplete.setAge(c.getString(c.getColumnIndex(UserColumns.AGE)));
@@ -256,7 +268,7 @@ public class Utility {
         if (authUser == null) {
             authUser = getFirebaseAuthUser();
         }
-        return new CursorLoader(context, UsersProvider.Users.USER_URI
+        return new CursorLoader(context, USER_URI
                 ,
                 null,
                 null,
@@ -362,15 +374,15 @@ public class Utility {
      * @return
      */
     public static UserComplete getOtherUserWithId(Context context, String friendId) {
-        Cursor c = context.getContentResolver().query(UsersProvider.Users.USER_URI
-                , null, UserColumns.FIREBASE_ID + " = ? ", new String[]{friendId}, null);
+        Cursor c = context.getContentResolver().query(USER_URI
+                , null, FIREBASE_ID + " = ? ", new String[]{friendId}, null);
         UserComplete userComplete = new UserComplete();
         //noinspection ConstantConditions
         if(c.moveToFirst()){
             userComplete.setLearningLanguage(c.getString(c.getColumnIndex(UserColumns.LEARNING_LANGUAGE)));
             userComplete.setLearningCode(c.getString(c.getColumnIndex(UserColumns.LEARNING_CODE)));
             userComplete.setFluentLanguage(c.getString(c.getColumnIndex(UserColumns.FLUENT_LANGUAGE)));
-            userComplete.setId(c.getString(c.getColumnIndex(UserColumns.FIREBASE_ID)));
+            userComplete.setId(c.getString(c.getColumnIndex(FIREBASE_ID)));
             userComplete.setName(c.getString(c.getColumnIndex(UserColumns.NAME)));
             userComplete.setEmail(c.getString(c.getColumnIndex(UserColumns.EMAIL)));
             userComplete.setAge(c.getString(c.getColumnIndex(UserColumns.AGE)));
@@ -519,7 +531,7 @@ public class Utility {
         context.getContentResolver().delete(UsersProvider.Users
                 .usersFriendsFrom(authUser.getUid()),null,null);
 
-        context.getContentResolver().delete(UsersProvider.Users.USER_URI,null,null);
+        context.getContentResolver().delete(USER_URI,null,null);
 
         context.getContentResolver().delete(UsersProvider.ChatMembers.CHAT_URI,null,null);
     }

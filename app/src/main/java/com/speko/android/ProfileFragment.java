@@ -105,9 +105,6 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
     @BindView(R.id.profile_fragment_imageview_profile_picture)
     CircleImageView profilePicture;
 
-    @BindView(R.id.signup_imageview_profile_picture_container)
-    ShimmerFrameLayout profilePictureContainer;
-
     private Uri downloadUrl = null;
 
     @BindView(R.id.profile_grid_layout)
@@ -131,6 +128,9 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
     @BindView(R.id.profile_language_of_interest_textview)
     TextView profileLanguageOfInterestTextView;
 
+    @BindView(R.id.signup_imageview_profile_picture_container)
+    ShimmerFrameLayout profilePictureContainer;
+
     @BindView(R.id.profile_fluent_language_container)
     View profileFluentLanguageContainer;
 
@@ -149,6 +149,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
 
     @Override
     public void setLoading(Boolean isLoading) {
+        Log.d(LOG_TAG, "setLoading: " + isLoading);
         updateScreenState();
     }
 
@@ -283,16 +284,36 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
     }
 
     private void updateScreenState() {
-
+        Log.d(LOG_TAG, "updateScreenState");
         if(BUNDLE_VALUE_IS_SYNCABLE){
             // if is syncing or off line
             if (SpekoSyncAdapter.isSyncActive(getContext()) ||
                     !Utility.getIsConnectedStatus(getContext())){
+                Log.d(LOG_TAG, "syncActive");
+
                 //noinspection ConstantConditions
                 signupButton.setClickable(false);
+                nameEditText.setEnabled(false);
+                ageEditText.setEnabled(false);
+                profilePictureContainer.setEnabled(false);
+                profileFluentLanguageContainer.setEnabled(false);
+                profileLanguageOfInterestContainer.setEnabled(false);
+                userDescription.setEnabled(false);
+
             }else{
+                Log.d(LOG_TAG, "syncNotActive");
+
                 //noinspection ConstantConditions
                 signupButton.setClickable(true);
+                nameEditText.setEnabled(true);
+                ageEditText.setEnabled(true);
+                profilePictureContainer.setEnabled(true);
+                profileFluentLanguageContainer.setEnabled(true);
+                profileLanguageOfInterestContainer.setEnabled(true);
+                userDescription.setEnabled(true);
+
+
+
             }
         }
 
@@ -316,6 +337,8 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
             OnCompleteListener onCompleteListener = new OnCompleteListener() {
                 @Override
                 public void onComplete(@NonNull Task task) {
+                    Log.i(LOG_TAG, "omComplete - putting info into firebase");
+                    Utility.deleteUserFromDB(applicationContext, userComplete.getId());
                     SpekoSyncAdapter.syncImmediatly(applicationContext);
                 }
             };
@@ -665,7 +688,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
 
 
 
-        Log.i(LOG_TAG,"Age: " + userComplete.getLearningLanguage());
+        Log.i(LOG_TAG,"Learning language: " + userComplete.getLearningLanguage());
 
         if (userComplete.getLearningLanguage() != null){
             profileLanguageOfInterestImageView.setImageResource(Utility.getDrawableUriForLanguage( userComplete.getLearningLanguage(),getActivity()));
@@ -748,12 +771,16 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
             Log.i(LOG_TAG,"onLoaderFinished");
             userComplete = Utility.getUser(getActivity());
             // we only stop the loading framework after we had the minimnum acceptable user info to show
-            if (userComplete != null && userComplete.getName() != null && userComplete.getId()!=null ){
+            if ( userComplete != null && userComplete.getName() != null && userComplete.getId()!=null ){
                 //we destroy the loader, as there is no need for updating the view
                 getLoaderManager().destroyLoader(USER_LOADER);
                 // now we show and allow edition
                 setView();
 
+            }else if(BUNDLE_VALUE_FIRST_TIME_ENABLED){
+                // even though we have have no user properly setted, if it is a registering user,
+                // we setView as we are prepared for setting view in this case too
+                setView();
             }
 
         }
