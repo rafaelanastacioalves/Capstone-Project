@@ -355,7 +355,11 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
         }
         //noinspection ConstantConditions
         if (connectivityChangeReceiver != null) {
-            unregisterReceiver(connectivityChangeReceiver);
+            try {
+                unregisterReceiver(connectivityChangeReceiver);
+            }catch (Exception e){
+                Log.w(LOG_TAG, e.getMessage());
+            }
         }
 
     }
