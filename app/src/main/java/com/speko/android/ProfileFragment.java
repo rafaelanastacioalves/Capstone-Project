@@ -745,12 +745,18 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if (loader.getId() == USER_LOADER){
             Log.i(LOG_TAG,"onLoaderFinished");
-            setView();
+            userComplete = Utility.getUser(getActivity());
+            // we only stop the loading framework after we had the minimnum acceptable user info to show
+            if (userComplete != null && userComplete.getName() != null && userComplete.getId()!=null ){
+                //we destroy the loader, as there is no need for updating the view
+                getLoaderManager().destroyLoader(USER_LOADER);
+                // now we show and allow edition
+                setView();
+
+            }
 
         }
 
-        //we destroy the loader, as there is no need for updating the view
-        getLoaderManager().destroyLoader(USER_LOADER);
 
     }
 
