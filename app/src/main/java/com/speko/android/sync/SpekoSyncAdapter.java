@@ -11,7 +11,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.SyncInfo;
 import android.content.SyncRequest;
 import android.content.SyncResult;
 import android.os.Build;
@@ -28,7 +27,6 @@ import com.speko.android.data.Chat;
 import com.speko.android.data.ChatMembersColumns;
 import com.speko.android.data.UserColumns;
 import com.speko.android.data.UserComplete;
-import com.speko.android.data.UserContract;
 import com.speko.android.data.UserPublic;
 import com.speko.android.data.UsersProvider;
 import com.speko.android.retrofit.APIException;
@@ -41,6 +39,7 @@ import java.io.IOException;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -65,6 +64,8 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
     private static final String LOG_TAG = "SpekoSyncAdapter";
     private static String userToken;
     private static UserComplete userComplete;
+
+    private static AtomicBoolean isSyncing = new AtomicBoolean(false);
 
 
     public static final String ACTION_DATA_UPDATED =
@@ -114,7 +115,7 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
     @Override
     public void onPerformSync(Account account, Bundle bundle, String s, ContentProviderClient contentProviderClient, SyncResult syncResult) {
         Log.i(LOG_TAG, "onPerformSync");
-
+        isSyncing.set(true);
 
         if (userToken != null) {
             UserComplete userComplete = null;
@@ -166,10 +167,7 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
         }
 
         updateWidgets();
-        synchronized (getContext().getContentResolver()){
-            getContext().getContentResolver().notify();
-        }
-
+        isSyncing.set(false);
 
     }
 
@@ -619,26 +617,7 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
 
     public static boolean isSyncActive(Context context) {
 
-        Account account = SpekoSyncAdapter.getSyncAccount(context);
-        String authority = UserContract.AUTHORITY;
-        if (account == null){
-            return false;
-        }
-        Log.i("isSyncActive", "start with values: \n " +
-                "account: " + account.toString() + "\n" +
-                "authority: " + authority);
-
-        for (SyncInfo syncInfo : ContentResolver.getCurrentSyncs()) {
-            Log.i("isSyncActive", "syncInfo: \n" +
-                    "account type: " + syncInfo.account + "\n" +
-                    "authority: " + syncInfo.authority + "\n");
-
-            // just checked authority, as account seems to be cryptographed
-            if (syncInfo.authority.equals(authority) ) {
-                return true;
-            }
-        }
-        return false;
+        return isSyncing.get();
 
     }
 
