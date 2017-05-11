@@ -366,7 +366,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
         if (nameEditText.getText() == null || nameEditText.getText().toString().isEmpty()) {
 
                 // and even the value already put is empty
-                if (userComplete.getName().isEmpty()){
+                if (userComplete.getName() == null || userComplete.getName().isEmpty()){
 
                     Toast.makeText(getActivity(), "You must fill a name.", Toast.LENGTH_SHORT)
                             .show();
