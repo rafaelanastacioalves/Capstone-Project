@@ -1,0 +1,59 @@
+{
+  "project_info": {
+    "project_number": "1028532292128",
+    "firebase_url": "https://fir-speko.firebaseio.com",
+    "project_id": "firebase-speko",
+    "storage_bucket": "firebase-speko.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1028532292128:android:44f122b4e2fa22d1",
+        "android_client_info": {
+          "package_name": "com.speko.android"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1028532292128-buraqsfno1ekegejltup8547pudg1dnn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.speko.android",
+            "certificate_hash": "a56358b909e4b967dedfc44d6f3ccd2da9b58bbe"
+          }
+        },
+        {
+          "client_id": "1028532292128-28ch4p1r4rbdsplp1p23bbk23jv5e196.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "1028532292128-ftii501l510rgoeaoelb3g3css8ecrq7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC8Eu0PURwwbO_8UbTFxQPuAyrpHlE1HYU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1028532292128-28ch4p1r4rbdsplp1p23bbk23jv5e196.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

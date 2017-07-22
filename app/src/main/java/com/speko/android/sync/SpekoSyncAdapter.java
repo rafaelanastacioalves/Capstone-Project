@@ -651,6 +651,14 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
 
     }
 
+    public static boolean hasUserTokenSetted(){
+        if(userToken !=null && !userToken.isEmpty()){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
     private static void setSyncStatus(Context c, @LocationStatus int syncStatus) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c);
         SharedPreferences.Editor spe = sp.edit();

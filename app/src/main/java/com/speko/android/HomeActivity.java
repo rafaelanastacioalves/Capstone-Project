@@ -156,6 +156,7 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
         userNotCreatedCheck();
 
 
+
         mBottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -265,6 +266,10 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
         filter.addAction(SpekoSyncAdapter.ACTION_DATA_UPDATED);
         registerReceiver(connectivityChangeReceiver, filter);
 
+        if(!SpekoSyncAdapter.isSyncActive(this)){
+            SpekoSyncAdapter.syncImmediatly(this);
+        }
+
         super.onStart();
     }
 
@@ -285,7 +290,11 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
     private void userNotCreatedCheck() {
         Log.i(LOG_TAG, "userNotCreatedCheck");
         UserComplete userComplete = Utility.getUser(this);
-        if(userComplete == null || userComplete.getId() == null || userComplete.getId().isEmpty()){
+        if(userComplete == null
+                || userComplete.getId() == null
+                || userComplete.getId().isEmpty()
+                || !SpekoSyncAdapter.hasUserTokenSetted() ){
+
             setFireBaseToken();
         }
     }
@@ -311,7 +320,7 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
         Log.i(LOG_TAG, "setFireBaseToken");
         FirebaseUser user = mFirebaseAuth.getCurrentUser();
         //noinspection ConstantConditions
-        user.getToken(false ).addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
+        user.getToken(false).addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
             public final String LOG_TAG = getClass().getSimpleName();
 
             @Override
@@ -321,6 +330,7 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
                     Log.i(LOG_TAG, "O token Deu certo! \n");
                     SpekoSyncAdapter.setUserToken(userToken);
                     SpekoSyncAdapter.initializeSyncAdapter(getApplication());
+                    SpekoSyncAdapter.syncImmediatly(getApplicationContext());
 
 
                 } else {

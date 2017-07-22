@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "817920505884",
+    "firebase_url": "https://speko-debug.firebaseio.com",
+    "project_id": "speko-debug",
+    "storage_bucket": "speko-debug.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:817920505884:android:c821950ed09cc2a7",
+        "android_client_info": {
+          "package_name": "com.speko.android.debug"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "817920505884-7mgi195g2pvnr1deq7oo5ortq9e2t73m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCeL31vCzjIIuOYcX-tmcsFFRelKG89KY8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "817920505884-7mgi195g2pvnr1deq7oo5ortq9e2t73m.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

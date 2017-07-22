@@ -7,10 +7,10 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.LinearLayout;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -24,8 +24,8 @@ public class ChatActivity extends AppCompatActivity implements SharedPreferences
     private Snackbar connectivitySnackBar;
     private SharedPreferences sp;
 
-    @BindView(R.id.chat_activity_coordinator_layout)
-    CoordinatorLayout mCoordinatorLayout;
+    @BindView(R.id.chat_activity_linear_layout)
+    LinearLayout mLinearLayout;
 
     // TODO: Maybe refactor and put it apart because of repeated code in chat activity
     private final BroadcastReceiver connectivityChangeReceiver = new BroadcastReceiver() {
@@ -100,7 +100,7 @@ public class ChatActivity extends AppCompatActivity implements SharedPreferences
 
         //this coordinator layout is inside the fragment so we need to wait for its creation
         ButterKnife.bind(this);
-        connectivitySnackBar = Snackbar.make(mCoordinatorLayout,
+        connectivitySnackBar = Snackbar.make(mLinearLayout,
                 R.string.connectivity_error, Snackbar.LENGTH_INDEFINITE);
 
 
