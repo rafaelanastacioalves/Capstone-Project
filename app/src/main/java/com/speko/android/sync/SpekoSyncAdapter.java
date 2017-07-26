@@ -166,8 +166,8 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
             Log.w(LOG_TAG, "userToken not setted!");
         }
 
-        updateWidgets();
         isSyncing.set(false);
+        updateWidgets();
 
     }
 

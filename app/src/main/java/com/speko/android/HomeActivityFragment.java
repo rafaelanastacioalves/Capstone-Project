@@ -81,8 +81,6 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
 
         Log.i(LOG_TAG, "setting adapter");
         userList.setAdapter(mAdapter);
-
-
         return view;
     }
 
@@ -115,7 +113,6 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
         super.onResume();
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
         sp.registerOnSharedPreferenceChangeListener(this);
-        updateScreenState();
 
     }
 
@@ -125,6 +122,8 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
 
 
         Log.i(LOG_TAG, "Initloader");
+        updateScreenState();
+
         getLoaderManager().initLoader(FRIENDS_LOADER, null, this);
 
 
@@ -144,6 +143,7 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         Log.i(LOG_TAG, "onCreateLoader");
+        updateScreenState();
         return Utility.getUserFriendsCursorLoader(getContext());
     }
 

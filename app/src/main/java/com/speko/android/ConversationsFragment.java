@@ -55,14 +55,13 @@ public class ConversationsFragment extends Fragment implements LoaderManager.Loa
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
+     * @param userId Parameter 1.
      * @return A new instance of fragment ConversationsFragment.
      */
-    // TODO: Rename and change types and number of parameters
-    public static ConversationsFragment newInstance(String param1) {
+    public static ConversationsFragment newInstance(String userId) {
         ConversationsFragment fragment = new ConversationsFragment();
         Bundle args = new Bundle();
-        args.putString(USER_ID, param1);
+        args.putString(USER_ID, userId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -73,6 +72,8 @@ public class ConversationsFragment extends Fragment implements LoaderManager.Loa
     public void onStart() {
         super.onStart();
         Log.i(LOG_TAG,"Initloader");
+        updateScreenState();
+
         getLoaderManager().initLoader(CONVERSATIONS_LOADER, null, this);
 
     }
@@ -131,6 +132,7 @@ public class ConversationsFragment extends Fragment implements LoaderManager.Loa
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         Log.i(LOG_TAG,"onCreateLoader");
         setRefreshScreen(true);
+        updateScreenState();
         return Utility.getUserConversationsCursorLoader(getContext());
     }
 
@@ -188,7 +190,6 @@ public class ConversationsFragment extends Fragment implements LoaderManager.Loa
     }
 
     private void setRefreshScreen(Boolean active) {
-        //TODO Implement
         Log.i(LOG_TAG, "setRefresh: " + active.toString());
         if (active) {
             progressBar.show();
