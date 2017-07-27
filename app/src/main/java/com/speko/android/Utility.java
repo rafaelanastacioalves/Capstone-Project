@@ -21,6 +21,7 @@ import com.github.bassaer.chatmessageview.utils.TimeUtils;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.speko.android.data.Chat;
 import com.speko.android.data.ChatMembersColumns;
@@ -300,7 +301,7 @@ public class Utility {
                 null);    }
 
     @SuppressWarnings("UnusedParameters")
-    public static String createRoomForUsers(Context context, String friendId, String userID, OnCompleteListener onCompleteListener ) {
+    public static String createRoomForUsers(Context context, String friendId, String userID, DatabaseReference.CompletionListener onCompleteListener) {
         //TODO
         Chat chat = new Chat();
         HashMap<String, UserPublic> members = new HashMap<>();
@@ -330,26 +331,18 @@ public class Utility {
 
         chat.setChatId(chatId);
 
-        HashMap<String, Chat> chatHashMap = new HashMap<String, Chat>();
+        HashMap<String, Object> chatHashMap = new HashMap<String, Object>();
         chatHashMap.put(chatId, chat);
         //noinspection unchecked
-        firebaseDatabase.getReference()
-                .child("chats")
-                .updateChildren((Map) chatHashMap);
 
-        //noinspection unchecked
-        firebaseDatabase.getReference()
-                .child("users")
-                .child(userPublic.getId())
-                .child("chats")
-                .updateChildren((Map) chatHashMap).addOnCompleteListener(onCompleteListener);
 
-        //noinspection unchecked
-        firebaseDatabase.getReference()
-                .child("users")
-                .child(userPublicFriend.getId())
-                .child("chats")
-                .updateChildren((Map) chatHashMap);
+        Map<String, Object> childUpdates = new HashMap<>();
+
+        childUpdates.put("/chats" , chatHashMap);
+        childUpdates.put("/users/" + userPublic.getId() + "/chats"  , chatHashMap);
+        childUpdates.put("/users/" + userPublicFriend.getId() + "/chats" , chatHashMap);
+        firebaseDatabase.getReference().updateChildren(childUpdates,  onCompleteListener);
+
         return chatId;
     }
 

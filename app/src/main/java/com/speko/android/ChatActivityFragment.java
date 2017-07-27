@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.util.SparseArrayCompat;
@@ -20,8 +19,6 @@ import android.widget.EditText;
 
 import com.github.bassaer.chatmessageview.models.Message;
 import com.github.bassaer.chatmessageview.views.ChatView;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -30,7 +27,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.speko.android.data.MessageLocal;
 import com.speko.android.data.UserComplete;
 import com.speko.android.sync.MyMessageStatusFormatter;
-import com.speko.android.sync.SpekoSyncAdapter;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
@@ -138,12 +134,17 @@ public class ChatActivityFragment extends Fragment {
 
 
                 if(chatId == null ) {
-                    OnCompleteListener onCompleteListener = new OnCompleteListener() {
+                    DatabaseReference.CompletionListener onCompleteListener = new DatabaseReference.CompletionListener() {
                         @Override
-                        public void onComplete(@NonNull Task task) {
-                            Log.i("onComplete", "Room creation completed!");
-                            SpekoSyncAdapter.syncImmediatly(getContext());
+                        public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
+                            if (databaseError !=null){
+                                Log.e(LOG_TAG, databaseError.getMessage());
+                            }else {
+                                Log.i(LOG_TAG, "Sala criada com sucesso!");
+                            }
                         }
+
+
                     };
                     //noinspection ConstantConditions
                     chatId = Utility.createRoomForUsers(getActivity(),friendId, Utility.getUser(getActivity()).getId(), onCompleteListener);
