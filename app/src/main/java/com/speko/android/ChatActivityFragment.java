@@ -27,6 +27,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.speko.android.data.MessageLocal;
 import com.speko.android.data.UserComplete;
 import com.speko.android.sync.MyMessageStatusFormatter;
+import com.speko.android.sync.SpekoSyncAdapter;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
@@ -139,10 +140,16 @@ public class ChatActivityFragment extends Fragment {
                         public void onComplete(DatabaseError databaseError, DatabaseReference databaseReference) {
                             if (databaseError !=null){
                                 Log.e(LOG_TAG, databaseError.getMessage());
+                                chatId=null;
                             }else {
                                 Log.i(LOG_TAG, "Sala criada com sucesso!");
+                                Log.i("onComplete", "Room creation completed!");
+                                SpekoSyncAdapter.syncImmediatly(getContext());
+
                             }
                         }
+
+
 
 
                     };
@@ -268,7 +275,9 @@ public class ChatActivityFragment extends Fragment {
                 });
 
 
-        Picasso.with(getActivity()).load(otherUserComplete.getProfilePicture()).into(new Target() {
+        Picasso.with(getActivity()).load(
+                otherUserComplete.getProfilePicture()
+        ).into(new Target() {
             @Override
             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
 
@@ -299,6 +308,7 @@ public class ChatActivityFragment extends Fragment {
 
             @Override
             public void onBitmapFailed(Drawable errorDrawable) {
+
 
             }
 
