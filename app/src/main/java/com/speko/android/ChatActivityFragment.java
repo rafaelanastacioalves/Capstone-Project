@@ -26,6 +26,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.speko.android.data.MessageLocal;
 import com.speko.android.data.UserComplete;
+import com.speko.android.data.UserPublic;
 import com.speko.android.sync.MyMessageStatusFormatter;
 import com.speko.android.sync.SpekoSyncAdapter;
 import com.squareup.picasso.Picasso;
@@ -37,7 +38,7 @@ import java.util.Random;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.speko.android.Utility.getOtherUserWithId;
+import static com.speko.android.Utility.getOtherUser;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -216,7 +217,7 @@ public class ChatActivityFragment extends Fragment {
         mChatView.setMessageMarginTop(5);
         mChatView.setMessageMarginBottom(5);
 
-        String otherUserName = Utility.getOtherUserWithId(getActivity(),friendId).getName();
+        String otherUserName = Utility.getOtherUser(getActivity(),friendId,chatId).getName();
         toolbar.setTitle(otherUserName);
         toolbar.setContentDescription(getActivity().getString(R.string.a11y_other_user_content_description, otherUserName));
 
@@ -229,7 +230,7 @@ public class ChatActivityFragment extends Fragment {
         Log.i(LOG_TAG, "Init Users");
         UserComplete userComplete = Utility.getUser(getActivity());
 
-        UserComplete otherUserComplete = getOtherUserWithId(getActivity(), friendId);
+        UserPublic otherUserPublic = getOtherUser(getActivity(), friendId, chatId);
         //User icon
         //noinspection ConstantConditions
         Picasso.with(getActivity())
@@ -276,24 +277,24 @@ public class ChatActivityFragment extends Fragment {
 
 
         Picasso.with(getActivity()).load(
-                otherUserComplete.getProfilePicture()
+                otherUserPublic.getProfilePicture()
         ).into(new Target() {
             @Override
             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
 
-                UserComplete otherUserComplete = getOtherUserWithId(getActivity(), friendId);
+                UserPublic otherUserPublic = getOtherUser(getActivity(),friendId ,chatId);
 
-                Log.i(LOG_TAG, "setting Icon for user:" + otherUserComplete.getName());
+                Log.i(LOG_TAG, "setting Icon for user:" + otherUserPublic.getName());
                 final com.github.bassaer.chatmessageview.models.User otherChatUser =
                         new com.github.bassaer.chatmessageview.models.User(
                                 HIM_CHATMESSAGE_ID,
-                                otherUserComplete.getName(), bitmap);
+                                otherUserPublic.getName(), bitmap);
 
                 if (mIdConvertion == null) {
                     //noinspection Convert2Diamond
                     mIdConvertion = new SparseArrayCompat<String>();
                 }
-                mIdConvertion.put(HIM_CHATMESSAGE_ID, otherUserComplete.getId());
+                mIdConvertion.put(HIM_CHATMESSAGE_ID, otherUserPublic.getId());
                 mUsers[HIM_CHATMESSAGE_INDEX] = otherChatUser;
                 imagesLoaded++;
                 if (imagesLoaded == totalImagesToBeLoaded) {
@@ -407,7 +408,8 @@ public class ChatActivityFragment extends Fragment {
                     Message message = Utility.parseFromFirebaseModel(messageFromFirebase);
                     for (com.github.bassaer.chatmessageview.models.User user : mUsers) {
                         if (
-                                Objects.equals(mIdConvertion.get(message.getUser().getId()), mIdConvertion.get(user.getId()))
+                                Objects.equals(mIdConvertion.get(message.getUser().getId()),
+                                        mIdConvertion.get(user.getId()))
                                 ) {
                                     Log.i(LOG_TAG, "setting the icon from  onChildAdded callback");
                                     message.getUser().setIcon(user.getIcon());

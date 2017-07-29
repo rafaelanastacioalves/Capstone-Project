@@ -24,7 +24,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.speko.android.data.Chat;
-import com.speko.android.data.ChatMembersColumns;
 import com.speko.android.data.MessageLocal;
 import com.speko.android.data.UserColumns;
 import com.speko.android.data.UserComplete;
@@ -41,7 +40,13 @@ import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
 
+import static com.speko.android.data.ChatMembersColumns.FIREBASE_CHAT_ID;
+import static com.speko.android.data.ChatMembersColumns.OTHER_MEMBER_FLUENT_LANGUAGE;
+import static com.speko.android.data.ChatMembersColumns.OTHER_MEMBER_ID;
+import static com.speko.android.data.ChatMembersColumns.OTHER_MEMBER_NAME;
+import static com.speko.android.data.ChatMembersColumns.OTHER_MEMBER_PHOTO_URL;
 import static com.speko.android.data.UserColumns.FIREBASE_ID;
+import static com.speko.android.data.UsersProvider.ChatMembers.CHAT_URI;
 import static com.speko.android.data.UsersProvider.Users.USER_URI;
 
 /**
@@ -167,37 +172,7 @@ public class Utility {
         return userComplete;
     }
 
-    /**
-     * Same as {@link #getOtherUserWithId(Context, String)}
-     * @param context
-     * @param id
-     * @return
-     */
-    private static UserComplete getUserFriendFromDB(Context context, String id){
-        Log.i("getUserFriendFromDB", "Retrieving user friend with id: " + id);
 
-        Cursor c = context.getContentResolver().query(UsersProvider.Users.userWith(id)
-                , null, null, null, null);
-        UserComplete userComplete = null ;
-        //noinspection ConstantConditions
-        if( c != null && c.moveToFirst()){
-            userComplete = new UserComplete();
-            userComplete.setLearningLanguage(c.getString(c.getColumnIndex(UserColumns.LEARNING_LANGUAGE)));
-            userComplete.setLearningCode(c.getString(c.getColumnIndex(UserColumns.LEARNING_CODE)));
-            userComplete.setFluentLanguage(c.getString(c.getColumnIndex(UserColumns.FLUENT_LANGUAGE)));
-            userComplete.setId(c.getString(c.getColumnIndex(FIREBASE_ID)));
-            userComplete.setName(c.getString(c.getColumnIndex(UserColumns.NAME)));
-            userComplete.setEmail(c.getString(c.getColumnIndex(UserColumns.EMAIL)));
-            userComplete.setAge(c.getString(c.getColumnIndex(UserColumns.AGE)));
-
-            Log.i("getUserFriendFromDB", "Retrieved user friend with id: " + userComplete.getId());
-
-        }
-
-
-        c.close();
-        return userComplete;
-    }
 
     /**
      *
@@ -207,7 +182,7 @@ public class Utility {
      */
     private static HashMap<String, Chat> getUserConversationsFromDB(Context context, UserComplete mainUserComplete){
         Log.i("getUserConvFromDB", "Retrieving user friend with id: " + mainUserComplete.getId());
-        Cursor c = context.getContentResolver().query(UsersProvider.ChatMembers.CHAT_URI
+        Cursor c = context.getContentResolver().query(CHAT_URI
                 , null, null, null, null);
         HashMap<String, Chat> chatsHashMap = null;
         Chat chat;
@@ -223,7 +198,7 @@ public class Utility {
                 HashMap<String, UserPublic> members = new HashMap<>();
 
                 UserPublic userCompleteFriend = new UserPublic(
-                        c.getString(c.getColumnIndex(ChatMembersColumns.OTHER_MEMBER_ID)));
+                        c.getString(c.getColumnIndex(OTHER_MEMBER_ID)));
 
 
 
@@ -234,7 +209,7 @@ public class Utility {
                 members.put(mainUserComplete.getId(), new UserComplete( mainUserComplete.getId()));
 
                 chat.setMembers(members);
-                chat.setChatId(c.getString(c.getColumnIndex(ChatMembersColumns.FIREBASE_CHAT_ID)));
+                chat.setChatId(c.getString(c.getColumnIndex(FIREBASE_CHAT_ID)));
                 chatsHashMap.put(chat.getChatId(), chat);
             } while (c.moveToNext());
 
@@ -286,14 +261,14 @@ public class Utility {
         //noinspection ConstantConditions
         if (c != null && c.moveToFirst()){
             chatIdWithOtherUser = c.getString(
-                    c.getColumnIndex(ChatMembersColumns.FIREBASE_CHAT_ID));
+                    c.getColumnIndex(FIREBASE_CHAT_ID));
         }
         c.close();
         return chatIdWithOtherUser;
     }
 
     public static Loader<Cursor> getUserConversationsCursorLoader(Context context) {
-        return new CursorLoader(context, UsersProvider.ChatMembers.CHAT_URI
+        return new CursorLoader(context, CHAT_URI
                 ,
                 null,
                 null,
@@ -305,7 +280,7 @@ public class Utility {
         //TODO
         Chat chat = new Chat();
         HashMap<String, UserPublic> members = new HashMap<>();
-        UserPublic userPublicFriend = getUserFriendFromDB(context, friendId);
+        UserPublic userPublicFriend = getOtherUserFriendWithFromFriendsDB(context, friendId);
         Log.i("createRoomForUSers", "Creating chat with \n" + userPublicFriend +
                 "\n id: " + userPublicFriend.getId());
 
@@ -360,29 +335,66 @@ public class Utility {
         activity.startActivityForResult(Intent.createChooser(intent, "Complete action using"), Utility.RC_PHOTO_PICKER);
     }
 
+    public static UserPublic getOtherUser(Context context, String friendId, String chatId){
+        if(chatId == null){
+            return getOtherUserFriendWithFromFriendsDB(context, friendId);
+        }else{
+            return getOtherUserWithIdFromConversationsDB(context, friendId);
+        }
+    }
+
     /**
-     * User to friends list only.
+     * User to friends list only. In other words, when already exists a room for that friend.
      * @param context
      * @param friendId
      * @return
      */
-    public static UserComplete getOtherUserWithId(Context context, String friendId) {
-        Cursor c = context.getContentResolver().query(USER_URI
-                , null, FIREBASE_ID + " = ? ", new String[]{friendId}, null);
-        UserComplete userComplete = new UserComplete();
+    public static UserPublic getOtherUserWithIdFromConversationsDB(Context context, String friendId) {
+        Log.i("getOtherUserWithIdFromConversationsDB", "Retrieving user friend with id: " + friendId);
+        Cursor c = context.getContentResolver().query(CHAT_URI
+                , null, OTHER_MEMBER_ID + " = ? ", new String[]{friendId}, null);
+        UserPublic userComplete = new UserComplete();
         //noinspection ConstantConditions
         if(c.moveToFirst()){
-            userComplete.setLearningLanguage(c.getString(c.getColumnIndex(UserColumns.LEARNING_LANGUAGE)));
-            userComplete.setLearningCode(c.getString(c.getColumnIndex(UserColumns.LEARNING_CODE)));
+
+            userComplete.setFluentLanguage(c.getString(c.getColumnIndex(OTHER_MEMBER_FLUENT_LANGUAGE)));
+            userComplete.setId(c.getString(c.getColumnIndex(OTHER_MEMBER_ID)));
+            userComplete.setName(c.getString(c.getColumnIndex(OTHER_MEMBER_NAME)));
+            userComplete.setProfilePicture(c.getString(c.getColumnIndex(OTHER_MEMBER_PHOTO_URL)));
+            Log.i("getOtherUserWithIdFromConversationsDB", "Retrieved user friend with id: " + friendId);
+
+        }
+
+        c.close();
+        return userComplete;
+    }
+
+    /**
+     * Same as {@link #getOtherUserWithIdFromConversationsDB(Context, String)}
+     * For use when there is no room created for conversations yet. In other words, there is
+     * no chatId created and so we can only retrieve user info from the list of friends that
+     * can help, which is different from the list of conversations.
+     * @param context
+     * @param id
+     * @return
+     */
+    private static UserPublic getOtherUserFriendWithFromFriendsDB(Context context, String id){
+        Log.i("getOtherUserFriendWithFromFriendsDB", "Retrieving user friend with id: " + id);
+
+        Cursor c = context.getContentResolver().query(UsersProvider.Users.userWith(id)
+                , null, null, null, null);
+        UserPublic userComplete = null ;
+        //noinspection ConstantConditions
+        if( c != null && c.moveToFirst()){
+            userComplete = new UserComplete();
             userComplete.setFluentLanguage(c.getString(c.getColumnIndex(UserColumns.FLUENT_LANGUAGE)));
             userComplete.setId(c.getString(c.getColumnIndex(FIREBASE_ID)));
             userComplete.setName(c.getString(c.getColumnIndex(UserColumns.NAME)));
-            userComplete.setEmail(c.getString(c.getColumnIndex(UserColumns.EMAIL)));
-            userComplete.setAge(c.getString(c.getColumnIndex(UserColumns.AGE)));
-            userComplete.setUserDescription(c.getString(c.getColumnIndex(UserColumns.USER_DESCRIPTION)));
             userComplete.setProfilePicture(c.getString(c.getColumnIndex(UserColumns.USER_PHOTO_URL)));
+            Log.i("getOtherUserFriendWithFromFriendsDB", "Retrieved user friend with id: " + userComplete.getId());
 
         }
+
 
         c.close();
         return userComplete;
@@ -526,7 +538,7 @@ public class Utility {
 
         context.getContentResolver().delete(USER_URI,null,null);
 
-        context.getContentResolver().delete(UsersProvider.ChatMembers.CHAT_URI,null,null);
+        context.getContentResolver().delete(CHAT_URI,null,null);
     }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
