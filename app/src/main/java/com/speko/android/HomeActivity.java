@@ -71,9 +71,9 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
 
                 }
             }
-            if(intent.getAction().equals(SpekoSyncAdapter.ACTION_DATA_UPDATED)){
+            if (intent.getAction().equals(SpekoSyncAdapter.ACTION_DATA_UPDATED)) {
                 Log.i(LOG_TAG, "Action data Updated");
-                ((UpdateFragmentStatus)currentFragment).setLoading(false);
+                ((UpdateFragmentStatus) currentFragment).setLoading(false);
             }
         }
 
@@ -99,23 +99,51 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        UsersDatabase userDB;
-        userDB = UsersDatabase.getInstance(getApplicationContext());
-        userDB.onCreate(userDB.getReadableDatabase());
+        setupDB();
 
         Fabric.with(this, new Crashlytics());
         Log.d("HomeActivity", "onCreate");
 
-        setContentView(R.layout.activity_home);
-        ButterKnife.bind(this);
+        attachView(savedInstanceState);
+
+        setupFirebase();
+
+
+        if (!isUserLogged()) {
+            callLoginActivity();
+            return;
+        }
+        userNotCreatedCheck();
+
+
+    }
+
+    private void setUpBottomNavigationView(Bundle savedInstanceState) {
         mBottomNavigationView.setContentDescription(this.getString(
                 R.string.bottom_navigation_view_content_description)
         );
 
-        connectivitySnackBar = Snackbar.make(mCoordinatorLayout,
-                R.string.connectivity_error, Snackbar.LENGTH_INDEFINITE);
+        mBottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                selectFragment(item);
+                return true;
+            }
+        });
+        MenuItem selectedItem;
+        if (savedInstanceState != null) {
+            mSelectedItem = savedInstanceState.getInt(SELECTED_ITEM, 0);
+            selectedItem = mBottomNavigationView.getMenu().findItem(mSelectedItem);
+            Log.i(LOG_TAG, "previous selected item is: " + selectedItem.toString());
+        } else {
+            selectedItem = mBottomNavigationView.getMenu().getItem(0);
+            Log.i(LOG_TAG, "first time selecting item: " + selectedItem.toString());
 
+        }
+        selectFragment(selectedItem);
+    }
 
+    private void setupFirebase() {
         mFirebaseAuth = FirebaseAuth.getInstance();
 
 
@@ -147,37 +175,23 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
                 }
             }
         };
+    }
 
+    private void attachView(Bundle savedInstanceState) {
+        setContentView(R.layout.activity_home);
+        ButterKnife.bind(this);
 
-        if(!isUserLogged()){
-            callLoginActivity();
-            return;
-        }
-        userNotCreatedCheck();
+        connectivitySnackBar = Snackbar.make(mCoordinatorLayout,
+                R.string.connectivity_error, Snackbar.LENGTH_INDEFINITE);
 
+        setUpBottomNavigationView(savedInstanceState);
 
+    }
 
-        mBottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                selectFragment(item);
-                return true;
-            }
-        });
-
-        MenuItem selectedItem;
-        if (savedInstanceState != null) {
-            mSelectedItem = savedInstanceState.getInt(SELECTED_ITEM, 0);
-            selectedItem = mBottomNavigationView.getMenu().findItem(mSelectedItem);
-            Log.i(LOG_TAG, "previous selected item is: " + selectedItem.toString());
-        } else {
-            selectedItem = mBottomNavigationView.getMenu().getItem(0);
-            Log.i(LOG_TAG, "first time selecting item: " + selectedItem.toString());
-
-        }
-        selectFragment(selectedItem);
-
-
+    private void setupDB() {
+        UsersDatabase userDB;
+        userDB = UsersDatabase.getInstance(getApplicationContext());
+        userDB.onCreate(userDB.getReadableDatabase());
     }
 
     private void clearAccount() {
@@ -235,8 +249,8 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
         // uncheck the other items.
         for (int i = 0; i < mBottomNavigationView.getMenu().size(); i++) {
             MenuItem menuItem = mBottomNavigationView.getMenu().getItem(i);
-            if (menuItem.getItemId() == mSelectedItem){
-                Log.i(LOG_TAG, "Checked menu is: "+  String.valueOf(menuItem.getItemId()));
+            if (menuItem.getItemId() == mSelectedItem) {
+                Log.i(LOG_TAG, "Checked menu is: " + String.valueOf(menuItem.getItemId()));
                 menuItem.setEnabled(true);
 
             }
@@ -266,7 +280,7 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
         filter.addAction(SpekoSyncAdapter.ACTION_DATA_UPDATED);
         registerReceiver(connectivityChangeReceiver, filter);
 
-        if(!SpekoSyncAdapter.isSyncActive(this)){
+        if (!SpekoSyncAdapter.isSyncActive(this)) {
             SpekoSyncAdapter.syncImmediatly(this);
         }
 
@@ -290,10 +304,10 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
     private void userNotCreatedCheck() {
         Log.i(LOG_TAG, "userNotCreatedCheck");
         UserComplete userComplete = Utility.getUser(this);
-        if(userComplete == null
+        if (userComplete == null
                 || userComplete.getId() == null
                 || userComplete.getId().isEmpty()
-                || !SpekoSyncAdapter.hasUserTokenSetted() ){
+                || !SpekoSyncAdapter.hasUserTokenSetted()) {
 
             setFireBaseToken();
         }
@@ -367,7 +381,7 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
         if (connectivityChangeReceiver != null) {
             try {
                 unregisterReceiver(connectivityChangeReceiver);
-            }catch (Exception e){
+            } catch (Exception e) {
                 Log.w(LOG_TAG, e.getMessage());
             }
         }
@@ -408,8 +422,8 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
 
 
 }
-interface UpdateFragmentStatus
-{
+
+interface UpdateFragmentStatus {
     @SuppressWarnings("SameParameterValue")
     void setLoading(Boolean isLoading);
 }
