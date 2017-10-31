@@ -59,6 +59,7 @@ afterEvaluate{
 
 repositories {
     maven { url 'https://maven.fabric.io/public' }
+    google()
 }
 
 
@@ -83,12 +84,12 @@ android {
         }
 
     }
-    compileSdkVersion 25
-    buildToolsVersion "26.0.2"
+    compileSdkVersion rootProject.compileSdkVersionExt
+    buildToolsVersion rootProject.buildToolsVersionExt
     defaultConfig {
         applicationId "com.speko.android"
-        minSdkVersion 21
-        targetSdkVersion 25
+        minSdkVersion rootProject.minSdkVersionExt
+        targetSdkVersion rootProject.targetSdkVersionExt
         versionCode 7
         versionName "0.0.40"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -122,19 +123,19 @@ dependencies {
 
 
     //firebase related things
-    compile 'com.firebaseui:firebase-ui-auth:1.2.0'
-    compile 'com.google.firebase:firebase-database:10.2.0'
-    compile 'com.google.firebase:firebase-storage:10.2.0'
-    compile 'com.facebook.android:facebook-android-sdk:[4,5)'
+    compile "com.firebaseui:firebase-ui-auth:$rootProject.firebaseUiExt"
+    compile "com.google.firebase:firebase-database:$rootProject.firebaseExt"
+    compile "com.google.firebase:firebase-storage:$rootProject.firebaseExt"
+    compile "com.facebook.android:facebook-android-sdk:$rootProject.facebookAndroidExt"
 
     //retrofit + gson
-    compile 'com.squareup.retrofit2:retrofit:2.1.0'
-    compile 'com.squareup.retrofit2:converter-gson:2.1.0'
-    compile 'com.squareup.okhttp3:logging-interceptor:3.3.0'
-    compile 'com.android.support:gridlayout-v7:25.3.1'
+    compile "com.squareup.retrofit2:converter-gson:$rootProject.retrofitExt"
+    compile "com.squareup.retrofit2:retrofit:$rootProject.retrofitExt"
+    compile "com.squareup.okhttp3:logging-interceptor:$rootProject.okhttp3Ext"
+    compile "com.android.support:gridlayout-v7:$rootProject.androidSupportLibrariesExt"
 
     // percent layout
-    compile 'com.android.support:percent:25.3.1'
+    compile "com.android.support:percent:$rootProject.androidSupportLibrariesExt"
 
 
     testCompile 'junit:junit:4.12'
@@ -147,7 +148,7 @@ dependencies {
     compile 'net.simonvt.schematic:schematic:0.6.7'
     annotationProcessor 'net.simonvt.schematic:schematic-compiler:0.6.7'
 
-    compile 'com.android.support:appcompat-v7:25.3.1'
+//    compile "com.android.support:appcompat-v7:$rootProject.androidSupportLibrariesExt"
 
     // picasso
     compile 'com.squareup.picasso:picasso:2.5.2'

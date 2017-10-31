@@ -5,6 +5,7 @@ buildscript {
         jcenter()
         mavenCentral()
 
+        google()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.0.0'
@@ -13,9 +14,6 @@ buildscript {
         classpath 'com.google.gms:google-services:3.0.0'
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
         classpath 'de.undercouch:gradle-download-task:3.2.0'
-
-
-
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -31,6 +29,20 @@ allprojects {
         maven { url 'https://maven.fabric.io/public' }
 
     }
+}
+
+ext {
+    compileSdkVersionExt = 26
+    buildToolsVersionExt = "26.0.2"
+    minSdkVersionExt = 21
+    targetSdkVersionExt = 25
+    androidSupportLibrariesExt = "26.1.0"
+    firebaseUiExt = "3.1.0"
+    firebaseExt = "11.4.2"
+    facebookAndroidExt = "4.27.0"
+    retrofitExt = "2.1.0"
+    okhttp3Ext = "3.3.0"
+
 }
 
 task clean(type: Delete) {
