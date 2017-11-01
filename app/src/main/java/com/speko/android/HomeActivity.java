@@ -25,6 +25,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GetTokenResult;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.speko.android.data.UserComplete;
 import com.speko.android.data.generated.UsersDatabase;
 import com.speko.android.sync.SpekoSyncAdapter;
@@ -94,6 +99,9 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
     CoordinatorLayout mCoordinatorLayout;
     private Snackbar connectivitySnackBar;
     private Fragment currentFragment;
+    private ChildEventListener mChildEventListener;
+    private FirebaseDatabase mFirebaseDatabase;
+    private DatabaseReference mChatRoomsReference;
 
 
     @Override
@@ -113,6 +121,7 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
             callLoginActivity();
             return;
         }
+
         userNotCreatedCheck();
 
 
@@ -145,10 +154,10 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
 
     private void setupFirebase() {
         mFirebaseAuth = FirebaseAuth.getInstance();
+        mFirebaseDatabase = FirebaseDatabase.getInstance();
 
 
 //        setFireBaseToken();
-
 
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             public final String LOG_TAG = getClass().getSimpleName();
@@ -161,11 +170,8 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
                     Log.i(LOG_TAG, "user logged in");
 
                     // User is signed in
-                    //TODO implement this
 
-//                    setFireBaseToken();
-
-
+                    attachFirebaseChatListener();
                 } else {
                     Log.i(LOG_TAG, "user logged out");
 
@@ -175,7 +181,30 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
                 }
             }
         };
+
+        UserComplete userComplete = Utility.getUser(this);
+        mChatRoomsReference = mFirebaseDatabase.getReference()
+                .child("users")
+                .child(userComplete.getId())
+                .child("chats");
+
     }
+
+    private void attachFirebaseChatListener() {
+        if (mChildEventListener == null) {
+            mChildEventListener = new ChildEventListener() {
+                @Override
+                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+
+                }
+
+                public void onChildChanged(DataSnapshot dataSnapshot, String s) {}
+                public void onChildRemoved(DataSnapshot dataSnapshot) {}
+                public void onChildMoved(DataSnapshot dataSnapshot, String s) {}
+                public void onCancelled(DatabaseError databaseError) {}
+            };
+            mChatRoomsReference.addChildEventListener(mChildEventListener);
+        }    }
 
     private void attachView(Bundle savedInstanceState) {
         setContentView(R.layout.activity_home);
@@ -386,6 +415,12 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
             }
         }
 
+        detachFirebaseChatListener();
+
+    }
+
+    private void detachFirebaseChatListener() {
+        //TODO implement
     }
 
 
