@@ -25,11 +25,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GetTokenResult;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.speko.android.data.UserComplete;
 import com.speko.android.data.generated.UsersDatabase;
 import com.speko.android.sync.SpekoSyncAdapter;
@@ -99,7 +99,7 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
     CoordinatorLayout mCoordinatorLayout;
     private Snackbar connectivitySnackBar;
     private Fragment currentFragment;
-    private ChildEventListener mChildEventListener;
+    private ValueEventListener mValueEventListener;
     private FirebaseDatabase mFirebaseDatabase;
     private DatabaseReference mChatRoomsReference;
 
@@ -190,36 +190,27 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
                     .child("users")
                     .child(mFirebaseAuth.getCurrentUser().getUid())
                     .child("chats");
-            if (mChildEventListener == null) {
-                mChildEventListener = new ChildEventListener() {
+            if (mValueEventListener == null) {
+                mValueEventListener = new ValueEventListener() {
+
+
+
                     @Override
-                    public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                    public void onDataChange(DataSnapshot dataSnapshot) {
                         Log.d(LOG_TAG, "New Room Created!");
-                    }
 
-                    @Override
-                    public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-
-                    }
-
-                    @Override
-                    public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-                    }
-
-                    @Override
-                    public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
+                        if (!SpekoSyncAdapter.isSyncActive(getApplicationContext())){
+                            SpekoSyncAdapter.syncImmediatly(getApplicationContext());
+                        }
                     }
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
-
+                        Log.e(LOG_TAG,databaseError.getDetails());
                     }
 
-
                 };
-                mChatRoomsReference.addChildEventListener(mChildEventListener);
+                mChatRoomsReference.addValueEventListener(mValueEventListener);
             }
         }
 
@@ -449,9 +440,9 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
     }
 
     private void detachFirebaseChatRoomsListener() {
-        if (mChildEventListener != null) {
-            mChatRoomsReference.removeEventListener(mChildEventListener);
-            mChildEventListener = null;
+        if (mValueEventListener != null) {
+            mChatRoomsReference.removeEventListener(mValueEventListener);
+            mValueEventListener = null;
         }
     }
 
