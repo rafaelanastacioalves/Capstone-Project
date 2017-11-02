@@ -158,7 +158,6 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
 
 
 //        setFireBaseToken();
-
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
             public final String LOG_TAG = getClass().getSimpleName();
 
@@ -171,7 +170,7 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
 
                     // User is signed in
 
-                    attachFirebaseChatListener();
+                    attachFirebaseChatRoomsListener();
                 } else {
                     Log.i(LOG_TAG, "user logged out");
 
@@ -182,29 +181,50 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
             }
         };
 
-        UserComplete userComplete = Utility.getUser(this);
-        mChatRoomsReference = mFirebaseDatabase.getReference()
-                .child("users")
-                .child(userComplete.getId())
-                .child("chats");
 
     }
 
-    private void attachFirebaseChatListener() {
-        if (mChildEventListener == null) {
-            mChildEventListener = new ChildEventListener() {
-                @Override
-                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+    private void attachFirebaseChatRoomsListener() {
+        if (mFirebaseAuth.getCurrentUser() != null) {
+            mChatRoomsReference = mFirebaseDatabase.getReference()
+                    .child("users")
+                    .child(mFirebaseAuth.getCurrentUser().getUid())
+                    .child("chats");
+            if (mChildEventListener == null) {
+                mChildEventListener = new ChildEventListener() {
+                    @Override
+                    public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                        Log.d(LOG_TAG, "New Room Created!");
+                    }
 
-                }
+                    @Override
+                    public void onChildChanged(DataSnapshot dataSnapshot, String s) {
 
-                public void onChildChanged(DataSnapshot dataSnapshot, String s) {}
-                public void onChildRemoved(DataSnapshot dataSnapshot) {}
-                public void onChildMoved(DataSnapshot dataSnapshot, String s) {}
-                public void onCancelled(DatabaseError databaseError) {}
-            };
-            mChatRoomsReference.addChildEventListener(mChildEventListener);
-        }    }
+                    }
+
+                    @Override
+                    public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+                    }
+
+                    @Override
+                    public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+
+
+                };
+                mChatRoomsReference.addChildEventListener(mChildEventListener);
+            }
+        }
+
+
+    }
 
     private void attachView(Bundle savedInstanceState) {
         setContentView(R.layout.activity_home);
@@ -313,6 +333,8 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
             SpekoSyncAdapter.syncImmediatly(this);
         }
 
+        attachFirebaseChatRoomsListener();
+
         super.onStart();
     }
 
@@ -357,6 +379,13 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
             }
 
         }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        detachFirebaseChatRoomsListener();
     }
 
     private void setFireBaseToken() {
@@ -415,12 +444,15 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
             }
         }
 
-        detachFirebaseChatListener();
+        detachFirebaseChatRoomsListener();
 
     }
 
-    private void detachFirebaseChatListener() {
-        //TODO implement
+    private void detachFirebaseChatRoomsListener() {
+        if (mChildEventListener != null) {
+            mChatRoomsReference.removeEventListener(mChildEventListener);
+            mChildEventListener = null;
+        }
     }
 
 
