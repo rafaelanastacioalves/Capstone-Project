@@ -44,7 +44,7 @@ import static android.net.ConnectivityManager.CONNECTIVITY_ACTION;
  * Should not retrieve user infor here. As it could be still loading database and it
  * could be returned null. Here we just need id info so use Firebase framework instead.
  */
-public class HomeActivity extends AppCompatActivity implements ProfileFragment.OnFragmentInteractionListener {
+public class HomeActivity extends AppCompatActivity implements ProfileFragment.OnFragmentInteractionListener, SharedPreferences.OnSharedPreferenceChangeListener {
 
     // Constants
 
@@ -313,7 +313,6 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
 
     @Override
     protected void onStart() {
-        Log.i(LOG_TAG, "onStart");
         userNotCreatedCheck();
         IntentFilter filter = new IntentFilter();
         filter.addAction(CONNECTIVITY_ACTION);
@@ -326,6 +325,7 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
 
         attachFirebaseChatRoomsListener();
 
+        Log.i(LOG_TAG, "onStart");
         super.onStart();
     }
 
@@ -412,6 +412,9 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
         super.onResume();
         mFirebaseAuth.addAuthStateListener(mAuthStateListener);
 
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        sp.registerOnSharedPreferenceChangeListener(this);
+
         View decorView = getWindow().getDecorView();
         int uiOptions = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
@@ -421,8 +424,7 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
 
     @Override
     protected void onPause() {
-        Log.i(LOG_TAG, "onPause()");
-        super.onPause();
+
         if (mAuthStateListener != null) {
             mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
         }
@@ -436,7 +438,11 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
         }
 
         detachFirebaseChatRoomsListener();
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+        sp.unregisterOnSharedPreferenceChangeListener(this);
 
+        Log.i(LOG_TAG, "onPause()");
+        super.onPause();
     }
 
     private void detachFirebaseChatRoomsListener() {
@@ -479,7 +485,21 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
     }
 
 
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        Log.i(LOG_TAG,"onSharedPreferenceChanged");
+
+        if (key.equals(getString(R.string.shared_preference_sync_status_key))) {
+            Log.i(LOG_TAG,"onSharedPreferenceChanged");
+            SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
+            @SpekoSyncAdapter.LocationStatus int location = sp.getInt(getString(R.string.shared_preference_sync_status_key), SpekoSyncAdapter.SYNC_STATUS_UNKNOWN);
+
+        }
+    }
+
 }
+
+
 
 interface UpdateFragmentStatus {
     @SuppressWarnings("SameParameterValue")

@@ -97,8 +97,7 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
     }
 
     @Retention(RetentionPolicy.SOURCE)
-    @IntDef({SYNC_STATUS_OK, SYNC_STATUS_SERVER_DOWN, SYNC_STATUS_INVALID, SYNC_STATUS_SERVER_ERROR,
-            SYNC_STATUS_UNKNOWN})
+    @IntDef({SYNC_STATUS_OK, SYNC_STATUS_SERVER_DOWN, SYNC_STATUS_INVALID, SYNC_STATUS_SERVER_ERROR, SYNC_STATUS_LOCAL_USER_INVALID, SYNC_STATUS_UNKNOWN})
     public @interface LocationStatus {
     }
 
@@ -106,7 +105,8 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
     public static final int SYNC_STATUS_SERVER_DOWN = 1;
     public static final int SYNC_STATUS_SERVER_ERROR = 2;
     public static final int SYNC_STATUS_UNKNOWN = 3;
-    private static final int SYNC_STATUS_INVALID = 4;
+    private static final int SYNC_STATUS_LOCAL_USER_INVALID = 4;
+    private static final int SYNC_STATUS_INVALID = 5;
 
     public static void setUserToken(String userToken) {
         SpekoSyncAdapter.userToken = userToken;
@@ -125,6 +125,9 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
                 userComplete = getUserComplete(userToken);
                 //in case of user null - logout - just stop
                 if (userComplete == null) {
+                    Log.w("SpekoSyncAdapter", "Local User Null! ");
+                    setSyncStatus(getContext(),SYNC_STATUS_LOCAL_USER_INVALID);
+                    Log.w("SpekoSyncAdapter", "Returning ");
                     return;
                 }
 
@@ -664,6 +667,7 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
         SharedPreferences.Editor spe = sp.edit();
         spe.putInt(c.getString(R.string.shared_preference_sync_status_key), syncStatus);
         spe.commit();
+        Log.i(LOG_TAG, "setSyncStatus committeed");
     }
 
 }
