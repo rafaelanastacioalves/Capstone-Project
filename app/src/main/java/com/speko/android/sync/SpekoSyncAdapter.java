@@ -98,7 +98,7 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
 
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({SYNC_STATUS_OK, SYNC_STATUS_SERVER_DOWN, SYNC_STATUS_INVALID, SYNC_STATUS_SERVER_ERROR, SYNC_STATUS_LOCAL_USER_INVALID, SYNC_STATUS_UNKNOWN})
-    public @interface LocationStatus {
+    public @interface SyncStatus {
     }
 
     public static final int SYNC_STATUS_OK = 0;
@@ -126,6 +126,7 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
                 //in case of user null - logout - just stop
                 if (userComplete == null) {
                     Log.w("SpekoSyncAdapter", "Local User Null! ");
+                    isSyncing.set(false);
                     setSyncStatus(getContext(),SYNC_STATUS_LOCAL_USER_INVALID);
                     Log.w("SpekoSyncAdapter", "Returning ");
                     return;
@@ -170,6 +171,7 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
         }
 
         isSyncing.set(false);
+        setSyncStatus(getContext(),SYNC_STATUS_OK);
         updateWidgets();
 
     }
@@ -662,7 +664,7 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
         }
     }
 
-    private static void setSyncStatus(Context c, @LocationStatus int syncStatus) {
+    private static void setSyncStatus(Context c, @SyncStatus int syncStatus) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c);
         SharedPreferences.Editor spe = sp.edit();
         spe.putInt(c.getString(R.string.shared_preference_sync_status_key), syncStatus);

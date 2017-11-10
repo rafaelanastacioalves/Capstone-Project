@@ -194,19 +194,18 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
                 mValueEventListener = new ValueEventListener() {
 
 
-
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         Log.d(LOG_TAG, "New Room Created!");
 
-                        if (!SpekoSyncAdapter.isSyncActive(getApplicationContext())){
+                        if (!SpekoSyncAdapter.isSyncActive(getApplicationContext())) {
                             SpekoSyncAdapter.syncImmediatly(getApplicationContext());
                         }
                     }
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
-                        Log.e(LOG_TAG,databaseError.getDetails());
+                        Log.e(LOG_TAG, databaseError.getDetails());
                     }
 
                 };
@@ -350,11 +349,19 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
         if (userComplete == null
                 || userComplete.getId() == null
                 || userComplete.getId().isEmpty()
-                || !SpekoSyncAdapter.hasUserTokenSetted()){
-            if(Utility.getLastSyncStatus(this) == SpekoSyncAdapter.SYNC_STATUS_LOCAL_USER_INVALID){
-                callLoginActivity();
-            }
+                || !SpekoSyncAdapter.hasUserTokenSetted()) {
+
             setFireBaseToken();
+            // this should always be priority
+            localUserSyncCheck();
+        }
+
+
+    }
+
+    private void localUserSyncCheck() {
+        if (Utility.getLastSyncStatus(this) == SpekoSyncAdapter.SYNC_STATUS_LOCAL_USER_INVALID) {
+            callLoginActivity();
         }
     }
 
@@ -490,21 +497,20 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        Log.d(LOG_TAG, "Shared Preferences changed: " + key);
+        Log.i(LOG_TAG, "Shared Preferences changed: " + key);
 
         if (key.equals(getString(R.string.shared_preference_sync_status_key))) {
-            Log.i(LOG_TAG,"onSharedPreferenceChanged");
-            SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-            @SpekoSyncAdapter.LocationStatus int location = sp.getInt(getString(R.string.shared_preference_sync_status_key), SpekoSyncAdapter.SYNC_STATUS_UNKNOWN);
+            Log.i(LOG_TAG, "onSharedPreferenceChanged");
 
+            //checking if somehow syncying main user to local storage was ok
+            localUserSyncCheck();
         }
+
     }
 
 }
+    interface UpdateFragmentStatus {
+        @SuppressWarnings("SameParameterValue")
+        void setLoading(Boolean isLoading);
+    }
 
-
-
-interface UpdateFragmentStatus {
-    @SuppressWarnings("SameParameterValue")
-    void setLoading(Boolean isLoading);
-}

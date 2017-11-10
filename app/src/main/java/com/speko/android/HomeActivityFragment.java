@@ -160,7 +160,7 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
         Log.i(LOG_TAG, "updateEmptyView");
 
         if (mAdapter.getItemCount() == 0) {
-            @SpekoSyncAdapter.LocationStatus int status = Utility.getSyncStatus(getActivity());
+            @SpekoSyncAdapter.SyncStatus int status = Utility.getSyncStatus(getActivity());
             String message = getString(R.string.no_friend_to_show);
             switch (status) {
                 //TODO: preencher com as mensagens

@@ -553,7 +553,8 @@ public class Utility {
     }
 
     @SuppressWarnings("ResourceType")
-    static public @SpekoSyncAdapter.LocationStatus int getSyncStatus(Context c) {
+    static public @SpekoSyncAdapter.SyncStatus
+    int getSyncStatus(Context c) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c);
         return sp.getInt(c.getString(R.string.shared_preference_sync_status_key),
                 SpekoSyncAdapter.SYNC_STATUS_UNKNOWN);
@@ -601,7 +602,7 @@ public class Utility {
      * @return the location status integer type
      */
     @SuppressWarnings("ResourceType")
-    static public @SpekoSyncAdapter.LocationStatus
+    static public @SpekoSyncAdapter.SyncStatus
     int getLastSyncStatus(Context c){
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c);
         return sp.getInt(c.getString(R.string.shared_preference_sync_status_key), SpekoSyncAdapter.SYNC_STATUS_UNKNOWN);
