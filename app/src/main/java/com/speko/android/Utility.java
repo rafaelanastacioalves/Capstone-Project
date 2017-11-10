@@ -113,6 +113,8 @@ public class Utility {
 
 
 
+
+
     /**
      * Persists current into Firebase
      *
@@ -591,5 +593,17 @@ public class Utility {
             result = context.getResources().getDimensionPixelSize(resourceId);
         }
         return result;
+    }
+
+    /**
+     *
+     * @param c Context used to get the SharedPreferences
+     * @return the location status integer type
+     */
+    @SuppressWarnings("ResourceType")
+    static public @SpekoSyncAdapter.LocationStatus
+    int getLastSyncStatus(Context c){
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c);
+        return sp.getInt(c.getString(R.string.shared_preference_sync_status_key), SpekoSyncAdapter.SYNC_STATUS_UNKNOWN);
     }
 }

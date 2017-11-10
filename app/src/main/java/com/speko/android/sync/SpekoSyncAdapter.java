@@ -101,12 +101,12 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
     public @interface LocationStatus {
     }
 
-    private static final int SYNC_STATUS_OK = 0;
+    public static final int SYNC_STATUS_OK = 0;
     public static final int SYNC_STATUS_SERVER_DOWN = 1;
     public static final int SYNC_STATUS_SERVER_ERROR = 2;
     public static final int SYNC_STATUS_UNKNOWN = 3;
-    private static final int SYNC_STATUS_LOCAL_USER_INVALID = 4;
-    private static final int SYNC_STATUS_INVALID = 5;
+    public static final int SYNC_STATUS_LOCAL_USER_INVALID = 4;
+    public static final int SYNC_STATUS_INVALID = 5;
 
     public static void setUserToken(String userToken) {
         SpekoSyncAdapter.userToken = userToken;

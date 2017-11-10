@@ -240,6 +240,7 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
     }
 
     private void callLoginActivity() {
+        Log.w(LOG_TAG, "Calling Login Activity");
         Intent i = new Intent(getApplicationContext(), LoginActivity.class);
         startActivity(i);
         finish();
@@ -349,8 +350,10 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
         if (userComplete == null
                 || userComplete.getId() == null
                 || userComplete.getId().isEmpty()
-                || !SpekoSyncAdapter.hasUserTokenSetted()) {
-
+                || !SpekoSyncAdapter.hasUserTokenSetted()){
+            if(Utility.getLastSyncStatus(this) == SpekoSyncAdapter.SYNC_STATUS_LOCAL_USER_INVALID){
+                callLoginActivity();
+            }
             setFireBaseToken();
         }
     }
@@ -487,7 +490,7 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        Log.i(LOG_TAG,"onSharedPreferenceChanged");
+        Log.d(LOG_TAG, "Shared Preferences changed: " + key);
 
         if (key.equals(getString(R.string.shared_preference_sync_status_key))) {
             Log.i(LOG_TAG,"onSharedPreferenceChanged");

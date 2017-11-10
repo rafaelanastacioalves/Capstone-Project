@@ -1,0 +1,107 @@
+{
+  "project_info": {
+    "project_number": "817920505884",
+    "firebase_url": "https://speko-debug.firebaseio.com",
+    "project_id": "speko-debug",
+    "storage_bucket": "speko-debug.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:817920505884:android:c821950ed09cc2a7",
+        "android_client_info": {
+          "package_name": "com.speko.android.debug"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "817920505884-eoe6g6b5p2lbce4j9sriemou7rjmiau0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.speko.android.debug",
+            "certificate_hash": "62FCAE6B1B72C58AD0E5D7EBC8156B189CA26176"
+          }
+        },
+        {
+          "client_id": "817920505884-kuun9sg9f7jkgqdg4lg4mh9s6jbuh3cg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.speko.android.debug",
+            "certificate_hash": "BAFCF5B5F6DC73A0AF8E5395DC941A5A73DE3320"
+          }
+        },
+        {
+          "client_id": "817920505884-7mgi195g2pvnr1deq7oo5ortq9e2t73m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCeL31vCzjIIuOYcX-tmcsFFRelKG89KY8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "817920505884-7mgi195g2pvnr1deq7oo5ortq9e2t73m.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:817920505884:android:44f122b4e2fa22d1",
+        "android_client_info": {
+          "package_name": "com.speko.android"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "817920505884-049a5qh47h48qedhk5phl0rklta1mh7p.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.speko.android",
+            "certificate_hash": "F3FCDAC1D57A763C2AAA132D72710B34592A5C24"
+          }
+        },
+        {
+          "client_id": "817920505884-7mgi195g2pvnr1deq7oo5ortq9e2t73m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCeL31vCzjIIuOYcX-tmcsFFRelKG89KY8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "817920505884-7mgi195g2pvnr1deq7oo5ortq9e2t73m.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

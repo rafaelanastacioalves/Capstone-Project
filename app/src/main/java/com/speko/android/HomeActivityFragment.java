@@ -214,7 +214,7 @@ public class HomeActivityFragment extends Fragment implements LoaderManager.Load
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        Log.d(LOG_TAG, "Shared Preferences changed: ");
+        Log.d(LOG_TAG, "Shared Preferences changed: " + key);
         if (key.equals(getString(R.string.shared_preference_sync_status_key))) {
             Log.d(LOG_TAG, "Case onClickSync-status");
             updateScreenState();
