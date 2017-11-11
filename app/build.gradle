@@ -90,7 +90,7 @@ android {
         applicationId "com.speko.android"
         minSdkVersion rootProject.minSdkVersionExt
         targetSdkVersion rootProject.targetSdkVersionExt
-        versionCode 7
+        versionCode 8
         versionName "0.0.50"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
