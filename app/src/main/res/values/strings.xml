@@ -102,7 +102,7 @@
     <string name="your_fluent_language_picture_representation">Your fluent language picture representation</string>
     <string name="profile_update_toast">Profile Updated!</string>
     <string name="must_fill_name">You must fill a name.</string>
-    <string name="at_least_3_char" translatable="false">The name must be at least 3 characters</string>
+    <string name="at_least_3_char" >The name must be at least 3 characters</string>
     <string name="sign_up_success">Signed Up Successfully!</string>
 
 

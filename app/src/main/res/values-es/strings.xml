@@ -86,7 +86,6 @@
     <string name="profile_update_toast">Profile Updated!</string>
     <string name="must_fill_name">You must fill a name.</string>
     <string name="sign_up_success">Registrado com éxito!</string>
-    <string name="fulano_de_tal_viewholder" translatable="false">Fulano de Tal Fulano de Tal Fulano de Tal Fulano de Tal Fulano de tal fulano de tal Fulano de Tal Fulano de Tal</string>
     <string name="at_least_3_char">El nombre debe tener al menos 3 caracteres</string>
 
 
