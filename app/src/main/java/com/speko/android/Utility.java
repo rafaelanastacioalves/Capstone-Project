@@ -294,7 +294,7 @@ public class Utility {
                 "\n id: " + userPublic.getId());
 
 
-        members.put(userPublic.getId(), new UserPublic( userPublic.getId()));
+        members.put(userPublic.getId(), new UserPublic(userPublic.getId()));
 
         chat.setMembers(members);
         if (firebaseDatabase == null) {
@@ -308,16 +308,11 @@ public class Utility {
 
         chat.setChatId(chatId);
 
-        HashMap<String, Object> chatHashMap = new HashMap<String, Object>();
-        chatHashMap.put(chatId, chat);
-        //noinspection unchecked
-
-
         Map<String, Object> childUpdates = new HashMap<>();
 
-        childUpdates.put("/chats" , chatHashMap);
-        childUpdates.put("/users/" + userPublic.getId() + "/chats"  , chatHashMap);
-        childUpdates.put("/users/" + userPublicFriend.getId() + "/chats" , chatHashMap);
+        childUpdates.put("/chats/" + chatId  , chat);
+        childUpdates.put("/users/" + userPublic.getId() + "/chats/" + chatId  , chat);
+        childUpdates.put("/users/" + userPublicFriend.getId() + "/chats/" + chatId , chat);
         firebaseDatabase.getReference().updateChildren(childUpdates,  onCompleteListener);
 
         return chatId;
@@ -606,5 +601,13 @@ public class Utility {
     int getLastSyncStatus(Context c){
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c);
         return sp.getInt(c.getString(R.string.shared_preference_sync_status_key), SpekoSyncAdapter.SYNC_STATUS_UNKNOWN);
+    }
+
+    public static void resetPreferences(Context context) {
+        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor spe = sp.edit();
+        spe.putInt(context.getString(R.string.shared_preference_sync_status_key), SpekoSyncAdapter.SYNC_STATUS_UNKNOWN);
+        spe.commit();
+        Log.i("Utility", "setSyncStatus committeed");
     }
 }

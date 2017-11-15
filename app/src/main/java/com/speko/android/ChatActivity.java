@@ -116,6 +116,7 @@ public class ChatActivity extends AppCompatActivity implements SharedPreferences
     @Override
     protected void onPause() {
         sp.unregisterOnSharedPreferenceChangeListener(this);
+        unregisterReceiver(connectivityChangeReceiver);
         super.onPause();
     }
 

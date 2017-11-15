@@ -361,7 +361,8 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
 
     private void localUserSyncCheck() {
         if (Utility.getLastSyncStatus(this) == SpekoSyncAdapter.SYNC_STATUS_LOCAL_USER_INVALID) {
-            callLoginActivity();
+            Log.w(LOG_TAG, "signing out");
+            signOut();
         }
     }
 
@@ -393,7 +394,7 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
         Log.i(LOG_TAG, "setFireBaseToken");
         FirebaseUser user = mFirebaseAuth.getCurrentUser();
         //noinspection ConstantConditions
-        user.getToken(false).addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
+        user.getIdToken(false).addOnCompleteListener(new OnCompleteListener<GetTokenResult>() {
             public final String LOG_TAG = getClass().getSimpleName();
 
             @Override
@@ -490,6 +491,7 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
         clearAccount();
         Utility.deleteEverything(this);
         FirebaseAuth.getInstance().signOut();
+        Utility.resetPreferences(this);
 
 
     }
