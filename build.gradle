@@ -36,6 +36,7 @@ ext {
     buildToolsVersionExt = "26.0.2"
     minSdkVersionExt = 21
     targetSdkVersionExt = 25
+    crashlytics = "2.7.1@aar"
     androidSupportLibrariesExt = "26.1.0"
     firebaseUiExt = "3.1.0"
     firebaseExt = "11.4.2"

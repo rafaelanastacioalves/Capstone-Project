@@ -116,17 +116,19 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile('com.crashlytics.sdk.android:crashlytics:2.6.8@aar') {
-        transitive = true;
-    }
 
 
 
-    //firebase related things
+
+    //firebase + crashlytics related things
     compile "com.firebaseui:firebase-ui-auth:$rootProject.firebaseUiExt"
     compile "com.google.firebase:firebase-database:$rootProject.firebaseExt"
     compile "com.google.firebase:firebase-storage:$rootProject.firebaseExt"
     compile "com.facebook.android:facebook-android-sdk:$rootProject.facebookAndroidExt"
+    compile "com.google.firebase:firebase-core:$rootProject.firebaseExt"
+    compile("com.crashlytics.sdk.android:crashlytics:$rootProject.crashlytics") {
+        transitive = true
+    }
 
     //retrofit + gson
     compile "com.squareup.retrofit2:converter-gson:$rootProject.retrofitExt"
