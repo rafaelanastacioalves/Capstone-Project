@@ -79,8 +79,8 @@ public class LoginActivity extends AppCompatActivity implements ProfileFragment.
                         .createSignInIntentBuilder()
                         .setTheme(R.style.AppTheme_NoActionBar)
                         .setLogo(R.drawable.ic_speko_complete_full_screen)
-                        .setIsSmartLockEnabled(!BuildConfig.DEBUG)
-                        .setProviders(Arrays.asList(
+                        .setIsSmartLockEnabled(false)
+                        .setAvailableProviders(Arrays.asList(
                                 new AuthUI.IdpConfig.Builder(AuthUI.GOOGLE_PROVIDER).build(),
                                 new AuthUI.IdpConfig.Builder(AuthUI.FACEBOOK_PROVIDER).build()))
                                 .build(),
@@ -193,7 +193,6 @@ public class LoginActivity extends AppCompatActivity implements ProfileFragment.
         if(userEventListener != null){
             firebaseDatabase.getReference().child("users").removeEventListener(userEventListener);
         }
-        setLoading(true);
         super.onPause();
     }
 
