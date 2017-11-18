@@ -56,7 +56,6 @@
 
         app:tilt="0.1"
         app:duration="800"
-        app:repeat_delay="200"
 
         android:id="@+id/signup_imageview_profile_picture_container"
         app:layout_anchor="@+id/profile_list_view"

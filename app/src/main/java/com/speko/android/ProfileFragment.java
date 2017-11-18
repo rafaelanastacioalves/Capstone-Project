@@ -271,6 +271,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
 
     @OnClick(R.id.log_out) @Optional
     public void onClicklogOut() {
+        updateScreenState();
         mListener.signOut();
 
     }
@@ -295,7 +296,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
                 signupButton.setClickable(false);
                 nameEditText.setEnabled(false);
                 ageEditText.setEnabled(false);
-                profilePictureContainer.setEnabled(false);
+                profilePictureContainer.setClickable(false);
                 profileFluentLanguageContainer.setEnabled(false);
                 profileLanguageOfInterestContainer.setEnabled(false);
                 userDescription.setEnabled(false);
@@ -307,7 +308,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
                 signupButton.setClickable(true);
                 nameEditText.setEnabled(true);
                 ageEditText.setEnabled(true);
-                profilePictureContainer.setEnabled(true);
+                profilePictureContainer.setClickable(true);
                 profileFluentLanguageContainer.setEnabled(true);
                 profileLanguageOfInterestContainer.setEnabled(true);
                 userDescription.setEnabled(true);
@@ -525,6 +526,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
         if (requestCode == RC_PHOTO_PICKER && resultCode == RESULT_OK) {
             Log.i(LOG_TAG, "Result OK from profile pick");
             Uri selectedImageUri = data.getData();
+            profilePictureContainer.startShimmerAnimation();
 
             // Get a reference to store file at user_pictures/<UID>/<FILENAME>
             @SuppressWarnings("ConstantConditions") StorageReference photoRef = FirebaseStorage.getInstance().getReference()
@@ -552,6 +554,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
     }
 
     private void showUserPhoto(String downloadUrl) {
+        Log.d(LOG_TAG,"StartShimmerAnimation");
         profilePictureContainer.startShimmerAnimation();
 
         Picasso.with(getContext()).load(downloadUrl)
@@ -561,6 +564,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
                 .centerCrop().into(profilePicture, new Callback() {
             @Override
             public void onSuccess() {
+                Log.d(LOG_TAG,"StopShimmerAnimation");
                 profilePictureContainer.stopShimmerAnimation();
             }
 
@@ -729,7 +733,6 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
                     .scaleY(0).scaleX(0)
                     .setDuration(200)
                     .start();
-            profilePictureContainer.setEnabled(false);
             profilePictureContainer.setClickable(false);
             Log.i(LOG_TAG, "Hiding Animation Started");
         }
@@ -741,7 +744,6 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
                     .animate()
                     .scaleY(1).scaleX(1)
                     .start();
-            profilePictureContainer.setEnabled(true);
             profilePictureContainer.setClickable(true);
             Log.i(LOG_TAG, "Showing Animation Started");
 
