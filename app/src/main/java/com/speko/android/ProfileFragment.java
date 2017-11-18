@@ -14,6 +14,7 @@ import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.support.v4.widget.ContentLoadingProgressBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
@@ -144,6 +145,9 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
     @BindView(R.id.profile_options_container_view_stub)
     ViewStub profileOptionsContainerViewStub;
 
+    @BindView(R.id.progress_bar)
+    ContentLoadingProgressBar progressBar;
+
     private UserComplete userComplete;
     private OnFragmentInteractionListener mListener;
 
@@ -212,6 +216,8 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
         profileListView.setPadding(0,Utility.getStatusBarHeight(getActivity()),0,0);
         setup(view);
         ButterKnife.bind(this,view);
+        setView();
+
 
 
 //        SpekoSyncAdapter.syncImmediatly(getContext());
@@ -229,6 +235,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
             //noinspection ConstantConditions
             profileOptionsContainerViewStub.setLayoutResource(R.layout.profile_options_signup);
             profileOptionsContainerViewStub.inflate();
+            progressBar.setVisibility(View.GONE);
 
         }else{
 
@@ -237,7 +244,6 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
             profileOptionsContainerViewStub.setLayoutResource(R.layout.profile_options_edit);
             profileOptionsContainerViewStub.inflate();
             signupButton = (AppCompatButton) view.findViewById(R.id.fragment_button_profile_change);
-
         }
 
         //noinspection StatementWithEmptyBody
@@ -271,7 +277,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
 
     @OnClick(R.id.log_out) @Optional
     public void onClicklogOut() {
-        updateScreenState();
+        progressBar.show();
         mListener.signOut();
 
     }
@@ -300,6 +306,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
                 profileFluentLanguageContainer.setEnabled(false);
                 profileLanguageOfInterestContainer.setEnabled(false);
                 userDescription.setEnabled(false);
+                progressBar.show();
 
             }else{
                 Log.d(LOG_TAG, "syncNotActive");
@@ -312,6 +319,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
                 profileFluentLanguageContainer.setEnabled(true);
                 profileLanguageOfInterestContainer.setEnabled(true);
                 userDescription.setEnabled(true);
+                progressBar.hide();
 
 
 
@@ -332,7 +340,6 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
 
     @OnClick(R.id.fragment_button_profile_change) @Optional
     public void onClickChangeProfile(){
-
         if(populateAndValidateUserObjectCorrectly()){
             final Context applicationContext = getActivity().getApplication();
             OnCompleteListener onCompleteListener = new OnCompleteListener() {
@@ -555,10 +562,11 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
 
     private void showUserPhoto(String downloadUrl) {
         Log.d(LOG_TAG,"StartShimmerAnimation");
+        profilePictureContainer.stopShimmerAnimation();
         profilePictureContainer.startShimmerAnimation();
 
         Picasso.with(getContext()).load(downloadUrl)
-                .placeholder(R.drawable.ic_user)
+                .placeholder(R.drawable.ic_action_user)
                 .resize(getResources().getDimensionPixelSize(R.dimen.profile_user_picture_dimen),
                         getResources().getDimensionPixelSize(R.dimen.profile_user_picture_dimen))
                 .centerCrop().into(profilePicture, new Callback() {
@@ -671,6 +679,9 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
             @SuppressWarnings("ConstantConditions") String pictureUrl = FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl().toString();
             userComplete.setProfilePicture(pictureUrl);
             showUserPhoto(pictureUrl);
+        }else {
+            // picture will be loaded sooner or later
+            showUserPhoto(null);
         }
 
         if(userComplete.getFluentLanguage() != null){
