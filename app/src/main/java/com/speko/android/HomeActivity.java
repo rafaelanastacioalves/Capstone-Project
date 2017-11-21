@@ -33,6 +33,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.speko.android.data.UserComplete;
 import com.speko.android.data.generated.UsersDatabase;
 import com.speko.android.sync.SpekoSyncAdapter;
+import com.speko.android.sync.SpekoSyncService;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -57,6 +58,7 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
     private FirebaseAuth mFirebaseAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
     private int mSelectedItem;
+
 
     // TODO: Maybe refactor and put it apart because of repeated code in chat activity
     private final BroadcastReceiver connectivityChangeReceiver = new BroadcastReceiver() {
@@ -233,10 +235,7 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
         userDB.onCreate(userDB.getReadableDatabase());
     }
 
-    private void clearAccount() {
-        SpekoSyncAdapter.clearAccount(this);
 
-    }
 
     private void callLoginActivity() {
         Log.w(LOG_TAG, "Calling Login Activity");
@@ -488,12 +487,9 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
 
     @Override
     public void signOut() {
-        clearAccount();
-        Utility.deleteEverything(this);
-        FirebaseAuth.getInstance().signOut();
-        Utility.resetPreferences(this);
-
-
+        Intent i = new Intent(this, SpekoSyncService.class);
+        i.setAction(SpekoSyncAdapter.ACTION_SIGNOUT);
+        startService(i);
     }
 
 
@@ -509,6 +505,7 @@ public class HomeActivity extends AppCompatActivity implements ProfileFragment.O
         }
 
     }
+
 
 }
     interface UpdateFragmentStatus {

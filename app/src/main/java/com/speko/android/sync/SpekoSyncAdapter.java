@@ -3,7 +3,6 @@ package com.speko.android.sync;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.AbstractThreadedSyncAdapter;
 import android.content.ContentProviderClient;
 import android.content.ContentResolver;
@@ -71,6 +70,7 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
     public static final String ACTION_DATA_UPDATED =
             "com.speko.android.ACTION_DATA_UPDATED";
 
+    public static final String ACTION_SIGNOUT = "com.speko.android.ACTION_SIGNOUT";
 
     @SuppressWarnings("SameParameterValue")
     public SpekoSyncAdapter(Context context, boolean autoInitialize) {
@@ -85,16 +85,19 @@ public class SpekoSyncAdapter extends AbstractThreadedSyncAdapter {
 
     }
 
-    public static void clearAccount(Activity context) {
+    public static void clearAccount(Context context) {
         Log.i(LOG_TAG, "Clear Account");
 
         Account account = getSyncAccount(context);
         userToken = null;
         if (account !=null){
             Log.i(LOG_TAG, "Clearing Account");
-            AccountManager.get(context).removeAccount(account,  context,null,null);
+            AccountManager.get(context).removeAccount(account,null,null);
         }
     }
+
+
+
 
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({SYNC_STATUS_OK, SYNC_STATUS_SERVER_DOWN, SYNC_STATUS_INVALID, SYNC_STATUS_SERVER_ERROR, SYNC_STATUS_LOCAL_USER_INVALID, SYNC_STATUS_UNKNOWN})
