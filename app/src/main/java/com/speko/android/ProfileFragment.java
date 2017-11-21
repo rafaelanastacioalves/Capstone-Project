@@ -566,7 +566,7 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
         profilePictureContainer.startShimmerAnimation();
 
         Picasso.with(getContext()).load(downloadUrl)
-                .placeholder(R.drawable.ic_action_user)
+                .placeholder(R.drawable.ic_placeholder_profile_photo)
                 .resize(getResources().getDimensionPixelSize(R.dimen.profile_user_picture_dimen),
                         getResources().getDimensionPixelSize(R.dimen.profile_user_picture_dimen))
                 .centerCrop().into(profilePicture, new Callback() {
@@ -733,9 +733,6 @@ public class ProfileFragment extends Fragment implements LoaderManager.LoaderCal
         }
 
         int percentage = (Math.abs(verticalOffset)) * 100 / mMaxScrollSize;
-//        Log.i(LOG_TAG,"mMaxScrollSize: " + mMaxScrollSize);
-//        Log.i(LOG_TAG,"percentage of Scrolling: " + percentage);
-
 
         if (percentage >= TOTAL_SCROLLED_PERCENTAGE_TO_ANIMATE_AVATAR && mIsAvatarShown) {
             mIsAvatarShown = false;
