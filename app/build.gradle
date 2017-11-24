@@ -30,27 +30,9 @@ task downloadDebugGoogleJson(type: Download) {
     }
 }
 
-task downloadReleaseGoogleJson(type: Download) {
-    src 'https://firebasestorage.googleapis.com/v0/b/firebase-speko.appspot.com/o/setup_files%2Fgoogle-services.json?alt=media&token=99d46238-2dbf-43b1-b27d-6bad7b5bd0dc'
-    dest file("$projectDir/src/release/google-services.json")
-}
 
-task downloadReleaseSignProperties(type: Download) {
-    src 'https://firebasestorage.googleapis.com/v0/b/firebase-speko.appspot.com/o/setup_files%2Fsign.properties?alt=media&token=aec77f08-897d-44d1-ab26-03e5b812b832'
-    dest file("$projectDir/keys/sign.properties")
-}
 
-task downloadReleaseKey(type: Download) {
-    dependsOn downloadReleaseSignProperties
 
-    src 'https://firebasestorage.googleapis.com/v0/b/firebase-speko.appspot.com/o/setup_files%2Frelease.jks?alt=media&token=227dc517-e853-493f-b1bb-9e5ee560dccd'
-    dest file("$projectDir/keys/release.jks")
-
-}
-
-preBuild.dependsOn downloadReleaseSignProperties
-preBuild.dependsOn downloadReleaseGoogleJson
-preBuild.dependsOn downloadReleaseKey
 preBuild.dependsOn downloadDebugGoogleJson
 afterEvaluate{
     tasks.getByPath(":app:processDebugGoogleServices").dependsOn downloadDebugGoogleJson
