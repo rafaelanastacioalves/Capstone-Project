@@ -9,4 +9,4 @@ Speko is an Android Free App that allows fluent students in different languages 
 ## Setup
 
 In order to properly build this project you'll need arrange the following files:
-google-services.json for debug uses (get it here -> https://console.firebase.google.com/project/speko-debug/settings/general/android:com.speko.android.debug)
+google-services.json for debug uses (get it here -> https://console.firebase.google.com/project/speko-debug/settings/general/android:com.speko.android.debug or you can ask me by email: rafaelanastacioalves@gmail.com)
